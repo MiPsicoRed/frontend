@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router'
 const authStore = useAuthStore()
 const router = useRouter()
 
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
@@ -14,7 +14,7 @@ const error = ref('')
 const handleLogin = async () => {
   error.value = ''
   
-  if (!username.value || !password.value) {
+  if (!email.value || !password.value) {
     error.value = 'Please fill in all fields'
     return
   }
@@ -23,7 +23,7 @@ const handleLogin = async () => {
   
   try {
     await authStore.login({
-      username: username.value,
+      email: email.value,
       password: password.value
     })
     router.push('/admin') // Redirect after successful login
@@ -53,18 +53,18 @@ const handleLogin = async () => {
 
         <!-- Login Form -->
         <form @submit.prevent="handleLogin" class="space-y-6">
-          <!-- Username Field -->
+          <!-- Email Field -->
           <div>
-            <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
-              Username
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+              Email
             </label>
             <input
-              id="username"
-              v-model="username"
+              id="email"
+              v-model="email"
               type="text"
               required
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-              placeholder="Enter your username"
+              placeholder="Enter your email"
             />
           </div>
 

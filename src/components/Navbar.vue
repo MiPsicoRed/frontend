@@ -72,11 +72,11 @@ const toggleMobileMenu = () => {
             <div class="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg">
               <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
                 <span class="text-white text-sm font-semibold">
-                  {{ authStore.currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
+                  {{ authStore.userEmail?.charAt(0).toUpperCase() || 'U' }}
                 </span>
               </div>
               <span class="text-sm font-medium text-gray-700">
-                {{ authStore.currentUser?.username || 'User' }}
+                {{ authStore.userEmail || 'User' }}
               </span>
             </div>
             <button
@@ -166,15 +166,15 @@ const toggleMobileMenu = () => {
           <div class="flex items-center space-x-3 px-4 py-3 bg-gray-50 rounded-lg mb-2">
             <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center">
               <span class="text-white font-semibold">
-                {{ authStore.currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
+                {{ authStore.userEmail?.charAt(0).toUpperCase() || 'U' }}
               </span>
             </div>
             <div>
               <p class="font-medium text-gray-900">
-                {{ authStore.currentUser?.username || 'User' }}
+                {{ authStore.userEmail || 'User' }}
               </p>
               <p class="text-sm text-gray-500">
-                {{ authStore.currentUser?.email || '' }}
+                {{ authStore.userEmail || '' }}
               </p>
             </div>
           </div>

@@ -1,24 +1,27 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import AuthService from '../services/auth.service.ts'
+import { getAuthToken } from '../services/auth-header'
+import type { ParsedToken } from '@/services/auth.types.ts'
 
 export const useAuthStore = defineStore('auth', () => {
-  // State
-  const user = ref(JSON.parse(localStorage.getItem('user') || 'null'))
-  const status = ref({
-    loggedIn: user.value ? true : false
+  const token = ref(localStorage.getItem('token') || null)
+  const parsedToken = computed((): ParsedToken | null => {
+    return token.value ? getAuthToken() : null
   })
 
+
   // Getters (computed)
-  const isLoggedIn = computed(() => status.value.loggedIn)
-  const currentUser = computed(() => user.value)
+  const isLoggedIn = computed(() => !!parsedToken.value)
+  const userEmail = computed(() => parsedToken.value?.claims.email)
+  const isVerified = computed(() => parsedToken.value?.claims.verified || false)
 
   // Actions
   async function login(userData: any) {
     try {
-      const loggedInUser = await AuthService.login(userData)
-      loginSuccess(loggedInUser)
-      return Promise.resolve(loggedInUser)
+      const authResponse = await AuthService.login(userData)
+      loginSuccess(authResponse.jwt)
+      return Promise.resolve(authResponse)
     } catch (error) {
       loginFailure()
       return Promise.reject(error)
@@ -27,8 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   function logout() {
     AuthService.logout()
-    status.value.loggedIn = false
-    user.value = null
+    token.value = null
   }
 
   async function register(userData: any) {
@@ -42,32 +44,34 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // Mutations (internal functions)
-  function loginSuccess(userData: any) {
-    status.value.loggedIn = true
-    user.value = userData
+  // Internal mutations
+  function loginSuccess(jwt: string) {
+    token.value = jwt
+    localStorage.setItem('token', jwt)
   }
 
   function loginFailure() {
-    status.value.loggedIn = false
-    user.value = null
+    token.value = null
+    localStorage.removeItem('token')
   }
 
+
   function registerSuccess() {
-    status.value.loggedIn = false
+    // Usually after register you’re NOT logged in yet
+    token.value = null
   }
 
   function registerFailure() {
-    status.value.loggedIn = false
+    token.value = null
   }
 
   return {
     // State
-    user,
-    status,
+    token,
     // Getters
     isLoggedIn,
-    currentUser,
+    userEmail,
+    isVerified,
     // Actions
     login,
     logout,

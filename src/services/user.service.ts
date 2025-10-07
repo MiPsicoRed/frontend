@@ -6,7 +6,11 @@ const API_URL = 'http://localhost:3001/api/user/'
 export interface User {
   id: string
   username: string
+  usersurname: string
   email: string
+  phone: string
+  verified: Boolean
+  birthdate: Date
 }
 
 class UserService {
@@ -15,7 +19,6 @@ class UserService {
       API_URL + 'all',
       { headers: authHeader() }
     )
-    console.log(response)
     return response.data.data
   }
 }

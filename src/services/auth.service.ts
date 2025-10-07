@@ -3,19 +3,22 @@ import axios, { type AxiosResponse } from 'axios'
 const API_URL = 'http://localhost:3001/api/user/'
 
 interface LoginCredentials {
-  username: string
+  email: string
   password: string
 }
 
 interface RegisterCredentials {
   username: string
+  usersurname: string
   email: string
+  phone: string
+  birthdate: Date
   password: string
 }
 
 interface AuthResponse {
   jwt: string
-  success: boolean 
+  success: boolean
 }
 
 class AuthService {
@@ -23,26 +26,29 @@ class AuthService {
     const response: AxiosResponse<AuthResponse> = await axios.post(
       API_URL + 'login',
       {
-        username: user.username,
+        email: user.email,
         password: user.password
       }
     )
-    
+
     if (response.data.jwt) {
-      localStorage.setItem('user', JSON.stringify(response.data.jwt))
+      localStorage.setItem('token', response.data.jwt)
     }
-    
+
     return response.data
   }
 
   logout(): void {
-    localStorage.removeItem('user')
+    localStorage.removeItem('token')
   }
 
   async register(user: RegisterCredentials): Promise<AxiosResponse> {
     return await axios.post(API_URL + 'register', {
       username: user.username,
+      usersurname: user.usersurname,
       email: user.email,
+      phone: user.phone,
+      birthdate: user.birthdate,
       password: user.password
     })
   }
