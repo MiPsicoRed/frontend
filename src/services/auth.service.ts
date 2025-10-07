@@ -43,7 +43,7 @@ class AuthService {
   }
 
   async register(user: RegisterCredentials): Promise<AxiosResponse> {
-    return await axios.post(API_URL + 'register', {
+    const response = await axios.post(API_URL + 'register', {
       username: user.username,
       usersurname: user.usersurname,
       email: user.email,
@@ -51,6 +51,8 @@ class AuthService {
       birthdate: user.birthdate,
       password: user.password
     })
+
+    return response.data.user_id
   }
 }
 
