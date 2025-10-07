@@ -16,14 +16,14 @@ interface RegisterCredentials {
   password: string
 }
 
-interface AuthResponse {
+interface LoginResponse {
   jwt: string
   success: boolean
 }
 
 class AuthService {
-  async login(user: LoginCredentials): Promise<AuthResponse> {
-    const response: AxiosResponse<AuthResponse> = await axios.post(
+  async login(user: LoginCredentials): Promise<LoginResponse> {
+    const response: AxiosResponse<LoginResponse> = await axios.post(
       API_URL + 'login',
       {
         email: user.email,

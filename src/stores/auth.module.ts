@@ -19,9 +19,9 @@ export const useAuthStore = defineStore('auth', () => {
   // Actions
   async function login(userData: any) {
     try {
-      const authResponse = await AuthService.login(userData)
-      loginSuccess(authResponse.jwt)
-      return Promise.resolve(authResponse)
+      const loginResponse = await AuthService.login(userData)
+      loginSuccess(loginResponse.jwt)
+      return Promise.resolve(loginResponse)
     } catch (error) {
       loginFailure()
       return Promise.reject(error)
