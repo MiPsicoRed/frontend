@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import AdminView from '../views/AdminView.vue'
 import LoginView from '../views/LoginView.vue'
 import { useAuthStore } from '@/stores/auth.module'
+import RegisterView from '../views/RegisterView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,10 +19,16 @@ const router = createRouter({
       component: AdminView,
       meta: { requiresAuth: true },
     },
-     {
+    {
       path: '/login',
       name: 'login',
       component: LoginView,
+      meta: { guest: true }
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
       meta: { guest: true }
     }
   ],
@@ -34,15 +41,15 @@ router.beforeEach((to, from, next) => {
   // Check if route requires authentication
   if (to.meta.requiresAuth && !isLoggedIn) {
     // Redirect to login if not authenticated
-    next({ 
+    next({
       name: 'login',
       query: { redirect: to.fullPath } // Save intended destination
     })
-  } 
+  }
   // Optional: Redirect to home if logged in user tries to access login
   else if (to.meta.guest && isLoggedIn) {
     next({ name: 'home' })
-  } 
+  }
   // Allow navigation
   else {
     next()
