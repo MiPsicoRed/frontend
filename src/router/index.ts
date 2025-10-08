@@ -39,12 +39,12 @@ const router = createRouter({
       component: VerifyView,
       meta: { requiresAuth: true },
     },
-    // {
-    //   path: '/verified',
-    //   name: 'verfied',
-    //   component: VerifiedView,
-    //   meta: { requiresAuth: true },
-    // }
+    {
+      path: '/verified',
+      name: 'verified',
+      component: VerifiedView,
+      meta: { requiresAuth: true },
+    }
   ],
 })
 
@@ -86,7 +86,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // Redirect to verification page if logged in but not verified
-  if (isLoggedIn && !isVerified && to.meta.requiresAuth && to.name !== 'verification') {
+  if (isLoggedIn && !isVerified && to.meta.requiresAuth && (to.name !== 'verification' && to.name !== 'verified')) {
     next({ name: 'verification' })
     return
   }
