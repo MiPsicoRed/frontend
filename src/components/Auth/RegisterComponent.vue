@@ -77,7 +77,7 @@ const handleRegister = async () => {
       password: model.password,
       confirmPassword: model.confirmPassword,
     })
-    //router.push('/admin') // Redirect after successful register (Maybe the backend should return the uuid to go to verification tab?)
+    router.push('/admin') // Redirect after successful login
   } catch (err: any) {
     error.value = err.response?.data?.message || 'Register failed. Please try again.'
   } finally {
@@ -200,7 +200,7 @@ const handleRegister = async () => {
             />
             <label for="terms" class="text-sm">
               Acepto los
-              <NuxtLink to="/#" class="text-[#6A9997] hover:underline">términos y condiciones</NuxtLink>
+              <a href="/#" class="text-[#6A9997] hover:underline">términos y condiciones</a>
             </label>
           </div>
 

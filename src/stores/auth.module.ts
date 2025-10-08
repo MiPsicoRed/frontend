@@ -1,8 +1,8 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import AuthService from '../services/auth.service.ts'
-import { getAuthToken } from '../services/auth-header'
-import type { ParsedToken } from '@/services/auth.types.ts'
+import AuthService from '../services/auth/auth.service.ts'
+import { getAuthToken } from '../services/auth/auth-header'
+import type { LoginResponse, ParsedToken, RegisterResponse } from '@/services/auth/auth.types.ts'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token') || null)
@@ -13,18 +13,18 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Getters (computed)
   const isLoggedIn = computed(() => !!parsedToken.value)
-  const userEmail = computed(() => parsedToken.value?.claims.email)
+  const userId = computed(() => parsedToken.value?.claims.uuid)
   const isVerified = computed(() => parsedToken.value?.claims.verified || false)
 
   // Actions
-  async function login(userData: any) {
+  async function login(userData: any): Promise<LoginResponse> {
     try {
-      const loginResponse = await AuthService.login(userData)
-      loginSuccess(loginResponse.jwt)
-      return Promise.resolve(loginResponse)
+      const data = await AuthService.login(userData)
+      loginSuccess(data.jwt)
+      return data
     } catch (error) {
       loginFailure()
-      return Promise.reject(error)
+      throw error
     }
   }
 
@@ -33,14 +33,14 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null
   }
 
-  async function register(userData: any) {
+  async function register(userData: any): Promise<RegisterResponse> {
     try {
-      const response = await AuthService.register(userData)
-      registerSuccess()
-      return Promise.resolve(response.data)
+      const data = await AuthService.register(userData)
+      registerSuccess(data.jwt)
+      return data
     } catch (error) {
       registerFailure()
-      return Promise.reject(error)
+      throw error
     }
   }
 
@@ -56,13 +56,14 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
 
-  function registerSuccess() {
-    // Usually after register you’re NOT logged in yet
-    token.value = null
+  function registerSuccess(jwt: string) {
+    token.value = jwt
+    localStorage.setItem('token', jwt)
   }
 
   function registerFailure() {
     token.value = null
+    localStorage.removeItem('token')
   }
 
   return {
@@ -70,7 +71,7 @@ export const useAuthStore = defineStore('auth', () => {
     token,
     // Getters
     isLoggedIn,
-    userEmail,
+    userId,
     isVerified,
     // Actions
     login,

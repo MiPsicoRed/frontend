@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import RegisterComponent from '@/components/Auth/RegisterComponent.vue';
 
-
 </script>
 
 <template>

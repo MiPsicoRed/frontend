@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import UserService, { type User } from '@/services/user.service'
+import UserService, { type User } from '@/services/user/user.service'
 
 const users = ref<User[]>([])
 const loading = ref(false)

@@ -1,5 +1,5 @@
 import { jwtDecode } from 'jwt-decode'
-import type { JwtClaims, ParsedToken, AuthHeader } from './auth.types'
+import type { JwtClaims, ParsedToken, AuthHeader } from '../auth/auth.types'
 
 function parseJwt(token: string): ParsedToken | null {
   try {
