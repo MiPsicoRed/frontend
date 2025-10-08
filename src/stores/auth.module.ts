@@ -12,11 +12,26 @@ export const useAuthStore = defineStore('auth', () => {
 
 
   // Getters (computed)
-  const isLoggedIn = computed(() => !!parsedToken.value)
+  const isLoggedIn = computed(() => !!token.value && !!parsedToken.value)
   const userId = computed(() => parsedToken.value?.claims.uuid)
   const isVerified = computed(() => parsedToken.value?.claims.verified || false)
 
   // Actions
+  async function validateToken(): Promise<boolean> {
+    if (!token.value) return false
+
+    try {
+      const isValid = await AuthService.validateToken()
+      if (!isValid) {
+        logout() // Clear invalid token
+      }
+      return isValid
+    } catch (error) {
+      logout()
+      return false
+    }
+  }
+
   async function login(userData: any): Promise<LoginResponse> {
     try {
       const data = await AuthService.login(userData)
@@ -76,6 +91,7 @@ export const useAuthStore = defineStore('auth', () => {
     // Actions
     login,
     logout,
-    register
+    register,
+    validateToken
   }
 })

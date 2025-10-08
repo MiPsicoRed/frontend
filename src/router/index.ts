@@ -48,31 +48,51 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   const isLoggedIn = authStore.isLoggedIn
   const isVerified = authStore.isVerified
 
+  console.log('Router guard - isLoggedIn:', isLoggedIn, 'token:', authStore.token)
+
   // Check if route requires authentication
   if (to.meta.requiresAuth && !isLoggedIn) {
-    // Redirect to login if not authenticated
     next({
       name: 'login',
-      query: { redirect: to.fullPath } // Save intended destination
+      query: { redirect: to.fullPath }
     })
+    return // Important: return early
   }
+
+  // Validate token if user claims to be logged in AND going to protected route
+  if (isLoggedIn && to.meta.requiresAuth) {
+    const isValid = await authStore.validateToken()
+
+    if (!isValid) {
+      // Token is invalid or expired, log them out
+      authStore.logout()
+      next({
+        name: 'login',
+        query: { redirect: to.fullPath, error: 'session_expired' }
+      })
+      return
+    }
+  }
+
   // Redirect to home if logged in user tries to access guest:true route
-  else if (to.meta.guest && isLoggedIn) {
+  if (to.meta.guest && isLoggedIn) {
     next({ name: 'home' })
+    return
   }
-  // Redirect to verification page if logged in user but not verified tries to access route
-  else if (!isVerified && to.meta.requiresAuth && to.name !== 'verification') {
+
+  // Redirect to verification page if logged in but not verified
+  if (isLoggedIn && !isVerified && to.meta.requiresAuth && to.name !== 'verification') {
     next({ name: 'verification' })
+    return
   }
+
   // Allow navigation
-  else {
-    next()
-  }
+  next()
 })
 
 export default router

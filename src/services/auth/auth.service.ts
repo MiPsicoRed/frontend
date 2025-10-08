@@ -7,6 +7,30 @@ const USERTOKENAPI_URL = 'http://localhost:3001/api/user_token/'
 
 
 class AuthService {
+  async validateToken(): Promise<boolean> {
+    try {
+      const response = await axios.post(
+        USERTOKENAPI_URL + 'validate',
+        {},
+        { headers: authHeader() }
+      )
+
+      return response.data.valid;
+
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          console.log('Token is invalid or expired');
+        } else {
+          console.error('Token validation error:', error.response?.status);
+        }
+      } else {
+        console.error('Token validation error:', error);
+      }
+      return false;
+    }
+  }
+
   async login(payload: LoginPayload): Promise<LoginResponse> {
     const response: AxiosResponse<LoginResponse> = await axios.post(
       USER_API_URL + 'login',
