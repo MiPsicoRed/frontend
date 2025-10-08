@@ -1,6 +1,7 @@
 export interface JwtClaims {
     uuid: string
     name: string
+    role: number,
     verified: boolean
     exp: number
 }
@@ -44,12 +45,5 @@ export interface RegisterResponse {
 }
 
 export interface GenerateTokenResponse {
-    data: {
-        created_at: Date,
-        expires_at: Date,
-        id: string,
-        token: string,
-        user_id: string,
-    }
     success: boolean
 }
