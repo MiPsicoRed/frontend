@@ -26,7 +26,7 @@ const handleRegister = async () => {
     error.value = "You have to accept the agreement"
     return
   }
-  
+
   if (
     !model.username ||
     !model.usersurname ||
@@ -64,9 +64,9 @@ const handleRegister = async () => {
     error.value = "Passwords do not match"
     return
   }
-  
+
   loading.value = true
-  
+
   try {
     await authStore.register({
       username: model.username,
@@ -87,6 +87,7 @@ const handleRegister = async () => {
 </script>
 
 <template>
+  <div class="min-w-screen container flex items-center justify-center min-h-screen py-6 px-4">
     <div class="w-full max-w-md bg-white rounded-lg shadow-lg overflow-hidden">
       <div class="p-6 space-y-6">
         <!-- Header -->
@@ -106,98 +107,56 @@ const handleRegister = async () => {
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label for="username" class="block text-sm font-medium">Nombre</label>
-              <input
-                id="username"
-                v-model="model.username"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]"
-              />
+              <input id="username" v-model="model.username" type="text" required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]" />
             </div>
 
             <div class="space-y-2">
               <label for="usersurname" class="block text-sm font-medium">Apellido</label>
-              <input
-                id="usersurname"
-                v-model="model.usersurname"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]"
-              />
+              <input id="usersurname" v-model="model.usersurname" type="text" required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]" />
             </div>
           </div>
 
           <!-- Email -->
           <div class="space-y-2">
             <label for="email" class="block text-sm font-medium">Correo electrónico</label>
-            <input
-              id="email"
-              v-model="model.email"
-              type="email"
-              placeholder="correo@ejemplo.com"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]"
-            />
+            <input id="email" v-model="model.email" type="email" placeholder="correo@ejemplo.com" required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]" />
           </div>
 
           <!-- Phone -->
           <div class="space-y-2">
             <label for="phone" class="block text-sm font-medium">Teléfono</label>
-            <input
-              id="phone"
-              v-model="model.phone"
-              type="tel"
-              placeholder="123-456-7890"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]"
-            />
+            <input id="phone" v-model="model.phone" type="tel" placeholder="123-456-7890" required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]" />
           </div>
 
           <!-- Birthdate -->
           <div class="space-y-2">
             <label for="birthdate" class="block text-sm font-medium">Fecha de nacimiento</label>
-            <input
-              id="birthdate"
-              v-model="model.birthdate"
-              type="date"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]"
-            />
+            <input id="birthdate" v-model="model.birthdate" type="date" required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]" />
           </div>
 
           <!-- Password -->
           <div class="space-y-2">
             <label for="password" class="block text-sm font-medium">Contraseña</label>
-            <input
-              id="password"
-              v-model="model.password"
-              type="password"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]"
-            />
+            <input id="password" v-model="model.password" type="password" required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]" />
           </div>
 
           <!-- Confirm Password -->
           <div class="space-y-2">
             <label for="confirmPassword" class="block text-sm font-medium">Confirmar contraseña</label>
-            <input
-              id="confirmPassword"
-              v-model="model.confirmPassword"
-              type="password"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]"
-            />
+            <input id="confirmPassword" v-model="model.confirmPassword" type="password" required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]" />
           </div>
 
           <!-- Terms Checkbox -->
           <div class="flex items-center space-x-2">
-            <input
-              id="terms"
-              v-model="acceptTerms"
-              type="checkbox"
-              required
-              class="h-4 w-4 text-[#6A9997] focus:ring-[#6A9997] border-gray-300 rounded"
-            />
+            <input id="terms" v-model="acceptTerms" type="checkbox" required
+              class="h-4 w-4 text-[#6A9997] focus:ring-[#6A9997] border-gray-300 rounded" />
             <label for="terms" class="text-sm">
               Acepto los
               <a href="/#" class="text-[#6A9997] hover:underline">términos y condiciones</a>
@@ -205,11 +164,9 @@ const handleRegister = async () => {
           </div>
 
           <!-- Submit Button -->
-          <button
-            type="submit"
+          <button type="submit"
             class="w-full py-2 px-4 bg-[#6A9997] hover:bg-[#5a8886] text-white font-medium rounded-md transition duration-200"
-            :disabled="loading"
-          >
+            :disabled="loading">
             {{ loading ? 'Registrando...' : 'Registrarse' }}
           </button>
         </form>
@@ -221,5 +178,5 @@ const handleRegister = async () => {
         </div>
       </div>
     </div>
+  </div>
 </template>
-

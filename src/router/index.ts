@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AdminView from '../views/AdminView.vue'
-import LoginView from '../views/LoginView.vue'
+import LoginView from '../views/Auth/LoginView.vue'
 import { useAuthStore } from '@/stores/auth.module'
-import RegisterView from '../views/RegisterView.vue'
-import VerifyView from '@/views/VerifyView.vue'
-import VerifiedView from '@/views/VerifiedView.vue'
+import RegisterView from '../views/Auth/RegisterView.vue'
+import VerifyView from '@/views/Auth/VerifyView.vue'
+import VerifiedView from '@/views/Auth/VerifiedView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,8 +52,6 @@ router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   const isLoggedIn = authStore.isLoggedIn
   const isVerified = authStore.isVerified
-
-  console.log('Router guard - isLoggedIn:', isLoggedIn, 'token:', authStore.token)
 
   // Check if route requires authentication
   if (to.meta.requiresAuth && !isLoggedIn) {
