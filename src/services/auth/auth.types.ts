@@ -6,6 +6,20 @@ export interface JwtClaims {
     exp: number
 }
 
+export enum Role {
+    Patient = 1,
+    Professional = 2,
+    Admin = 3,
+}
+
+export function fromRoleId(id: number): Role | undefined {
+    if (Object.values(Role).includes(id as Role)) {
+        return id as Role;
+    }
+    return undefined;
+}
+
+
 export interface ParsedToken {
     token: string
     claims: JwtClaims
