@@ -10,8 +10,6 @@ const model = reactive({
   username: "",
   usersurname: "",
   email: "",
-  phone: "",
-  birthdate: new Date(),
   password: "",
   confirmPassword: "",
 })
@@ -31,8 +29,6 @@ const handleRegister = async () => {
     !model.username ||
     !model.usersurname ||
     !model.email ||
-    !model.phone ||
-    !model.birthdate ||
     !model.password ||
     !model.confirmPassword
   ) {
@@ -43,13 +39,6 @@ const handleRegister = async () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(model.email)) {
     error.value = "Invalid email address"
-    return
-  }
-
-  // Phone number validation (digits only, min length)
-  const phoneRegex = /^[0-9]{7,15}$/
-  if (!phoneRegex.test(model.phone)) {
-    error.value = "Invalid phone number"
     return
   }
 
@@ -72,8 +61,6 @@ const handleRegister = async () => {
       username: model.username,
       usersurname: model.usersurname,
       email: model.email,
-      phone: model.phone,
-      birthdate: model.birthdate, // will be a Date object
       password: model.password,
       confirmPassword: model.confirmPassword,
     })
@@ -122,20 +109,6 @@ const handleRegister = async () => {
           <div class="space-y-2">
             <label for="email" class="block text-sm font-medium">Correo electrónico</label>
             <input id="email" v-model="model.email" type="email" placeholder="correo@ejemplo.com" required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]" />
-          </div>
-
-          <!-- Phone -->
-          <div class="space-y-2">
-            <label for="phone" class="block text-sm font-medium">Teléfono</label>
-            <input id="phone" v-model="model.phone" type="tel" placeholder="123-456-7890" required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]" />
-          </div>
-
-          <!-- Birthdate -->
-          <div class="space-y-2">
-            <label for="birthdate" class="block text-sm font-medium">Fecha de nacimiento</label>
-            <input id="birthdate" v-model="model.birthdate" type="date" required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6A9997]" />
           </div>
 

@@ -39,8 +39,6 @@ export interface RegisterPayload {
     username: string
     usersurname: string
     email: string
-    phone: string
-    birthdate: Date
     password: string
 }
 
