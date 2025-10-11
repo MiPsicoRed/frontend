@@ -1,7 +1,7 @@
 import axios, { type AxiosResponse } from 'axios'
 import authHeader from '../auth/auth-header'
 
-const API_URL = 'http://localhost:3001/api/user/'
+const API_URL = import.meta.env.VITE_BASE_API_URL + 'user/'
 
 export interface User {
   id: string

@@ -2,7 +2,7 @@ import axios, { type AxiosResponse } from 'axios'
 import authHeader from '../auth/auth-header'
 import type { CreatePayload, CreateResponse, DeletePayload, DeleteResponse, ReadAllResponse, ReadSingleQuery, ReadSingleResponse, UpdatePayload, UpdateResponse } from './session.types'
 
-const API_URL = 'http://localhost:3001/api/session/'
+const API_URL = import.meta.env.VITE_BASE_API_URL + 'session/'
 
 export interface Session {
     id: string

@@ -2,8 +2,8 @@ import axios, { type AxiosResponse } from 'axios'
 import type { GenerateTokenPayload, LoginPayload, LoginResponse, RegisterPayload, RegisterResponse } from './auth.types'
 import authHeader from './auth-header'
 
-const USER_API_URL = 'http://localhost:3001/api/user/'
-const USERTOKENAPI_URL = 'http://localhost:3001/api/user_token/'
+const USER_API_URL = import.meta.env.VITE_BASE_API_URL + 'user/'
+const USERTOKENAPI_URL = import.meta.env.VITE_BASE_API_URL + 'user_token/'
 
 
 class AuthService {
