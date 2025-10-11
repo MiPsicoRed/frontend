@@ -56,8 +56,6 @@ class AuthService {
       username: payload.username,
       usersurname: payload.usersurname,
       email: payload.email,
-      phone: payload.phone,
-      birthdate: payload.birthdate,
       password: payload.password
     })
 

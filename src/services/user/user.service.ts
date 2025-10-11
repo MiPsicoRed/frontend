@@ -5,12 +5,12 @@ const API_URL = 'http://localhost:3001/api/user/'
 
 export interface User {
   id: string
+  role_id: number
   username: string
   usersurname: string
   email: string
-  phone: string
   verified: Boolean
-  birthdate: Date
+  created_at: Date
 }
 
 class UserService {
