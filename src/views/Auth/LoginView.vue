@@ -26,7 +26,7 @@ const handleLogin = async () => {
       email: email.value,
       password: password.value
     })
-    router.push('/admin') // Redirect after successful login
+    router.push('/')
   } catch (err: any) {
     error.value = err.response?.data?.message || 'Login failed. Please try again.'
   } finally {
