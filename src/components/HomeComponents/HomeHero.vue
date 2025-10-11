@@ -4,7 +4,8 @@
 
 <template>
     <section id="home" class="relative overflow-hidden py-20">
-        <div class="absolute inset-0 bg-[url('/placeholder.svg?height=800&width=1600')] bg-cover bg-center opacity-10">
+        <div
+            class="absolute inset-0 bg-[url('/other/placeholder.svg?height=800&width=1600')] bg-cover bg-center opacity-10">
         </div>
         <div class="absolute inset-0 bg-gradient-to-r from-[#f8f3eb]/90 to-[#e8d5c4]/50"></div>
         <div class="absolute top-0 right-0 w-96 h-96 bg-[#e8d5c4] rounded-full opacity-20 blur-3xl -mr-48 -mt-48"></div>
