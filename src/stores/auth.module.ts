@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
   // Getters (computed)
   const isLoggedIn = computed(() => !!token.value && !!parsedToken.value)
   const userId = computed(() => parsedToken.value?.claims.uuid)
-  const userName = computed(() => parsedToken.value?.claims.name)
+  const fullUserName = computed(() => parsedToken.value?.claims.fullname)
   const isVerified = computed(() => parsedToken.value?.claims.verified || false)
 
   // Actions
@@ -88,7 +88,7 @@ export const useAuthStore = defineStore('auth', () => {
     // Getters
     isLoggedIn,
     userId,
-    userName,
+    fullUserName,
     isVerified,
     // Actions
     login,

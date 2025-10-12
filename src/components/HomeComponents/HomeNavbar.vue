@@ -84,11 +84,11 @@ const toggleMobileMenu = () => {
             <div class="flex items-center space-x-2 px-3 py-2 bg-white rounded-full shadow-sm">
               <div class="w-8 h-8 bg-[#7a9e9f] rounded-full flex items-center justify-center">
                 <span class="text-white text-sm font-semibold">
-                  {{ authStore.userName?.charAt(0).toUpperCase() || 'U' }}
+                  {{ authStore.fullUserName?.charAt(0).toUpperCase() || 'U' }}
                 </span>
               </div>
               <span class="text-sm font-medium text-[#5a7d7c]">
-                {{ authStore.userName || 'User' }}
+                {{ authStore.fullUserName || 'User' }}
               </span>
             </div>
             <button @click="router.push('/admin')"
@@ -144,12 +144,12 @@ const toggleMobileMenu = () => {
           <div class="flex items-center space-x-3 px-4 py-3 rounded-lg mb-3">
             <div class="w-10 h-10 bg-[#7a9e9f] rounded-full flex items-center justify-center">
               <span class="text-white font-semibold">
-                {{ authStore.userName?.charAt(0).toUpperCase() || 'U' }}
+                {{ authStore.fullUserName?.charAt(0).toUpperCase() || 'U' }}
               </span>
             </div>
             <div>
               <p class="font-medium text-[#5a7d7c]">
-                {{ authStore.userName || 'User' }}
+                {{ authStore.fullUserName || 'User' }}
               </p>
             </div>
           </div>
