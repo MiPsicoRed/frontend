@@ -1,0 +1,212 @@
+[
+  {
+    "id": 1,
+    "slug": "cuando-deberia-ir-al-psicologo",
+    "title": "¿Cuándo debería ir al psicólogo?",
+    "excerpt": "Descubre por qué acudir al psicólogo no es solo para momentos de crisis, sino una herramienta preventiva y de crecimiento personal.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Terapia",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  { 
+    "id": 2,
+    "slug": "como-saber-si-estoy-sufriendo-ansiedad",
+    "title": "¿Cómo saber si estoy sufriendo ansiedad?",
+    "excerpt": "Aprende a identificar los síntomas de la ansiedad y cuándo buscar ayuda profesional.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Ansiedad",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 3,
+    "slug": "es-normal-sentirse-triste-sin-motivo",
+    "title": "¿Es normal sentirse triste sin motivo?",
+    "excerpt": "Explora por qué puedes sentir tristeza sin una razón clara y cuándo puede ser preocupante.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Emociones",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 4,
+    "slug": "que-es-la-terapia-cognitivo-conductual",
+    "title": "¿Qué es la terapia cognitivo-conductual?",
+    "excerpt": "Conoce en qué consiste la TCC, cómo funciona y por qué es una de las terapias más efectivas.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Terapias",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 5,
+    "slug": "la-terapia-online-funciona",
+    "title": "¿La terapia online funciona igual que la presencial?",
+    "excerpt": "Descubre la eficacia de la terapia online, sus ventajas y recomendaciones para que funcione bien.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Terapia",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 6,
+    "slug": "primera-sesion-con-psicologo",
+    "title": "¿Qué puedo esperar de la primera sesión con un psicólogo?",
+    "excerpt": "Te explicamos cómo es la primera sesión de terapia y por qué es un paso clave hacia tu bienestar.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Terapia",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 7,
+    "slug": "cuanto-dura-un-proceso-terapeutico",
+    "title": "¿Cuánto dura un proceso terapéutico?",
+    "excerpt": "La duración de una terapia depende de muchos factores. Aquí te explicamos cuáles.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Terapia",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 8,
+    "slug": "como-ayuda-la-terapia-en-la-relacion-de-pareja",
+    "title": "¿Cómo ayuda la terapia en las relaciones de pareja?",
+    "excerpt": "La terapia de pareja fortalece el vínculo, mejora la comunicación y previene crisis mayores.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Relaciones",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 9,
+    "slug": "que-hacer-si-todo-me-supera",
+    "title": "¿Qué hacer si siento que todo me supera?",
+    "excerpt": "Sentirse desbordado es humano. Aprende cómo identificarlo y pedir ayuda a tiempo.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Emociones",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 10,
+    "slug": "diferencias-entre-tristeza-y-depresion",
+    "title": "¿Qué diferencias hay entre tristeza y depresión?",
+    "excerpt": "Aprende a diferenciar entre la tristeza normal y un posible trastorno depresivo.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Depresión",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 11,
+    "slug": "como-mejorar-la-autoestima",
+    "title": "¿Cómo puedo mejorar mi autoestima?",
+    "excerpt": "La autoestima se construye. Aquí tienes claves para fortalecerla desde el interior.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Autoestima",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 12,
+    "slug": "ir-al-psicologo-sin-problema-grave",
+    "title": "¿Puedo ir al psicólogo aunque no tenga un “problema grave”?",
+    "excerpt": "La terapia también es útil como herramienta de prevención y desarrollo personal.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Terapia",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 13,
+    "slug": "que-es-un-ataque-de-panico",
+    "title": "¿Qué es un ataque de pánico y cómo se trata?",
+    "excerpt": "Los ataques de pánico son intensos pero tratables. Conoce sus síntomas y cómo enfrentarlos.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Ansiedad",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 14,
+    "slug": "pensamientos-negativos-constantes",
+    "title": "¿Qué puedo hacer si tengo pensamientos negativos todo el tiempo?",
+    "excerpt": "Identifica y cambia pensamientos negativos automáticos para mejorar tu salud emocional.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Pensamiento",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  },
+  {
+    "id": 15,
+    "slug": "no-me-siento-comodo-con-mi-psicologo",
+    "title": "¿Qué pasa si no me siento cómodo con mi psicólogo?",
+    "excerpt": "La relación con tu terapeuta es clave. Aprende qué hacer si no sientes conexión.",
+    "image": "/placeholder.svg?height=800&width=1200",
+    "category": "Terapia",
+    "date": "12 Mayo 2023",
+    "author": {
+      "name": "Dra. María Rodríguez",
+      "avatar": "/placeholder.svg?height=100&width=100",
+      "role": "Psicóloga Clínica"
+    }
+  }
+]
