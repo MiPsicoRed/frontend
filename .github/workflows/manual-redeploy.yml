@@ -9,7 +9,7 @@ on:
       api_url:
         description: 'API URL (leave empty to use default)'
         required: false
-        default: 'https://api.mipsicored.com/'
+        default: 'https://api.mipsicored.com/api/'
         type: string
       git_ref:
         description: 'Git ref to build (branch/tag/commit)'
@@ -20,7 +20,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  VITE_BASE_API_URL: ${{ inputs.api_url || 'https://api.mipsicored.com/' }}
+  VITE_BASE_API_URL: ${{ inputs.api_url || 'https://api.mipsicored.com/api/' }}
 
 jobs:
   build-and-push:

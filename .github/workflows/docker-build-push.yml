@@ -17,7 +17,7 @@ env:
   REGISTRY: ghcr.io
   # This will be: ghcr.io/username/repo-name (automatically lowercased)
   IMAGE_NAME: ${{ github.repository }}
-  VITE_BASE_API_URL: https://api.mipsicored.com/
+  VITE_BASE_API_URL: https://api.mipsicored.com/api/
 
 
 jobs:
