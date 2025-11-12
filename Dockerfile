@@ -4,6 +4,10 @@ FROM node:24-alpine AS build-stage
 # Set working directory
 WORKDIR /app
 
+# Build argument for API URL
+ARG VITE_BASE_API_URL
+ENV VITE_BASE_API_URL=$VITE_BASE_API_URL
+
 # Copy package files
 COPY package*.json ./
 
