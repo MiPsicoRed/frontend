@@ -1,4 +1,4 @@
-import type { ProfessionalSepecialization } from "./professional-specialization.service"
+import type { ProfessionalSpecialization } from "./professional-specialization.service"
 
 export interface CreatePayload {
     professional_id: string
@@ -27,12 +27,12 @@ export interface DeleteResponse {
 }
 
 export interface ReadAllResponse {
-    data: ProfessionalSepecialization[]
+    data: ProfessionalSpecialization[]
     success: boolean
 }
 
 export interface ReadSingleResponse {
-    data: ProfessionalSepecialization
+    data: ProfessionalSpecialization
     success: boolean
 }
 
