@@ -1,5 +1,5 @@
 # Build stage
-FROM node:24-alpine AS build-stage
+FROM oven/bun:canary-alpine AS build-stage
 
 # Set working directory
 WORKDIR /app
@@ -9,16 +9,16 @@ ARG VITE_BASE_API_URL
 ENV VITE_BASE_API_URL=$VITE_BASE_API_URL
 
 # Copy package files
-COPY package*.json ./
+COPY package*.json bun.lock* ./
 
 # Install dependencies
-RUN npm ci
+RUN bun install --frozen-lockfile || bun install
 
 # Copy project files
 COPY . .
 
-# Build the application
-RUN echo "Building with API URL: $VITE_BASE_API_URL" && npm run build
+# Build the application with verbose output
+RUN echo "Building with API URL: $VITE_BASE_API_URL" && bun run build-only
 
 # Production stage
 FROM nginx:stable-alpine AS production-stage
