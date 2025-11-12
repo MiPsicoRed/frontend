@@ -18,7 +18,8 @@ RUN bun install --frozen-lockfile || bun install
 COPY . .
 
 # Build the application with verbose output
-RUN bun run build-only
+RUN echo "Building with API URL: $VITE_BASE_API_URL" && bun run build-only
+
 # Production stage
 FROM nginx:stable-alpine AS production-stage
 

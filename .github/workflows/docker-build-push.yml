@@ -17,7 +17,7 @@ env:
   REGISTRY: ghcr.io
   # This will be: ghcr.io/username/repo-name (automatically lowercased)
   IMAGE_NAME: ${{ github.repository }}
-  VITE_BASE_API_URL: https://api.mipsicored.com:3001
+  VITE_BASE_API_URL: https://api.mipsicored.com/
 
 
 jobs:
@@ -61,6 +61,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            VITE_BASE_API_URL=${{ env.VITE_BASE_API_URL }}
 
       - name: Display pushed tags
         run: |
