@@ -9,10 +9,10 @@ const error = ref('')
 const fetchUsers = async () => {
   loading.value = true
   error.value = ''
-  
+
   try {
     const response = await UserService.getAllUsers()
-    users.value = response
+    users.value = response.data
   } catch (err: any) {
     error.value = err.response?.data?.message || 'Failed to load users'
     console.error('Error fetching users:', err)
@@ -27,7 +27,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+  <main class="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-8 px-4">
     <div class="max-w-7xl mx-auto">
       <!-- Header -->
       <div class="mb-8">
@@ -44,8 +44,11 @@ onMounted(() => {
       <div v-if="loading" class="bg-white rounded-2xl shadow-xl p-12 text-center">
         <div class="flex items-center justify-center">
           <svg class="animate-spin h-10 w-10 text-indigo-600" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none">
+            </circle>
+            <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
           </svg>
           <span class="ml-3 text-lg text-gray-600">Loading users...</span>
         </div>
@@ -54,7 +57,7 @@ onMounted(() => {
       <!-- Users List -->
       <div v-else-if="users.length > 0" class="bg-white rounded-2xl shadow-xl overflow-hidden">
         <!-- Table Header -->
-        <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4">
+        <div class="bg-linear-to-r from-indigo-600 to-indigo-700 px-6 py-4">
           <h2 class="text-xl font-semibold text-white">All Users ({{ users.length }})</h2>
         </div>
 
@@ -70,11 +73,7 @@ onMounted(() => {
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-              <tr 
-                v-for="user in users" 
-                :key="user.id"
-                class="hover:bg-gray-50 transition"
-              >
+              <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50 transition">
                 <td class="px-6 py-4 text-sm text-gray-600">{{ user.id }}</td>
                 <td class="px-6 py-4">
                   <div class="flex items-center space-x-3">
@@ -89,10 +88,12 @@ onMounted(() => {
                 <td class="px-6 py-4 text-sm text-gray-600">{{ user.email }}</td>
                 <td class="px-6 py-4">
                   <div class="flex items-center space-x-2">
-                    <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 text-sm font-medium transition">
+                    <button
+                      class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 text-sm font-medium transition">
                       Edit
                     </button>
-                    <button class="px-3 py-1 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 text-sm font-medium transition">
+                    <button
+                      class="px-3 py-1 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 text-sm font-medium transition">
                       Delete
                     </button>
                   </div>
@@ -104,13 +105,9 @@ onMounted(() => {
 
         <!-- Mobile Card View -->
         <div class="md:hidden divide-y divide-gray-200">
-          <div 
-            v-for="user in users" 
-            :key="user.id"
-            class="p-6 hover:bg-gray-50 transition"
-          >
+          <div v-for="user in users" :key="user.id" class="p-6 hover:bg-gray-50 transition">
             <div class="flex items-start space-x-4">
-              <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shrink-0">
                 <span class="text-white font-semibold text-lg">
                   {{ user.username.charAt(0).toUpperCase() }}
                 </span>
@@ -120,10 +117,12 @@ onMounted(() => {
                 <p class="text-sm text-gray-600 mb-1">{{ user.email }}</p>
                 <p class="text-xs text-gray-500">ID: {{ user.id }}</p>
                 <div class="flex items-center space-x-2 mt-3">
-                  <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 text-sm font-medium transition">
+                  <button
+                    class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 text-sm font-medium transition">
                     Edit
                   </button>
-                  <button class="px-3 py-1 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 text-sm font-medium transition">
+                  <button
+                    class="px-3 py-1 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 text-sm font-medium transition">
                     Delete
                   </button>
                 </div>
@@ -137,7 +136,8 @@ onMounted(() => {
       <div v-else class="bg-white rounded-2xl shadow-xl p-12 text-center">
         <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
         </div>
         <h3 class="text-lg font-semibold text-gray-900 mb-2">No users found</h3>

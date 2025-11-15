@@ -16,6 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
   const userId = computed(() => parsedToken.value?.claims.uuid)
   const fullUserName = computed(() => parsedToken.value?.claims.fullname)
   const isVerified = computed(() => parsedToken.value?.claims.verified || false)
+  const needsOnboarding = computed(() => parsedToken.value?.claims.needs_onboarding || false)
 
   // Actions
   async function validateToken(): Promise<boolean> {
@@ -90,6 +91,7 @@ export const useAuthStore = defineStore('auth', () => {
     userId,
     fullUserName,
     isVerified,
+    needsOnboarding,
     // Actions
     login,
     logout,
