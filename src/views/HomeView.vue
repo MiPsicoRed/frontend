@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Navbar from '@/components/HomeComponents/HomeNavbar.vue';
-import Footer from '@/components/HomeComponents/HomeFooter.vue';
-import HeroComponent from '@/components/HomeComponents/HomeHero.vue';
-import ServicesComponent from '@/components/HomeComponents/HomeServices.vue';
-import TherapistsComponent from '@/components/HomeComponents/HomeTherapists.vue';
+import Navbar from '@/components/Home/HomeNavbar.vue';
+import Footer from '@/components/Home/HomeFooter.vue';
+import HeroComponent from '@/components/Home/HomeHero.vue';
+import ServicesComponent from '@/components/Home/HomeServices.vue';
+import TherapistsComponent from '@/components/Home/HomeTherapists.vue';
 
 </script>
 
