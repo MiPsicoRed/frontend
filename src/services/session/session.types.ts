@@ -20,6 +20,14 @@ export interface ReadSingleQuery {
     user_id: string | null
 }
 
+export interface ReadPatientQuery {
+    patient_id: string
+}
+
+export interface ReadProfessionalQuery {
+    professional_id: string
+}
+
 export interface UpdatePayload {
     id: string
     patient_id: string
@@ -41,6 +49,16 @@ export interface DeleteResponse {
 }
 
 export interface ReadAllResponse {
+    data: Session[]
+    success: boolean
+}
+
+export interface ReadPatientResponse {
+    data: Session[]
+    success: boolean
+}
+
+export interface ReadProfessionalResponse {
     data: Session[]
     success: boolean
 }
