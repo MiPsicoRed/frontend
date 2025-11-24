@@ -5,7 +5,7 @@
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <NuxtLink to="/">
-                        <img src="/images/logo.svg" alt="MiPsicoRed Logo" class="h-8 w-auto" />
+                        <img src="/logo.svg" alt="MiPsicoRed Logo" class="h-8 w-auto" />
                     </NuxtLink>
                 </div>
                 <div class="ml-3">
@@ -48,9 +48,11 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { 
   Bell, User, ChevronDown
 } from 'lucide-vue-next'
+
 
 const props = defineProps({
     showUserMenu: Boolean,

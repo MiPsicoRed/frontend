@@ -1,0 +1,3383 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "mipsicored-backend",
+    "description": "",
+    "license": {
+      "name": ""
+    },
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/blog_post/all": {
+      "get": {
+        "tags": [
+          "Blog Post"
+        ],
+        "summary": "Returns all blog posts with their info",
+        "description": "\n\n**Required:** Verified Email + Admin Role",
+        "operationId": "read_all_blog_posts",
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlogPostReadAllResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/blog_post/create": {
+      "post": {
+        "tags": [
+          "Blog Post"
+        ],
+        "summary": "Creates a new blog post",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "create_blog_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlogPostCreatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlogPostCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/blog_post/delete": {
+      "delete": {
+        "tags": [
+          "Blog Post"
+        ],
+        "summary": "Deletes a blog post",
+        "description": "\n\n**Required:** Verified Email + Admin Role",
+        "operationId": "delete_blog_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlogPostDeletePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlogPostDeleteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/blog_post/single": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "summary": "Retrieves data of a single blog post",
+        "description": "\n\n**Required:**  Verified Email + Admin/Professional Role",
+        "operationId": "read_single_blog_post",
+        "parameters": [
+          {
+            "name": "blog_post_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "insert-blog-post-uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlogPostReadSingleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/blog_post/update": {
+      "patch": {
+        "tags": [
+          "Blog Post"
+        ],
+        "summary": "Updates a blog post",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "update_blog_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlogPostUpdatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlogPostUpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/patient/all": {
+      "get": {
+        "tags": [
+          "Patient"
+        ],
+        "summary": "Returns all patients with their info",
+        "description": "\n\n**Required:** Verified Email + Admin Role",
+        "operationId": "read_all_patients",
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientReadAllResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/patient/create": {
+      "post": {
+        "tags": [
+          "Patient"
+        ],
+        "summary": "Creates a new patient",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role OR Creating for requesting user_id",
+        "operationId": "create_patient",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientCreatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/patient/delete": {
+      "delete": {
+        "tags": [
+          "Patient"
+        ],
+        "summary": "Deletes a patient",
+        "description": "\n\n**Required:** Verified Email + Admin Role",
+        "operationId": "delete_patient",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientDeletePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientDeleteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/patient/single": {
+      "get": {
+        "tags": [
+          "Patient"
+        ],
+        "summary": "Retrieves data of a single patient",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role or requesting user_id",
+        "operationId": "read_single_patient",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "insert-patient-uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientReadSingleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/patient/update": {
+      "patch": {
+        "tags": [
+          "Patient"
+        ],
+        "summary": "Updates a patient",
+        "description": "\n\n**Required:** Verified Email",
+        "operationId": "update_patient",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientUpdatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientUpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional/all": {
+      "get": {
+        "tags": [
+          "Professional"
+        ],
+        "summary": "Returns all professionals with their info",
+        "description": "\n\n**Required:** Verified Email + Admin Role",
+        "operationId": "read_all_professionals",
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalReadAllResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional/create": {
+      "post": {
+        "tags": [
+          "Professional"
+        ],
+        "summary": "Creates a new professional",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "create_professional",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessionalCreatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional/delete": {
+      "delete": {
+        "tags": [
+          "Professional"
+        ],
+        "summary": "Deletes a professional",
+        "description": "\n\n**Required:** Verified Email + Admin Role",
+        "operationId": "delete_professional",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessionalDeletePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalDeleteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional/single": {
+      "get": {
+        "tags": [
+          "Professional"
+        ],
+        "summary": "Retrieves data of a single professional",
+        "description": "\n\n**Required:**  Verified Email + Admin Role or Professional + requesting user_id",
+        "operationId": "read_single_professional",
+        "parameters": [
+          {
+            "name": "professional_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "insert-professional-uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalReadSingleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional/update": {
+      "patch": {
+        "tags": [
+          "Professional"
+        ],
+        "summary": "Updates a professional",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "update_professional",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessionalUpdatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalUpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional_language/all": {
+      "get": {
+        "tags": [
+          "Professional Language"
+        ],
+        "summary": "Returns all professional languages with their info",
+        "description": "\n\n**Required:** Verified Email + Admin Role",
+        "operationId": "read_all_professional_languages",
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalLanguageReadAllResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional_language/create": {
+      "post": {
+        "tags": [
+          "Professional Language"
+        ],
+        "summary": "Creates a new professional language",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "create_professional_language",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessionalLanguageCreatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalLanguageCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional_language/delete": {
+      "delete": {
+        "tags": [
+          "Professional Language"
+        ],
+        "summary": "Deletes a professional language",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "delete_professional_language",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessionalLanguageDeletePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalLanguageDeleteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional_language/single": {
+      "get": {
+        "tags": [
+          "Professional Language"
+        ],
+        "summary": "Retrieves data of a single professional language",
+        "description": "\n\n**Required:**  Verified Email + Admin/Professional Role",
+        "operationId": "read_single_professional_language",
+        "parameters": [
+          {
+            "name": "professional_language_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "insert-professional-language-uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalLanguageReadSingleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional_language/update": {
+      "patch": {
+        "tags": [
+          "Professional Language"
+        ],
+        "summary": "Updates a professional language",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "update_professional_language",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessionalLanguageUpdatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalLanguageUpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional_specialization/all": {
+      "get": {
+        "tags": [
+          "Professional Specialization"
+        ],
+        "summary": "Returns all professional specializations with their info",
+        "description": "\n\n**Required:** Verified Email + Admin Role",
+        "operationId": "read_all_professional_specializations",
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalSpecializationReadAllResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional_specialization/create": {
+      "post": {
+        "tags": [
+          "Professional Specialization"
+        ],
+        "summary": "Creates a new professional specialization",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "create_professional_specialization",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessionalSpecializationCreatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalSpecializationCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional_specialization/delete": {
+      "delete": {
+        "tags": [
+          "Professional Specialization"
+        ],
+        "summary": "Deletes a professional specialization",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "delete_professional_specialization",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessionalSpecializationDeletePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalSpecializationDeleteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional_specialization/single": {
+      "get": {
+        "tags": [
+          "Professional Specialization"
+        ],
+        "summary": "Retrieves data of a single professional specialization",
+        "description": "\n\n**Required:**  Verified Email + Admin/Professional Role",
+        "operationId": "read_single_professional_specialization",
+        "parameters": [
+          {
+            "name": "professional_specialization_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "insert-professional-specialization-uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalSpecializationReadSingleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/professional_specialization/update": {
+      "patch": {
+        "tags": [
+          "Professional Specialization"
+        ],
+        "summary": "Updates a professional specialization",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "update_professional_specialization",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessionalSpecializationUpdatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfessionalSpecializationUpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/session/all": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "summary": "Returns all sessions with their info",
+        "description": "\n\n**Required:** Verified Email + Admin Role",
+        "operationId": "read_all_sessions",
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionReadAllResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/session/create": {
+      "post": {
+        "tags": [
+          "Session"
+        ],
+        "summary": "Creates a new session",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "create_session",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionCreatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/session/delete": {
+      "delete": {
+        "tags": [
+          "Session"
+        ],
+        "summary": "Deletes a session",
+        "description": "\n\n**Required:** Verified Email + Admin Role",
+        "operationId": "delete_session",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionDeletePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDeleteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/session/single": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "summary": "Retrieves data of a single session",
+        "description": "\n\n**Required:**  Verified Email + Admin/Professional Role",
+        "operationId": "read_single_session",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "insert-session-uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionReadSingleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/session/update": {
+      "patch": {
+        "tags": [
+          "Session"
+        ],
+        "summary": "Updates a session",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "update_session",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionUpdatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionUpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/session_type/all": {
+      "get": {
+        "tags": [
+          "Session Type"
+        ],
+        "summary": "Returns all session types with their info",
+        "description": "\n\n**Required:** Verified Email",
+        "operationId": "read_all_session_types",
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionTypeReadAllResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/session_type/create": {
+      "post": {
+        "tags": [
+          "Session Type"
+        ],
+        "summary": "Creates a new session type",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "create_session_type",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionTypeCreatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionTypeCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/session_type/delete": {
+      "delete": {
+        "tags": [
+          "Session Type"
+        ],
+        "summary": "Deletes a session type",
+        "description": "\n\n**Required:** Verified Email + Admin Role",
+        "operationId": "delete_session_type",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionTypeDeletePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionTypeDeleteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/session_type/single": {
+      "get": {
+        "tags": [
+          "Session Type"
+        ],
+        "summary": "Retrieves data of a single session type",
+        "description": "\n\n**Required:** Verified Email",
+        "operationId": "read_single_session_type",
+        "parameters": [
+          {
+            "name": "session_type_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "insert-session-type-uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data retrieved correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionTypeReadSingleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/session_type/update": {
+      "patch": {
+        "tags": [
+          "Session Type"
+        ],
+        "summary": "Updates a session type",
+        "description": "\n\n**Required:** Verified Email + Admin/Professional Role",
+        "operationId": "update_session_type",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionTypeUpdatePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionTypeUpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/user/all": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get all users",
+        "description": "Retrieves a list of all users. \n\n\n        **Required:** Verified Email + Admin Role",
+        "operationId": "get_all_users",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllUsersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/user/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Login as a specific user",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        }
+      }
+    },
+    "/api/user/register": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Creates a new user based on the submitted credentials",
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        }
+      }
+    },
+    "/api/user_token/generate": {
+      "post": {
+        "tags": [
+          "User Token"
+        ],
+        "summary": "Generates a new verification token for the given user_id and sends them a confirmation email",
+        "description": "\n\n**Required:** Admin Role OR Generating for requesting user_id",
+        "operationId": "generate_token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GeneratePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/user_token/validate": {
+      "post": {
+        "tags": [
+          "User Token"
+        ],
+        "summary": "Validates a JWT token to see if  it's valid",
+        "operationId": "validate_token",
+        "responses": {
+          "200": {
+            "description": "Token is valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token is invalid or expired"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/user_token/verify": {
+      "post": {
+        "tags": [
+          "User Token"
+        ],
+        "summary": "Verifies the given token",
+        "operationId": "verify",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "f99d8d694c4aff731ba577a4c0e647d498794c7f..."
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload"
+          },
+          "500": {
+            "description": "Internal server error or database error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BlogPostCreatePayload": {
+        "type": "object",
+        "required": [
+          "author_id",
+          "blog_post_status_id",
+          "title",
+          "slug",
+          "content"
+        ],
+        "properties": {
+          "author_id": {
+            "type": "string"
+          },
+          "blog_post_status_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "string"
+          },
+          "featured_image": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reading_time_minutes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tags": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "view_count": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "BlogPostCreateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BlogPostDeletePayload": {
+        "type": "object",
+        "required": [
+          "blog_post_id"
+        ],
+        "properties": {
+          "blog_post_id": {
+            "type": "string"
+          }
+        }
+      },
+      "BlogPostDeleteResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BlogPostReadAllResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BlogPostResponse"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BlogPostReadSingleResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/BlogPostResponse"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BlogPostResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "author_id",
+          "blog_post_status_id",
+          "title",
+          "slug",
+          "content"
+        ],
+        "properties": {
+          "author_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "blog_post_status_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "featured_image": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reading_time_minutes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tags": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "view_count": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "BlogPostUpdatePayload": {
+        "type": "object",
+        "required": [
+          "id",
+          "blog_post_status_id",
+          "title",
+          "slug",
+          "content"
+        ],
+        "properties": {
+          "blog_post_status_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "string"
+          },
+          "featured_image": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "reading_time_minutes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tags": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "view_count": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "BlogPostUpdateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GeneratePayload": {
+        "type": "object",
+        "required": [
+          "user_id"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          }
+        }
+      },
+      "GenerateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GetAllUsersResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserResponse"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "LoginPayload": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "required": [
+          "jwt",
+          "success"
+        ],
+        "properties": {
+          "jwt": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PatientCreatePayload": {
+        "type": "object",
+        "required": [
+          "gender_id",
+          "sexual_orientation_id",
+          "phone"
+        ],
+        "properties": {
+          "allergies": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "birthdate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "current_medications": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "emergency_contact_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "emergency_contact_phone": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "gender_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "insurance_policy_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "medical_history": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "phone": {
+            "type": "string"
+          },
+          "sexual_orientation_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "user_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "PatientCreateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PatientDeletePayload": {
+        "type": "object",
+        "required": [
+          "patient_id"
+        ],
+        "properties": {
+          "patient_id": {
+            "type": "string"
+          }
+        }
+      },
+      "PatientDeleteResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PatientReadAllResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatientResponse"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PatientReadSingleResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PatientResponse"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PatientResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "gender",
+          "sexual_orientation",
+          "phone"
+        ],
+        "properties": {
+          "allergies": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "birthdate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "current_medications": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "emergency_contact_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "emergency_contact_phone": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "gender": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "insurance_policy_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "medical_history": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "phone": {
+            "type": "string"
+          },
+          "sexual_orientation": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "user_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          }
+        }
+      },
+      "PatientUpdatePayload": {
+        "type": "object",
+        "required": [
+          "id",
+          "gender_id",
+          "sexual_orientation_id",
+          "phone"
+        ],
+        "properties": {
+          "allergies": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "birthdate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "current_medications": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "emergency_contact_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "emergency_contact_phone": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "gender_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
+            "type": "string"
+          },
+          "insurance_policy_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "medical_history": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "phone": {
+            "type": "string"
+          },
+          "sexual_orientation_id": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PatientUpdateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalCreatePayload": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "gender_id",
+          "accepts_insurance"
+        ],
+        "properties": {
+          "accepts_insurance": {
+            "type": "boolean"
+          },
+          "bio": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "birthdate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "education": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "experience_years": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "gender_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hourly_rate": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "float"
+          },
+          "license_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "user_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ProfessionalCreateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalDeletePayload": {
+        "type": "object",
+        "required": [
+          "professional_id"
+        ],
+        "properties": {
+          "professional_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ProfessionalDeleteResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalLanguageCreatePayload": {
+        "type": "object",
+        "required": [
+          "professional_id",
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "professional_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ProfessionalLanguageCreateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalLanguageDeletePayload": {
+        "type": "object",
+        "required": [
+          "professional_language_id"
+        ],
+        "properties": {
+          "professional_language_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ProfessionalLanguageDeleteResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalLanguageReadAllResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProfessionalLanguageResponse"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalLanguageReadSingleResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProfessionalLanguageResponse"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalLanguageResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "professional_id",
+          "name"
+        ],
+        "properties": {
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "professional_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ProfessionalLanguageUpdatePayload": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ProfessionalLanguageUpdateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalReadAllResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProfessionalResponse"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalReadSingleResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProfessionalResponse"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "gender",
+          "accepts_insurance"
+        ],
+        "properties": {
+          "accepts_insurance": {
+            "type": "boolean"
+          },
+          "bio": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "birthdate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "education": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "experience_years": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "gender": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hourly_rate": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "float"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "license_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ProfessionalSpecializationCreatePayload": {
+        "type": "object",
+        "required": [
+          "professional_id",
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "professional_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ProfessionalSpecializationCreateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalSpecializationDeletePayload": {
+        "type": "object",
+        "required": [
+          "professional_specialization_id"
+        ],
+        "properties": {
+          "professional_specialization_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ProfessionalSpecializationDeleteResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalSpecializationReadAllResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProfessionalSpecializationResponse"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalSpecializationReadSingleResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProfessionalSpecializationResponse"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalSpecializationResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "professional_id",
+          "name"
+        ],
+        "properties": {
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "professional_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ProfessionalSpecializationUpdatePayload": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ProfessionalSpecializationUpdateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProfessionalUpdatePayload": {
+        "type": "object",
+        "required": [
+          "id",
+          "gender_id",
+          "accepts_insurance"
+        ],
+        "properties": {
+          "accepts_insurance": {
+            "type": "boolean"
+          },
+          "bio": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "birthdate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "education": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "experience_years": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "gender_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hourly_rate": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "float"
+          },
+          "id": {
+            "type": "string"
+          },
+          "license_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "ProfessionalUpdateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RegisterPayload": {
+        "type": "object",
+        "required": [
+          "username",
+          "usersurname",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          },
+          "username": {
+            "type": "string"
+          },
+          "usersurname": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterResponse": {
+        "type": "object",
+        "required": [
+          "jwt",
+          "success"
+        ],
+        "properties": {
+          "jwt": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionCreatePayload": {
+        "type": "object",
+        "required": [
+          "patient_id",
+          "professional_id"
+        ],
+        "properties": {
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "patient_id": {
+            "type": "string"
+          },
+          "professional_id": {
+            "type": "string"
+          },
+          "session_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "session_duration": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "session_status_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "session_type_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "videocall_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "SessionCreateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionDeletePayload": {
+        "type": "object",
+        "required": [
+          "session_id"
+        ],
+        "properties": {
+          "session_id": {
+            "type": "string"
+          }
+        }
+      },
+      "SessionDeleteResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionReadAllResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionResponse"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionReadSingleResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SessionResponse"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "patient_id",
+          "professional_id",
+          "session_status_id",
+          "completed"
+        ],
+        "properties": {
+          "completed": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "patient_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "professional_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "session_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "session_duration": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "session_status_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "session_type_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "videocall_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "SessionTypeCreatePayload": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "SessionTypeCreateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionTypeDeletePayload": {
+        "type": "object",
+        "required": [
+          "session_type_id"
+        ],
+        "properties": {
+          "session_type_id": {
+            "type": "string"
+          }
+        }
+      },
+      "SessionTypeDeleteResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionTypeReadAllResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionTypeResponse"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionTypeReadSingleResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SessionTypeResponse"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionTypeResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "SessionTypeUpdatePayload": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "SessionTypeUpdateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionUpdatePayload": {
+        "type": "object",
+        "required": [
+          "id",
+          "patient_id",
+          "professional_id",
+          "session_status_id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "patient_id": {
+            "type": "string"
+          },
+          "professional_id": {
+            "type": "string"
+          },
+          "session_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "session_duration": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "session_status_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "session_type_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "videocall_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "SessionUpdateResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "role_id",
+          "username",
+          "usersurname",
+          "email",
+          "password_hash"
+        ],
+        "properties": {
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "email": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "password_hash": {
+            "type": "string"
+          },
+          "role_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "username": {
+            "type": "string"
+          },
+          "usersurname": {
+            "type": "string"
+          },
+          "verified": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      },
+      "ValidateResponse": {
+        "type": "object",
+        "required": [
+          "valid"
+        ],
+        "properties": {
+          "valid": {
+            "type": "boolean"
+          }
+        }
+      },
+      "VerifyResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer_auth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Bearer token for authentication.\n\nSome endpoints require verified email or specific roles. Check individual endpoint descriptions for requirements."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "User",
+      "description": "User endpoints"
+    },
+    {
+      "name": "User Token",
+      "description": "User Token endpoints"
+    },
+    {
+      "name": "Patient",
+      "description": "Patient endpoints"
+    },
+    {
+      "name": "Session Type",
+      "description": "Session Type endpoints"
+    },
+    {
+      "name": "Session",
+      "description": "Session endpoints"
+    },
+    {
+      "name": "Professional",
+      "description": "Professional endpoints"
+    },
+    {
+      "name": "Professional Language",
+      "description": "Professional languages endpoints"
+    },
+    {
+      "name": "Professional Specialization",
+      "description": "Professional specializations endpoints"
+    },
+    {
+      "name": "Blog Post",
+      "description": "Blog Post endpoints"
+    }
+  ]
+}

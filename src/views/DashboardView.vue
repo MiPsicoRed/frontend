@@ -126,17 +126,29 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import SessionsService, { type Session } from '@/services/session/session.service'
 import ProfessionalService, { type Professional } from '@/services/professional/professional.service'
 import SessionTypeService, { type SessionType } from '@/services/session_type/session_type.service'
+import PatientService from '@/services/patient/patient.service'
+import { useAuthStore } from '@/stores/auth.module'
+// Dashboard components
+import DashboardNavBar from '@/components/Dashboard/NavBar.vue'
+import OnboardingModalForm from '@/components/Dashboard/NewPatientModal.vue'
+import DashboardNavTabs from '@/components/Dashboard/NavTabs.vue'
+import DashboardWelcomeSection from '@/components/Dashboard/WelcomeSection.vue'
+import DashboardStatCards from '@/components/Dashboard/StatCards.vue'
+import DashboardUpcomingSession from '@/components/Dashboard/UpcomingSession.vue'
+import DashboardQuickActions from '@/components/Dashboard/QuickActions.vue'
+import DashboardSessionsTab from '@/components/Dashboard/SessionsTab.vue'
 
 // Reactive data
-
 const activeTab = ref('dashboard')
 const showUserMenu = ref(false)
 const sessionFilter = ref('upcoming')
-const onboard = ref(true)
+const onboard = ref(false)
+const authStore = useAuthStore()
 
 const sessions = ref<Session[]>([])
 const professionals = ref<Professional[]>([])
 const sessionTypes = ref<SessionType[]>([])
+const patientId = ref<string | null>(null)
 const loading = ref(false)
 const error = ref('')
 
@@ -151,6 +163,18 @@ const fetchSessions = async () => {
     console.error('Error fetching sessions:', err)
   } finally {
     loading.value = false
+  }
+}
+
+const fetchCurrentUserPatient = async (userId: string) => {
+  try {
+    const response = await PatientService.readSingle({ patient_id: '', user_id: userId })
+    if (response && response.data && response.data.id) {
+      patientId.value = response.data.id
+    }
+  } catch (err: any) {
+    console.warn('No patient record found for user:', userId)
+    patientId.value = null
   }
 }
 
@@ -234,8 +258,9 @@ const allSessions = computed(() => {
 
 const therapists = computed(() => {
   return professionals.value.map((p: any) => ({
-    id: p.id,
-    name: p.name ?? `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim(),
+    // prefer UUID-like ids when available; fall back to user_id
+    id: String(p.id ?? p.user_id ?? p.uuid ?? ''),
+    name: p.name ?? `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim() ?? p.user_full_name ?? '',
     specialty: p.specialty ?? (p.specializations && p.specializations[0]?.name) ?? ''
   }))
 })
@@ -245,6 +270,12 @@ onMounted(() => {
   fetchSessions()
   fetchProfessionals()
   fetchSessionTypes()
+  
+  // Fetch current user's patient record
+  if (authStore.userId) {
+    fetchCurrentUserPatient(authStore.userId)
+  }
+  
   if (typeof window !== 'undefined') {
     document.addEventListener('click', handleClickOutside)
   }
@@ -264,16 +295,93 @@ const bookingForm = ref({
   notes: ''
 })
 
-// Methods
-const bookSession = () => {
-  // Handle session booking
-  console.log('Booking session:', bookingForm.value)
-  alert('¡Sesión reservada exitosamente!')
-  bookingForm.value = {
-    therapist: '',
-    date: '',
-    time: '',
-    notes: ''
+const bookSession = async () => {
+  // Basic validation
+  if (!bookingForm.value.therapist) {
+    alert('Por favor selecciona un terapeuta')
+    return
+  }
+  if (!bookingForm.value.date) {
+    alert('Por favor selecciona una fecha')
+    return
+  }
+
+  // Check if user has a patient record
+  if (!patientId.value) {
+    alert('No se encontró un registro de paciente para tu cuenta. Por favor contacta al administrador.')
+    return
+  }
+
+  // Build session_date from date + time (if provided)
+  let sessionDate: Date | null = null
+  try {
+    if (bookingForm.value.time) {
+      // combine date and time into ISO string
+      sessionDate = new Date(`${bookingForm.value.date}T${bookingForm.value.time}:00`)
+    } else {
+      sessionDate = new Date(bookingForm.value.date)
+    }
+    if (isNaN(sessionDate.getTime())) sessionDate = null
+  } catch (e) {
+    sessionDate = null
+  }
+
+  if (!authStore.userId) {
+    alert('Debes iniciar sesión para reservar una sesión')
+    return
+  }
+
+  // Format session_date to a naive datetime string (YYYY-MM-DDTHH:MM:SS) because
+  // backend expects chrono::NaiveDateTime (no timezone). If sessionDate is null, send null.
+  let sessionDatePayload: string | null = null
+  if (sessionDate) {
+    // toISOString() returns 'YYYY-MM-DDTHH:MM:SS.sssZ', strip milliseconds and trailing Z
+    const iso = sessionDate.toISOString()
+    sessionDatePayload = iso.slice(0, 19)
+  }
+
+  const payload = {
+    patient_id: patientId.value,
+    professional_id: String(bookingForm.value.therapist),
+    session_type_id: sessionTypes.value?.[0]?.id ?? null,
+    session_status_id: null,
+    session_date: sessionDatePayload,
+    videocall_url: null,
+    notes: bookingForm.value.notes || null,
+    session_duration: null
+  }
+
+  try {
+    loading.value = true
+    console.debug('Creating session payload:', payload)
+    const res = await SessionsService.create(payload as any)
+    // service returns { success: boolean } per types; assume success indicates creation
+    if (res && (res.success ?? true)) {
+      alert('¡Sesión reservada exitosamente!')
+      // refresh sessions to show the new booking
+      await fetchSessions()
+      // reset form
+      bookingForm.value = { therapist: '', date: '', time: '', notes: '' }
+      // switch to sessions tab to show created booking
+      activeTab.value = 'sessions'
+    } else {
+      console.warn('Unexpected create response', res)
+      alert('No se pudo reservar la sesión. Por favor intenta de nuevo.')
+    }
+  } catch (err: any) {
+    console.error('Error creating session:', err)
+    // log more useful backend response body if present
+    if (err?.response) {
+      console.error('Response data:', err.response.data)
+      // if status 422 provide a clearer alert
+      if (err.response.status === 422) {
+        alert('El servidor no pudo procesar la solicitud (422). Revisa los campos requeridos.')
+        return
+      }
+    }
+    alert(err?.response?.data?.message || err?.message || 'Error al reservar la sesión')
+  } finally {
+    loading.value = false
   }
 }
 

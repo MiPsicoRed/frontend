@@ -39,6 +39,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { 
   Plus, MessageCircle, FileText, BookOpen 
 } from 'lucide-vue-next'
