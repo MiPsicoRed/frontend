@@ -1,7 +1,7 @@
 <template>
     <div class="flex items-center justify-between">
         <div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">¡Hola, {{ profile?.first_name }}!</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">¡Hola, {{ name }}!</h2>
             <p class="text-gray-600">Bienvenido a tu panel de terapia online</p>
         </div>
         <div class="hidden md:block">
@@ -17,6 +17,6 @@ import {
   Heart
 } from 'lucide-vue-next'
 const props = defineProps({
-    profile: Object
+    name: String
 })
 </script>

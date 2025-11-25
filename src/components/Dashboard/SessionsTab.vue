@@ -31,7 +31,7 @@
                 <User class="h-6 w-6 text-teal-600" />
               </div>
               <div class="ml-4">
-                <h3 class="font-medium text-gray-900">{{ session.therapist }}</h3>
+                <h3 class="font-medium text-gray-900">{{ session.id }}</h3>
                 <p class="text-sm text-gray-500">{{ session.specialty }}</p>
                 <p class="text-sm text-gray-500">{{ session.date }} - {{ session.time }}</p>
               </div>
@@ -54,16 +54,17 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { 
   User,
   MoreVertical
 } from 'lucide-vue-next'
+import { type Session } from '@/services/session/session.service'
 
 const props = defineProps({
   allSessions: {
-    type: Array,
+    type: Array as () => Session[],
     required: true
   },
   sessionFilter: String
@@ -78,13 +79,13 @@ const sessionFilter = computed({
 
 const filteredSessions = computed(() => {
   if (sessionFilter.value === 'upcoming') {
-    return props.allSessions.filter(session => session.status === 'Próxima')
+    return props.allSessions.filter(session => session.completed == true)
   } else {
-    return props.allSessions.filter(session => session.status === 'Completada')
+    return props.allSessions.filter(session => session.completed == false)
   }
 })
 
-const getStatusClass = (status) => {
+const getStatusClass = (status: any) => {
   switch (status) {
     case 'Próxima':
       return 'bg-blue-100 text-blue-800'

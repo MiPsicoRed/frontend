@@ -22,7 +22,7 @@
       <div v-if="activeTab === 'dashboard'">
         <!-- Welcome Section -->
         <div class="bg-gradient-to-r from-teal-50 to-green-50 rounded-xl p-6 mb-8 shadow-sm border">
-          <DashboardWelcomeSection />
+          <DashboardWelcomeSection :name="userName"/>
         </div>
 
         <!-- Stats Cards -->
@@ -55,7 +55,7 @@
 
       <!-- Sessions Tab -->
       <div v-if="activeTab === 'sessions'">
-        <DashboardSessionsTab :allSessions="allSessions" v-model:sessionFilter="sessionFilter" />
+        <DashboardSessionsTab :allSessions="sessions" v-model:sessionFilter="sessionFilter" />
       </div>
 
       <!-- Book Session Tab -->
@@ -126,9 +126,8 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import SessionsService, { type Session } from '@/services/session/session.service'
 import ProfessionalService, { type Professional } from '@/services/professional/professional.service'
 import SessionTypeService, { type SessionType } from '@/services/session_type/session_type.service'
-import PatientService from '@/services/patient/patient.service'
+import PatientService, { type Patient } from '@/services/patient/patient.service'
 import { useAuthStore } from '@/stores/auth.module'
-// Dashboard components
 import DashboardNavBar from '@/components/Dashboard/NavBar.vue'
 import OnboardingModalForm from '@/components/Dashboard/NewPatientModal.vue'
 import DashboardNavTabs from '@/components/Dashboard/NavTabs.vue'
@@ -138,20 +137,37 @@ import DashboardUpcomingSession from '@/components/Dashboard/UpcomingSession.vue
 import DashboardQuickActions from '@/components/Dashboard/QuickActions.vue'
 import DashboardSessionsTab from '@/components/Dashboard/SessionsTab.vue'
 
-// Reactive data
+/*
+* =========================================
+* Variables
+* =========================================
+*/
 const activeTab = ref('dashboard')
 const showUserMenu = ref(false)
 const sessionFilter = ref('upcoming')
 const onboard = ref(false)
-const authStore = useAuthStore()
-
 const sessions = ref<Session[]>([])
+const patients = ref<Patient[]>([])
+const patient = ref<Patient>()
 const professionals = ref<Professional[]>([])
 const sessionTypes = ref<SessionType[]>([])
-const patientId = ref<string | null>(null)
 const loading = ref(false)
 const error = ref('')
+const authStore = useAuthStore()
+const bookingForm = ref({
+  therapist: '',
+  date: '',
+  time: '',
+  notes: ''
+})
 
+
+/*
+* =========================================
+* Data fetching methods
+* =========================================
+*/
+//TODO: Fetch sessions for the logged-in patient only
 const fetchSessions = async () => {
   loading.value = true
   error.value = ''
@@ -166,15 +182,28 @@ const fetchSessions = async () => {
   }
 }
 
-const fetchCurrentUserPatient = async (userId: string) => {
+//TODO: Fetch patient data for the logged-in user
+const fetchPatient = async (user_id: any) => {
+  loading.value = true
+  error.value = ''
   try {
-    const response = await PatientService.readSingle({ patient_id: '', user_id: userId })
-    if (response && response.data && response.data.id) {
-      patientId.value = response.data.id
+    const authStore = useAuthStore()
+    if (!authStore.userId) {
+      throw new Error('User not logged in')
     }
+    const response = await PatientService.readAll()
+    // You can store patient data if needed
+    patients.value = response.data || response
+
+    patient.value = patients.value.find((p: any) => p.user_id === authStore.userId)
+
+    patients.value = <Patient[]>[]
+
   } catch (err: any) {
-    console.warn('No patient record found for user:', userId)
-    patientId.value = null
+    error.value = err?.response?.data?.message || err?.message || 'Failed to load patient data'
+    console.error('Error fetching patient:', err)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -192,6 +221,7 @@ const fetchSessionTypes = async () => {
   }
 }
 
+//TODO: Fetch professionals only when necessary
 const fetchProfessionals = async () => {
   loading.value = true
   error.value = ''
@@ -206,6 +236,11 @@ const fetchProfessionals = async () => {
   }
 }
 
+/*
+* =========================================
+* Computed data
+* =========================================
+*/
 const nextSession = computed(() => {
   const ups = upcomingSessions.value ?? []
   if (ups.length === 0) return { date: '—', time: '—' }
@@ -220,11 +255,10 @@ const nextSession = computed(() => {
 const stats = computed(() => {
   // derive: use `completed` boolean when present
   const completed = sessions.value.filter((s: any) => !!s.completed).length
-  const totalHours = completed * 1 // placeholder: 1 hour per session if not provided
+  const totalHours = sessions.value.length // I supose that each session is one hour, anyways i dont like this stat
   return { completed, totalHours }
 })
 
-// Derived / computed values for the template
 const upcomingSessions = computed(() => {
   const now = new Date()
   try {
@@ -265,17 +299,31 @@ const therapists = computed(() => {
   }))
 })
 
-// Call fetchers on mount and clean up listeners
+const userName = computed(() => {
+  const authStore = useAuthStore()
+  return authStore.fullUserName?.split(' ')[0] || 'bienvenido'
+})
+
+const filteredProfessionals = computed(() => 
+  professionals.value.filter(pro => 
+    sessions.value.some(session => 
+      session.professional_id === pro.id && session.patient_id === patient.value?.id
+    )
+  )
+)
+
+
+
+/*
+* =========================================
+* Lifecycle hooks
+* =========================================
+*/
 onMounted(() => {
+  fetchPatient(authStore.userId)
   fetchSessions()
   fetchProfessionals()
   fetchSessionTypes()
-  
-  // Fetch current user's patient record
-  if (authStore.userId) {
-    fetchCurrentUserPatient(authStore.userId)
-  }
-  
   if (typeof window !== 'undefined') {
     document.addEventListener('click', handleClickOutside)
   }
@@ -287,14 +335,11 @@ onUnmounted(() => {
   }
 })
 
-
-const bookingForm = ref({
-  therapist: '',
-  date: '',
-  time: '',
-  notes: ''
-})
-
+/*
+* =========================================
+* Methods
+* =========================================
+*/  
 const bookSession = async () => {
   // Basic validation
   if (!bookingForm.value.therapist) {
@@ -303,12 +348,6 @@ const bookSession = async () => {
   }
   if (!bookingForm.value.date) {
     alert('Por favor selecciona una fecha')
-    return
-  }
-
-  // Check if user has a patient record
-  if (!patientId.value) {
-    alert('No se encontró un registro de paciente para tu cuenta. Por favor contacta al administrador.')
     return
   }
 
@@ -340,8 +379,9 @@ const bookSession = async () => {
     sessionDatePayload = iso.slice(0, 19)
   }
 
+
   const payload = {
-    patient_id: patientId.value,
+    patient_id: patient.value?.id,
     professional_id: String(bookingForm.value.therapist),
     session_type_id: sessionTypes.value?.[0]?.id ?? null,
     session_status_id: null,
@@ -366,6 +406,7 @@ const bookSession = async () => {
       activeTab.value = 'sessions'
     } else {
       console.warn('Unexpected create response', res)
+      console.log("Res" + JSON.stringify(res))
       alert('No se pudo reservar la sesión. Por favor intenta de nuevo.')
     }
   } catch (err: any) {
@@ -385,20 +426,12 @@ const bookSession = async () => {
   }
 }
 
-const saveSettings = (settings: any) => {
-  // Handle settings save
-  console.log('Saving settings:', settings)
-  alert('¡Configuración guardada exitosamente!')
-}
-
 // Close user menu when clicking outside
 const handleClickOutside = (event: any) => {
   if (!event.target.closest('.relative')) {
     showUserMenu.value = false
   }
 }
-
-// (listener is added during onMounted and removed onUnmounted)
 </script>
 
 <style scoped>
