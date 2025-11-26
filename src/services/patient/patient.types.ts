@@ -20,7 +20,10 @@ export interface DeletePayload {
 
 export interface ReadSingleQuery {
     patient_id: string
-    user_id: string | null
+}
+
+export interface ReadSingleByUserQuery {
+    user_id: string
 }
 
 export interface UpdatePayload {
