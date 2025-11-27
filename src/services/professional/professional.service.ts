@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from 'axios'
 import authHeader from '../auth/auth-header'
-import type { CreatePayload, CreateResponse, DeletePayload, DeleteResponse, ReadAllResponse, ReadSingleQuery, ReadSingleResponse, UpdatePayload, UpdateResponse } from './professional.types'
+import type { CreatePayload, CreateResponse, DeletePayload, DeleteResponse, ReadAllResponse, ReadSingleByUserQuery, ReadSingleQuery, ReadSingleResponse, UpdatePayload, UpdateResponse } from './professional.types'
 
 const API_URL = import.meta.env.VITE_BASE_API_URL + 'professional/'
 
@@ -47,6 +47,14 @@ class ProfessionalService {
     async readSingle(query: ReadSingleQuery): Promise<ReadSingleResponse> {
         const response: AxiosResponse<any> = await axios.get(
             API_URL + 'single',
+            { headers: authHeader(), params: query }
+        )
+        return response.data.data
+    }
+
+    async readSingleByUser(query: ReadSingleByUserQuery): Promise<ReadSingleResponse> {
+        const response: AxiosResponse<any> = await axios.get(
+            API_URL + 'user',
             { headers: authHeader(), params: query }
         )
         return response.data.data

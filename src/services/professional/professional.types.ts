@@ -20,6 +20,10 @@ export interface ReadSingleQuery {
     professional_id: string
 }
 
+export interface ReadSingleByUserQuery {
+    user_id: string
+}
+
 export interface UpdatePayload {
     id: string
     gender_id: number

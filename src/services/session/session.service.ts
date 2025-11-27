@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from 'axios'
 import authHeader from '../auth/auth-header'
-import type { CreatePayload, CreateResponse, DeletePayload, DeleteResponse, ReadAllResponse, ReadSingleQuery, ReadSingleResponse, UpdatePayload, UpdateResponse } from './session.types'
+import type { CreatePayload, CreateResponse, DeletePayload, DeleteResponse, ReadAllResponse, ReadPatientQuery, ReadPatientResponse, ReadProfessionalQuery, ReadProfessionalResponse, ReadSingleQuery, ReadSingleResponse, UpdatePayload, UpdateResponse } from './session.types'
 
 const API_URL = import.meta.env.VITE_BASE_API_URL + 'session/'
 
@@ -39,6 +39,22 @@ class SessionService {
     async readAll(): Promise<ReadAllResponse> {
         const response: AxiosResponse<any> = await axios.get(
             API_URL + 'all',
+            { headers: authHeader() }
+        )
+        return response.data.data
+    }
+
+    async readPatient(query: ReadPatientQuery): Promise<ReadPatientResponse> {
+        const response: AxiosResponse<any> = await axios.get(
+            API_URL + 'patient',
+            { headers: authHeader() }
+        )
+        return response.data.data
+    }
+
+    async readProfessional(query: ReadProfessionalQuery): Promise<ReadProfessionalResponse> {
+        const response: AxiosResponse<any> = await axios.get(
+            API_URL + 'professional',
             { headers: authHeader() }
         )
         return response.data.data

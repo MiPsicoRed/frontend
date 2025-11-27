@@ -1,8 +1,9 @@
 export interface JwtClaims {
     uuid: string
     fullname: string
-    role: number,
+    role: number
     verified: boolean
+    needs_onboarding: boolean
     exp: number
 }
 
