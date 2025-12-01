@@ -36,7 +36,7 @@
                             <a href="#" @click.prevent="activeTab = 'settings'"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Configuración</a>
                             <hr class="my-1">
-                            <a @click.prevent="$emit('logout')"
+                            <a @click.prevent="logout()"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">Cerrar
                                 Sesión</a>
                         </div>
@@ -52,6 +52,7 @@ import { computed } from 'vue'
 import { 
   Bell, User, ChevronDown
 } from 'lucide-vue-next'
+import authService from '@/services/auth/auth.service'
 
 
 const props = defineProps({
@@ -71,4 +72,9 @@ const activeTab = computed({
     get: () => props.activeTab,
     set: (value) => emit('update:activeTab', value)
 })
+
+const logout = () => {
+    authService.logout()
+    window.location.reload()
+}
 </script>

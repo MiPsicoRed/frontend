@@ -217,8 +217,12 @@ import { ref, onMounted } from 'vue'
 import PatientService, { type Patient } from '@/services/patient/patient.service'
 import UserService, { type User } from '@/services/user/user.service'
 
+
+//================================
+// Variables
+//================================
+
 const patients = ref<Patient[]>([])
-const patient = ref<Patient|null>(null)
 const users = ref<User[]>([])
 const loading = ref(false)
 const error = ref('')
@@ -238,16 +242,14 @@ const patientCreateForm = ref({
   medical_history: ''
 })
 
-const formatDate = (date: Date | string | null): string => {
-  if (!date) return 'N/A'
-  const d = new Date(date)
-  return d.toLocaleDateString()
-}
+//================================
+// Fetchers
+//================================
 
 const fetchUsers = async () => {
   try {
     const response = await UserService.getAllUsers()
-    users.value = response || []
+    users.value = Array.isArray(response) ? response : (response as any).data || []
   } catch (err: any) {
     console.error('Error fetching users:', err)
   }
@@ -268,10 +270,39 @@ const fetchPatients = async () => {
   }
 }
 
+//================================
+// CRUD actions
+//================================
+
 const createPatient = async () => {
   try {
     loading.value = true
-    await PatientService.create(patientCreateForm.value as any)
+
+    if (!patientCreateForm.value.user_id) {
+      error.value = 'Usuario es requerido'
+      return
+    }
+
+    const birthdateString = patientCreateForm.value.birthdate
+      ? patientCreateForm.value.birthdate
+      : null
+
+    const payload = {
+      user_id: patientCreateForm.value.user_id,
+      gender_id: patientCreateForm.value.gender_id,
+      sexual_orientation_id: patientCreateForm.value.sexual_orientation_id,
+      birthdate: birthdateString,
+      phone: patientCreateForm.value.phone,
+      allergies: patientCreateForm.value.allergies || null,
+      current_medications: patientCreateForm.value.current_medications || null,
+      emergency_contact_name: patientCreateForm.value.emergency_contact_name || null,
+      emergency_contact_phone: patientCreateForm.value.emergency_contact_phone || null,
+      insurance_policy_number: patientCreateForm.value.insurance_policy_number || null,
+      medical_history: patientCreateForm.value.medical_history || null
+    }
+
+    console.log('Patient payload:', payload)
+    await PatientService.create(payload as any)
     alert('Paciente creado exitosamente')
     showCreateModal.value = false
     patientCreateForm.value = {
@@ -311,10 +342,27 @@ const deletePatient = async (patientId: string) => {
   }
 }
 
+//================================
+// Lifecycle
+//================================
+
 onMounted(() => {
   fetchPatients()
   fetchUsers()
 })
+
+
+//================================
+// Misc
+//================================
+
+const formatDate = (date: Date | string | null): string => {
+  if (!date) return 'N/A'
+  const d = new Date(date)
+  return d.toLocaleDateString()
+}
+
+
 </script>
 
 <style scoped>

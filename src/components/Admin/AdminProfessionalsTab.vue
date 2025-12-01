@@ -62,7 +62,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Usuario ID (UUID)</label>
             <input
-              v-model="createForm.user_id"
+              v-model="payload.user_id"
               type="text"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
               placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
@@ -72,7 +72,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Género ID</label>
             <input
-              v-model.number="createForm.gender_id"
+              v-model.number="payload.gender_id"
               type="number"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
               required
@@ -81,15 +81,23 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Tarifa Horaria</label>
             <input
-              v-model.number="createForm.hourly_rate"
+              v-model.number="payload.hourly_rate"
               type="number"
               step="0.01"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
             />
           </div>
           <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de nacimiento</label>
+            <input
+              v-model="payload.birthdate"
+              type="date"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            />
+          </div>
+          <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              <input v-model="createForm.accepts_insurance" type="checkbox" />
+              <input v-model="payload.accepts_insurance" type="checkbox" />
               Acepta Seguro
             </label>
           </div>
@@ -117,19 +125,20 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import ProfessionalService, { type Professional } from '@/services/professional/professional.service'
+import type { CreatePayload } from '@/services/professional/professional.types'
 
 const professionals = ref<Professional[]>([])
 const loading = ref(false)
 const error = ref('')
 const showCreateModal = ref(false)
 
-const createForm = ref({
+const payload = ref({
   user_id: '',
   gender_id: 1,
   hourly_rate: null as number | null,
-  accepts_insurance: false
+  accepts_insurance: false,
+  birthdate: null as Date | null,
 })
-
 const fetchProfessionals = async () => {
   loading.value = true
   error.value = ''
@@ -148,10 +157,40 @@ const fetchProfessionals = async () => {
 const createProfessional = async () => {
   try {
     loading.value = true
-    await ProfessionalService.create(createForm.value as any)
+
+    // Validate required fields
+    if (!payload.value.user_id || !payload.value.birthdate) {
+      error.value = 'Usuario ID y Fecha de nacimiento son requeridos'
+      return
+    }
+
+    // Format birthdate as ISO 8601 date string (YYYY-MM-DD)
+    const birthdateString = payload.value.birthdate instanceof Date 
+      ? payload.value.birthdate.toISOString().split('T')[0]
+      : payload.value.birthdate
+
+    const query: CreatePayload = {
+      user_id: payload.value.user_id,
+      gender_id: payload.value.gender_id,
+      hourly_rate: payload.value.hourly_rate,
+      accepts_insurance: payload.value.accepts_insurance,
+      license_number: null,
+      bio: null,
+      education: null,
+      experience_years: null,
+      birthdate: birthdateString as any as Date
+    }
+    console.log('Professional payload:', query)
+    await ProfessionalService.create(query)
     alert('Profesional creado exitosamente')
     showCreateModal.value = false
-    createForm.value = { user_id: '', gender_id: 1, hourly_rate: null, accepts_insurance: false }
+    payload.value = {
+      user_id: '',
+      gender_id: 1,
+      hourly_rate: null,
+      accepts_insurance: false,
+      birthdate: null
+    }
     await fetchProfessionals()
   } catch (err: any) {
     error.value = err?.response?.data?.message || 'Error creating professional'
@@ -160,7 +199,6 @@ const createProfessional = async () => {
     loading.value = false
   }
 }
-
 const deleteProfessional = async (profId: string) => {
   if (!confirm('¿Estás seguro?')) return
 

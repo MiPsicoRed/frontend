@@ -55,62 +55,22 @@
 
       <!-- Sessions Tab -->
       <div v-if="activeTab === 'sessions'">
-        <DashboardSessionsTab :allSessions="sessions" v-model:sessionFilter="sessionFilter" />
+        <DashboardSessionsTab 
+          :allSessions="sessions" 
+          :professionals="therapists"
+          v-model:sessionFilter="sessionFilter"
+          @session-created="fetchSessions"
+        />
       </div>
 
       <!-- Book Session Tab -->
       <div v-if="activeTab === 'book'">
-        <div class="max-w-2xl mx-auto">
-          <div class="bg-white rounded-xl shadow-sm border p-6">
-            <h2 class="text-xl font-semibold text-gray-900 mb-6">Reservar Nueva Sesión</h2>
-
-            <form @submit.prevent="bookSession" class="space-y-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Seleccionar Terapeuta</label>
-                <select v-model="bookingForm.therapist"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
-                  <option value="">Selecciona un terapeuta</option>
-                  <option v-for="therapist in therapists" :key="therapist.id" :value="therapist.id">
-                    {{ therapist.name }} - {{ therapist.specialty }}
-                  </option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Fecha Preferida</label>
-                <input v-model="bookingForm.date" type="date"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Hora Preferida</label>
-                <select v-model="bookingForm.time"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
-                  <option value="">Selecciona una hora</option>
-                  <option value="09:00">09:00</option>
-                  <option value="10:00">10:00</option>
-                  <option value="11:00">11:00</option>
-                  <option value="14:00">14:00</option>
-                  <option value="15:00">15:00</option>
-                  <option value="16:00">16:00</option>
-                  <option value="17:00">17:00</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Notas (Opcional)</label>
-                <textarea v-model="bookingForm.notes" rows="3"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                  placeholder="Comparte cualquier información relevante para tu sesión..."></textarea>
-              </div>
-
-              <button type="submit"
-                class="w-full bg-teal-600 text-white py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors font-medium">
-                Reservar Sesión
-              </button>
-            </form>
-          </div>
-        </div>
+        <DashboardBookSessionTab 
+          :professionals="therapists"
+          :patient-id="patient?.id"
+          :session-type-id="sessionTypes?.[0]?.id"
+          @session-booked="handleSessionBooked"
+        />
       </div>
 
       <!-- Settings Tab -->
@@ -122,11 +82,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, onBeforeMount } from 'vue'
 import SessionsService, { type Session } from '@/services/session/session.service'
 import ProfessionalService, { type Professional } from '@/services/professional/professional.service'
 import SessionTypeService, { type SessionType } from '@/services/session_type/session_type.service'
 import PatientService, { type Patient } from '@/services/patient/patient.service'
+import UserService, { type User } from '@/services/user/user.service'
 import { useAuthStore } from '@/stores/auth.module'
 import DashboardNavBar from '@/components/Dashboard/NavBar.vue'
 import OnboardingModalForm from '@/components/Dashboard/NewPatientModal.vue'
@@ -136,6 +97,7 @@ import DashboardStatCards from '@/components/Dashboard/StatCards.vue'
 import DashboardUpcomingSession from '@/components/Dashboard/UpcomingSession.vue'
 import DashboardQuickActions from '@/components/Dashboard/QuickActions.vue'
 import DashboardSessionsTab from '@/components/Dashboard/SessionsTab.vue'
+import DashboardBookSessionTab from '@/components/Dashboard/BookSessionTab.vue'
 
 /*
 * =========================================
@@ -147,32 +109,36 @@ const showUserMenu = ref(false)
 const sessionFilter = ref('upcoming')
 const onboard = ref(false)
 const sessions = ref<Session[]>([])
-const patients = ref<Patient[]>([])
 const patient = ref<Patient>()
 const professionals = ref<Professional[]>([])
+const users = ref<User[]>([])
 const sessionTypes = ref<SessionType[]>([])
 const loading = ref(false)
 const error = ref('')
-const authStore = useAuthStore()
-const bookingForm = ref({
-  therapist: '',
-  date: '',
-  time: '',
-  notes: ''
-})
-
 
 /*
 * =========================================
 * Data fetching methods
 * =========================================
 */
-//TODO: Fetch sessions for the logged-in patient only
 const fetchSessions = async () => {
   loading.value = true
   error.value = ''
   try {
-    const response = await SessionsService.readAll()
+    await fetchPatient() // Ensure patient data is loaded first
+    const patientData = patient.value
+    console.log('Fetching sessions for patient:', patientData)
+    
+    if (!patientData?.id) {
+      console.warn('No patient data available')
+      return
+    }
+    
+    console.log
+
+    const response = await SessionsService.readPatient({
+      patient_id: patientData?.id
+    })
     sessions.value = response.data || response
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load sessions'
@@ -182,8 +148,7 @@ const fetchSessions = async () => {
   }
 }
 
-//TODO: Fetch patient data for the logged-in user
-const fetchPatient = async (user_id: any) => {
+const fetchPatient = async () => {
   loading.value = true
   error.value = ''
   try {
@@ -191,14 +156,9 @@ const fetchPatient = async (user_id: any) => {
     if (!authStore.userId) {
       throw new Error('User not logged in')
     }
-    const response = await PatientService.readAll()
-    // You can store patient data if needed
-    patients.value = response.data || response
 
-    patient.value = patients.value.find((p: any) => p.user_id === authStore.userId)
-
-    patients.value = <Patient[]>[]
-
+    const response = await PatientService.readSingleByUser({ user_id: authStore.userId })   
+    patient.value = response.data || response
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load patient data'
     console.error('Error fetching patient:', err)
@@ -236,6 +196,15 @@ const fetchProfessionals = async () => {
   }
 }
 
+const fetchUsers = async () => {
+  try {
+    const response = await UserService.getAllUsers()
+    users.value = Array.isArray(response) ? response : (response as any).data || []
+  } catch (err: any) {
+    console.error('Error fetching users:', err)
+  }
+}
+
 /*
 * =========================================
 * Computed data
@@ -253,7 +222,6 @@ const nextSession = computed(() => {
 })
 
 const stats = computed(() => {
-  // derive: use `completed` boolean when present
   const completed = sessions.value.filter((s: any) => !!s.completed).length
   const totalHours = sessions.value.length // I supose that each session is one hour, anyways i dont like this stat
   return { completed, totalHours }
@@ -291,12 +259,17 @@ const allSessions = computed(() => {
 })
 
 const therapists = computed(() => {
-  return professionals.value.map((p: any) => ({
-    // prefer UUID-like ids when available; fall back to user_id
-    id: String(p.id ?? p.user_id ?? p.uuid ?? ''),
-    name: p.name ?? `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim() ?? p.user_full_name ?? '',
-    specialty: p.specialty ?? (p.specializations && p.specializations[0]?.name) ?? ''
-  }))
+  return professionals.value.map((p: any) => {
+    // Find the user associated with this professional
+    const user = users.value.find((u: any) => u.id === p.user_id)
+    
+    return {
+      // Use user_id as the id, backend foreign key expects for sessions
+      id: String(p.user_id ?? ''),
+      name: user ? `${user.username} ${user.usersurname}`.trim() : `Prof ${p.user_id?.substring(0, 8) ?? 'Unknown'}`,
+      specialty: p.specialty ?? (p.specializations && p.specializations[0]?.name) ?? 'General'
+    }
+  })
 })
 
 const userName = computed(() => {
@@ -312,18 +285,21 @@ const filteredProfessionals = computed(() =>
   )
 )
 
-
-
 /*
 * =========================================
 * Lifecycle hooks
 * =========================================
 */
+onBeforeMount(async () => {
+  await Promise.all([
+    fetchProfessionals(),
+    fetchSessionTypes(),
+    fetchUsers()
+  ])
+})
+
 onMounted(() => {
-  fetchPatient(authStore.userId)
   fetchSessions()
-  fetchProfessionals()
-  fetchSessionTypes()
   if (typeof window !== 'undefined') {
     document.addEventListener('click', handleClickOutside)
   }
@@ -339,94 +315,12 @@ onUnmounted(() => {
 * =========================================
 * Methods
 * =========================================
-*/  
-const bookSession = async () => {
-  // Basic validation
-  if (!bookingForm.value.therapist) {
-    alert('Por favor selecciona un terapeuta')
-    return
-  }
-  if (!bookingForm.value.date) {
-    alert('Por favor selecciona una fecha')
-    return
-  }
-
-  // Build session_date from date + time (if provided)
-  let sessionDate: Date | null = null
-  try {
-    if (bookingForm.value.time) {
-      // combine date and time into ISO string
-      sessionDate = new Date(`${bookingForm.value.date}T${bookingForm.value.time}:00`)
-    } else {
-      sessionDate = new Date(bookingForm.value.date)
-    }
-    if (isNaN(sessionDate.getTime())) sessionDate = null
-  } catch (e) {
-    sessionDate = null
-  }
-
-  if (!authStore.userId) {
-    alert('Debes iniciar sesión para reservar una sesión')
-    return
-  }
-
-  // Format session_date to a naive datetime string (YYYY-MM-DDTHH:MM:SS) because
-  // backend expects chrono::NaiveDateTime (no timezone). If sessionDate is null, send null.
-  let sessionDatePayload: string | null = null
-  if (sessionDate) {
-    // toISOString() returns 'YYYY-MM-DDTHH:MM:SS.sssZ', strip milliseconds and trailing Z
-    const iso = sessionDate.toISOString()
-    sessionDatePayload = iso.slice(0, 19)
-  }
-
-
-  const payload = {
-    patient_id: patient.value?.id,
-    professional_id: String(bookingForm.value.therapist),
-    session_type_id: sessionTypes.value?.[0]?.id ?? null,
-    session_status_id: null,
-    session_date: sessionDatePayload,
-    videocall_url: null,
-    notes: bookingForm.value.notes || null,
-    session_duration: null
-  }
-
-  try {
-    loading.value = true
-    console.debug('Creating session payload:', payload)
-    const res = await SessionsService.create(payload as any)
-    // service returns { success: boolean } per types; assume success indicates creation
-    if (res && (res.success ?? true)) {
-      alert('¡Sesión reservada exitosamente!')
-      // refresh sessions to show the new booking
-      await fetchSessions()
-      // reset form
-      bookingForm.value = { therapist: '', date: '', time: '', notes: '' }
-      // switch to sessions tab to show created booking
-      activeTab.value = 'sessions'
-    } else {
-      console.warn('Unexpected create response', res)
-      console.log("Res" + JSON.stringify(res))
-      alert('No se pudo reservar la sesión. Por favor intenta de nuevo.')
-    }
-  } catch (err: any) {
-    console.error('Error creating session:', err)
-    // log more useful backend response body if present
-    if (err?.response) {
-      console.error('Response data:', err.response.data)
-      // if status 422 provide a clearer alert
-      if (err.response.status === 422) {
-        alert('El servidor no pudo procesar la solicitud (422). Revisa los campos requeridos.')
-        return
-      }
-    }
-    alert(err?.response?.data?.message || err?.message || 'Error al reservar la sesión')
-  } finally {
-    loading.value = false
-  }
+*/
+const handleSessionBooked = async () => {
+  await fetchSessions()
+  activeTab.value = 'sessions'
 }
 
-// Close user menu when clicking outside
 const handleClickOutside = (event: any) => {
   if (!event.target.closest('.relative')) {
     showUserMenu.value = false
@@ -435,7 +329,6 @@ const handleClickOutside = (event: any) => {
 </script>
 
 <style scoped>
-/* Custom styles to match the mipsicored.com design */
 .bg-teal-600 {
   background-color: #0d9488;
 }
