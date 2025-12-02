@@ -47,7 +47,7 @@ class SessionService {
     async readPatient(query: ReadPatientQuery): Promise<ReadPatientResponse> {
         const response: AxiosResponse<any> = await axios.get(
             API_URL + 'patient',
-            { headers: authHeader() }
+            { headers: authHeader(), params: query }
         )
         return response.data.data
     }
@@ -55,7 +55,7 @@ class SessionService {
     async readProfessional(query: ReadProfessionalQuery): Promise<ReadProfessionalResponse> {
         const response: AxiosResponse<any> = await axios.get(
             API_URL + 'professional',
-            { headers: authHeader() }
+            { headers: authHeader(), params: query }
         )
         return response.data.data
     }
