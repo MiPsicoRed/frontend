@@ -2,11 +2,11 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
     <header class="bg-white shadow-sm border-b">
-      <DashboardNavBar v-model:showUserMenu="showUserMenu" v-model:activeTab="activeTab"
-         />
+      <DashboardNavBar v-model:showUserMenu="showUserMenu" v-model:activeTab="activeTab" />
     </header>
 
-    <div v-if="onboard" class="fixed inset-0 flex items-center justify-center bg-[#00000086] bg-opacity-50 w-full h-screen overflow-clip">
+    <div v-if="onboard"
+      class="fixed inset-0 flex items-center justify-center bg-[#00000086] bg-opacity-50 w-full h-screen overflow-clip">
       <div>
         <OnboardingModalForm @closeOnboarding="onboard = false" />
       </div>
@@ -22,7 +22,7 @@
       <div v-if="activeTab === 'dashboard'">
         <!-- Welcome Section -->
         <div class="bg-gradient-to-r from-teal-50 to-green-50 rounded-xl p-6 mb-8 shadow-sm border">
-          <DashboardWelcomeSection :name="userName"/>
+          <DashboardWelcomeSection :name="userName" />
         </div>
 
         <!-- Stats Cards -->
@@ -55,27 +55,19 @@
 
       <!-- Sessions Tab -->
       <div v-if="activeTab === 'sessions'">
-        <DashboardSessionsTab 
-          :allSessions="sessions" 
-          :professionals="therapists"
-          v-model:sessionFilter="sessionFilter"
-          @session-created="fetchSessions"
-        />
+        <DashboardSessionsTab :allSessions="sessions" :professionals="therapists" v-model:sessionFilter="sessionFilter"
+          @session-created="fetchSessions" />
       </div>
 
       <!-- Book Session Tab -->
       <div v-if="activeTab === 'book'">
-        <DashboardBookSessionTab 
-          :professionals="therapists"
-          :patient-id="patient?.id"
-          :session-type-id="sessionTypes?.[0]?.id"
-          @session-booked="handleSessionBooked"
-        />
+        <DashboardBookSessionTab :professionals="therapists" :patient-id="patient?.id"
+          :session-type-id="sessionTypes?.[0]?.id" @session-booked="handleSessionBooked" />
       </div>
 
       <!-- Settings Tab -->
       <div v-if="activeTab === 'settings'">
-        <!-- <DashboardSettingsTab :currentUser="currentUser" @save="saveSettings" /> -->
+        <DashboardSettingsTab :currentUser="currentUser" @save="saveSettings" />
       </div>
     </div>
   </div>
@@ -98,6 +90,7 @@ import DashboardUpcomingSession from '@/components/Dashboard/UpcomingSession.vue
 import DashboardQuickActions from '@/components/Dashboard/QuickActions.vue'
 import DashboardSessionsTab from '@/components/Dashboard/SessionsTab.vue'
 import DashboardBookSessionTab from '@/components/Dashboard/BookSessionTab.vue'
+import DashboardSettingsTab from '@/components/Dashboard/SettingsTab.vue'
 
 /*
 * =========================================
@@ -128,12 +121,12 @@ const fetchSessions = async () => {
     await fetchPatient() // Ensure patient data is loaded first
     const patientData = patient.value
     console.log('Fetching sessions for patient:', patientData)
-    
+
     if (!patientData?.id) {
       console.warn('No patient data available')
       return
     }
-    
+
     console.log
 
     const response = await SessionsService.readPatient({
@@ -157,7 +150,7 @@ const fetchPatient = async () => {
       throw new Error('User not logged in')
     }
 
-    const response = await PatientService.readSingleByUser({ user_id: authStore.userId })   
+    const response = await PatientService.readSingleByUser({ user_id: authStore.userId })
     patient.value = response.data || response
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load patient data'
@@ -223,14 +216,14 @@ const nextSession = computed(() => {
 
 const stats = computed(() => {
   const completed = sessions.value.filter((s: any) => !!s.completed).length
-  const totalHours = sessions.value.length // I supose that each session is one hour, anyways i dont like this stat
+  const totalHours = sessions.value.length
   return { completed, totalHours }
 })
 
 const upcomingSessions = computed(() => {
   const now = new Date()
   try {
-    return sessions.value
+    const sortedSessions = sessions.value
       .filter((s: any) => {
         // prefer session_date field if available
         const raw = s.session_date ?? s.date ?? s.start_at ?? null
@@ -243,6 +236,21 @@ const upcomingSessions = computed(() => {
         const db = new Date(b.session_date ?? b.date ?? b.start_at ?? 0).getTime()
         return da - db
       })
+
+    return sortedSessions.map((s: any) => {
+      const raw = s.session_date ?? s.date ?? s.start_at ?? null
+      const d = raw ? new Date(raw) : null
+
+      // Find therapist name
+      const therapist = therapists.value.find(t => t.id === s.professional_id || t.user_id === s.professional_id)?.name || 'Unknown Therapist'
+
+      return {
+        ...s,
+        therapist,
+        date: d ? d.toLocaleDateString() : '—',
+        time: d ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—'
+      }
+    })
   } catch (e) {
     console.warn('Could not compute upcoming sessions', e)
     return []
@@ -259,13 +267,17 @@ const allSessions = computed(() => {
 })
 
 const therapists = computed(() => {
+  // console.log('Computing therapists. Professionals:', professionals.value.length, 'Users:', users.value.length)
   return professionals.value.map((p: any) => {
     // Find the user associated with this professional
     const user = users.value.find((u: any) => u.id === p.user_id)
-    
+
+    // if (!user) console.warn('User not found for professional:', p.id, 'user_id:', p.user_id)
+
     return {
-      // Use user_id as the id, backend foreign key expects for sessions
-      id: String(p.user_id ?? ''),
+      // Use professional id as the id, backend foreign key expects for sessions
+      id: p.id,
+      user_id: p.user_id,
       name: user ? `${user.username} ${user.usersurname}`.trim() : `Prof ${p.user_id?.substring(0, 8) ?? 'Unknown'}`,
       specialty: p.specialty ?? (p.specializations && p.specializations[0]?.name) ?? 'General'
     }
@@ -277,9 +289,9 @@ const userName = computed(() => {
   return authStore.fullUserName?.split(' ')[0] || 'bienvenido'
 })
 
-const filteredProfessionals = computed(() => 
-  professionals.value.filter(pro => 
-    sessions.value.some(session => 
+const filteredProfessionals = computed(() =>
+  professionals.value.filter(pro =>
+    sessions.value.some(session =>
       session.professional_id === pro.id && session.patient_id === patient.value?.id
     )
   )
@@ -320,6 +332,19 @@ const handleSessionBooked = async () => {
   await fetchSessions()
   activeTab.value = 'sessions'
 }
+
+const saveSettings = (newSettings: any) => {
+  console.log('Settings saved:', newSettings)
+  // In a real app, we might refresh user data here
+}
+
+const currentUser = computed(() => {
+  const authStore = useAuthStore()
+  if (!authStore.userId || users.value.length === 0) return {}
+
+  const user = users.value.find((u: any) => u.id === authStore.userId)
+  return user || {}
+})
 
 const handleClickOutside = (event: any) => {
   if (!event.target.closest('.relative')) {

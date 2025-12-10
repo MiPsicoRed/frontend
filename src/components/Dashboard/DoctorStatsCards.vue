@@ -54,8 +54,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import { 
-  Calendar, CheckCircle, 
+import {
+  Calendar, CheckCircle, Users, TrendingUp
 } from 'lucide-vue-next'
 
 const props = defineProps({

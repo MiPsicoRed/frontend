@@ -9,7 +9,6 @@ const mobileMenuOpen = ref(false)
 
 const handleLogout = () => {
   authStore.logout()
-  authStore.
   mobileMenuOpen.value = false
   router.push('/')
 }

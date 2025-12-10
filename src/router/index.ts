@@ -7,6 +7,7 @@ import RegisterView from '../views/Auth/RegisterView.vue'
 import VerifyView from '@/views/Auth/VerifyView.vue'
 import VerifiedView from '@/views/Auth/VerifiedView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import ProfessionalDashboardView from '../views/ProfessionalDashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,12 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: DashboardView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/professional-dashboard',
+      name: 'professional-dashboard',
+      component: ProfessionalDashboardView,
       meta: { requiresAuth: true },
     }
   ],

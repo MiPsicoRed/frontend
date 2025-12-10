@@ -4,9 +4,9 @@
             <!-- Logo -->
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <NuxtLink to="/">
+                    <RouterLink to="/">
                         <img src="/logo.svg" alt="MiPsicoRed Logo" class="h-8 w-auto" />
-                    </NuxtLink>
+                    </RouterLink>
                 </div>
                 <div class="ml-3">
                     <h1 class="text-xl font-semibold text-gray-900">Mi Panel</h1>
@@ -49,8 +49,8 @@
 
 <script setup>
 import { computed } from 'vue'
-import { 
-  Bell, User, ChevronDown
+import {
+    Bell, User, ChevronDown
 } from 'lucide-vue-next'
 import authService from '@/services/auth/auth.service'
 

@@ -5,9 +5,9 @@
 <template>
     <section id="home" class="relative overflow-hidden py-20">
         <div
-            class="absolute inset-0 bg-[url('/other/placeholder.svg?height=800&width=1600')] bg-cover bg-center opacity-10">
+            class="absolute inset-0 bg-[url('/fondo7.png')] bg-cover opacity-100">
         </div>
-        <div class="absolute inset-0 bg-gradient-to-r from-[#f8f3eb]/90 to-[#e8d5c4]/50"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-[#f8f3eb]/90 to-[#e8d5c4]/50 opacity-0"></div>
         <div class="absolute top-0 right-0 w-96 h-96 bg-[#e8d5c4] rounded-full opacity-20 blur-3xl -mr-48 -mt-48"></div>
         <div class="absolute bottom-0 left-0 w-96 h-96 bg-[#b8d8d8] rounded-full opacity-20 blur-3xl -ml-48 -mb-48">
         </div>

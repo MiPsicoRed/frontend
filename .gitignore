@@ -32,3 +32,7 @@ coverage
 
 # Bun
 bun.lock
+
+# Images
+*.jpg
+*.png

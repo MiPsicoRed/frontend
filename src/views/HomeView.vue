@@ -4,6 +4,7 @@ import Footer from '@/components/Home/HomeFooter.vue';
 import HeroComponent from '@/components/Home/HomeHero.vue';
 import ServicesComponent from '@/components/Home/HomeServices.vue';
 import TherapistsComponent from '@/components/Home/HomeTherapists.vue';
+import HomeAssistant from '@/components/Home/HomeAssistant.vue';
 
 </script>
 
@@ -16,6 +17,8 @@ import TherapistsComponent from '@/components/Home/HomeTherapists.vue';
     <ServicesComponent />
 
     <TherapistsComponent />
+
+    <HomeAssistant />
 
     <Footer />
   </main>
