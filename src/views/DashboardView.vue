@@ -272,8 +272,6 @@ const therapists = computed(() => {
     // Find the user associated with this professional
     const user = users.value.find((u: any) => u.id === p.user_id)
 
-    // if (!user) console.warn('User not found for professional:', p.id, 'user_id:', p.user_id)
-
     return {
       // Use professional id as the id, backend foreign key expects for sessions
       id: p.id,

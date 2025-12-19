@@ -19,7 +19,10 @@
               <User class="h-5 w-5 text-teal-500" />
               1. Selecciona tu Terapeuta
             </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div v-if="professionals.length === 0" class="text-center py-8 text-gray-500">
+              No hay profesionales disponibles en este momento.
+            </div>
+            <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div v-for="therapist in professionals" :key="therapist.id" @click="selectTherapist(therapist.id)"
                 class="cursor-pointer relative group rounded-xl border-2 p-4 transition-all duration-200 hover:shadow-md"
                 :class="bookingForm.therapist === therapist.id ? 'border-teal-500 bg-teal-50' : 'border-gray-100 hover:border-teal-200 bg-white'">
@@ -30,7 +33,7 @@
                   </div>
                   <div>
                     <h4 class="font-medium text-gray-900 group-hover:text-teal-700 transition-colors">{{ therapist.name
-                      }}</h4>
+                    }}</h4>
                     <p class="text-sm text-gray-500">{{ therapist.specialty }}</p>
                   </div>
                 </div>
@@ -147,6 +150,10 @@ const props = defineProps({
     default: null
   }
 })
+
+watch(() => props.professionals, (newVal) => {
+  console.log('BookSessionTab received professionals:', newVal)
+}, { immediate: true })
 
 const bookingForm = ref<BookingFormData>({
   therapist: '',
