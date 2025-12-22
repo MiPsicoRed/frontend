@@ -13,8 +13,8 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
+      path: '/wip',
+      name: 'homewip',
       component: HomeView,
     },
     {
@@ -58,6 +58,11 @@ const router = createRouter({
       name: 'professional-dashboard',
       component: ProfessionalDashboardView,
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/',
+      name: 'home',
+      component: () => import('../views/WorkInProgressView.vue'),
     }
   ],
 })
