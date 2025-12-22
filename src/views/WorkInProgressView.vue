@@ -56,7 +56,7 @@
 
         <!-- Footer info -->
         <div class="absolute bottom-8 text-center text-gray-400 text-sm">
-            &copy; {{ new Date().getFullYear() }} MiPsicoPito. Todos los derechos reservados.
+            &copy; {{ new Date().getFullYear() }} MiPsicoRed. Todos los derechos reservados.
         </div>
     </div>
 </template>
