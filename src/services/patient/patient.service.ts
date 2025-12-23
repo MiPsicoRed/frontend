@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from 'axios'
 import authHeader from '../auth/auth-header'
-import type { CreatePayload, CreateResponse, DeletePayload, DeleteResponse, ReadAllResponse, ReadSingleByUserQuery, ReadSingleQuery, ReadSingleResponse, UpdatePayload, UpdateResponse } from './patient.types'
+import type { CreatePayload, CreateResponse, DeletePayload, DeleteResponse, ReadAllResponse, ReadByProfessionalQuery, ReadByProfessionalResponse, ReadSingleByUserQuery, ReadSingleQuery, ReadSingleResponse, UpdatePayload, UpdateResponse } from './patient.types'
 
 const API_URL = import.meta.env.VITE_BASE_API_URL + 'patient/'
 
@@ -67,6 +67,14 @@ class PatientService {
             API_URL + 'update',
             payload,
             { headers: authHeader() }
+        )
+        return response.data.data
+    }
+
+    async readByProfessional(query: ReadByProfessionalQuery): Promise<ReadByProfessionalResponse> {
+        const response: AxiosResponse<any> = await axios.get(
+            API_URL + 'professional',
+            { headers: authHeader(), params: query }
         )
         return response.data.data
     }

@@ -26,6 +26,10 @@ export interface ReadSingleByUserQuery {
     user_id: string
 }
 
+export interface ReadByProfessionalQuery {
+    professional_id: string
+}
+
 export interface UpdatePayload {
     id: string
     gender_id: number
@@ -59,5 +63,10 @@ export interface ReadSingleResponse {
 }
 
 export interface UpdateResponse {
+    success: boolean
+}
+
+export interface ReadByProfessionalResponse {
+    data: Patient[]
     success: boolean
 }
