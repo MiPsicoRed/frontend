@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from 'axios'
 import authHeader from '../auth/auth-header'
-import type { CreatePayload, CreateResponse, DeletePayload, DeleteResponse, ReadAllResponse, ReadSingleByUserQuery, ReadSingleQuery, ReadSingleResponse, UpdatePayload, UpdateResponse } from './professional.types'
+import type { CreatePayload, CreateResponse, DeletePayload, DeleteResponse, ReadAllResponse, ReadSingleByUserQuery, ReadSingleQuery, ReadSingleResponse, SelectorResponse, UpdatePayload, UpdateResponse } from './professional.types'
 
 const API_URL = import.meta.env.VITE_BASE_API_URL + 'professional/'
 
@@ -64,6 +64,14 @@ class ProfessionalService {
         const response: AxiosResponse<any> = await axios.patch(
             API_URL + 'update',
             payload,
+            { headers: authHeader() }
+        )
+        return response.data.data
+    }
+
+    async selector(): Promise<SelectorResponse> {
+        const response: AxiosResponse<any> = await axios.get(
+            API_URL + 'selector',
             { headers: authHeader() }
         )
         return response.data.data

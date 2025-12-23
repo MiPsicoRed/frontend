@@ -57,3 +57,12 @@ export interface ReadSingleResponse {
 export interface UpdateResponse {
     success: boolean
 }
+
+export interface SelectorResponse {
+    // Maybe it would be better if this was another type I'm not sure if there's any difference in ts
+    data: {
+        professional_id: string,
+        name: string,
+    }
+    success: boolean
+}
