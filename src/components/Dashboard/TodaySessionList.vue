@@ -15,17 +15,15 @@
             <User class="h-5 w-5 text-teal-600" />
           </div>
           <div class="ml-4">
-            <p class="font-medium text-gray-900">{{ session.patientName }}</p>
+            <p class="font-medium text-gray-900">{{ getProfessionalName(session.professional_id) }}</p>
             <p class="text-sm text-gray-500">{{ session.time }} - {{ session.type }}</p>
           </div>
         </div>
         <div class="flex items-center space-x-2">
-          <span :class="getSessionStatusClass(session.status)"
-            class="px-2 py-1 text-xs font-medium rounded-full">
+          <span :class="getSessionStatusClass(session.status)" class="px-2 py-1 text-xs font-medium rounded-full">
             {{ session.status }}
           </span>
-          <button v-if="session.status === 'Próxima'"
-            class="text-teal-600 hover:text-teal-700 text-sm font-medium">
+          <button v-if="session.status === 'Próxima'" class="text-teal-600 hover:text-teal-700 text-sm font-medium">
             Iniciar
           </button>
         </div>
@@ -35,10 +33,11 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { 
+import { computed, ref, onMounted } from 'vue'
+import {
   User
 } from 'lucide-vue-next'
+import ProfessionalService from '@/services/professional/professional.service'
 
 const props = defineProps({
   todaySessions: {
@@ -55,6 +54,22 @@ const activeTab = computed({
   set: (value) => emit('update:activeTab', value)
 })
 
+const professionals = ref([])
+
+const fetchProfessionals = async () => {
+  try {
+    const response = await ProfessionalService.selector()
+    professionals.value = response.data || response
+  } catch (err) {
+    console.error('Error fetching professionals:', err)
+  }
+}
+
+const getProfessionalName = (professionalId) => {
+  const pro = professionals.value.find(p => p.professional_id === professionalId)
+  return pro ? pro.name : 'Cargando...'
+}
+
 const getSessionStatusClass = (status) => {
   switch (status) {
     case 'Próxima':
@@ -67,4 +82,8 @@ const getSessionStatusClass = (status) => {
       return 'bg-gray-100 text-gray-800'
   }
 }
+
+onMounted(() => {
+  fetchProfessionals()
+})
 </script>

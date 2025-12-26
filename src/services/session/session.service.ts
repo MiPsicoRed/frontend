@@ -10,7 +10,7 @@ export interface Session {
     professional_id: string,
     session_type_id: string | null
     session_status_id: number
-    session_date: Date | null
+    session_date: string | null
     videocall_url: string | null
     notes: string | null
     completed: boolean

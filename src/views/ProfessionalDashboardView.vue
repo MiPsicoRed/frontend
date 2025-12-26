@@ -23,28 +23,7 @@
 
         <!-- Today's Sessions and Recent Patients -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <div class="bg-white rounded-xl shadow-sm border p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-6">Sesiones de Hoy</h3>
-            <div class="space-y-4">
-              <div v-for="session in todaySessions" :key="session.id"
-                class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div class="flex items-center">
-                  <div class="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
-                    <UserIcon class="h-5 w-5 text-teal-600" />
-                  </div>
-                  <div class="ml-4">
-                    <p class="font-medium text-gray-900">{{ session.patientName }}</p>
-                    <p class="text-sm text-gray-500">{{ session.session_date ? new
-                      Date(session.session_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—' }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div v-if="todaySessions.length === 0" class="text-center py-8 text-gray-500">
-                No hay sesiones programadas para hoy
-              </div>
-            </div>
-          </div>
+          <ProfessionalTodaySessionsCard :todaySessions="todaySessions" />
 
           <!-- Recent Patients -->
           <div class="bg-white rounded-xl shadow-sm border p-6">
@@ -75,12 +54,12 @@
 
       <!-- Calendar Tab -->
       <div v-if="activeTab === 'calendar'">
-        <ProfessionalCalendarTab :sessions="sessions" :patients="enrichedPatients" />
+        <ProfessionalCalendarTab :sessions="sessions" :patients="enrichedPatients" @session-updated="fetchSessions" />
       </div>
 
       <!-- Sessions Tab -->
       <div v-if="activeTab === 'sessions'">
-        <ProfessionalSessionsTab :sessions="sessions" :patients="enrichedPatients" />
+        <ProfessionalSessionsTab :sessions="sessions" :patients="enrichedPatients" @session-updated="fetchSessions" />
       </div>
 
       <!-- Patients Tab -->
@@ -104,6 +83,7 @@ import DashboardNavBar from '@/components/Dashboard/NavBar.vue'
 import ProfessionalNavTabs from '@/components/Dashboard/ProfessionalNavTabs.vue'
 import DoctorWelcomeSection from '@/components/Dashboard/DoctorWelcomeSection.vue'
 import DoctorStatsCards from '@/components/Dashboard/DoctorStatsCards.vue'
+import ProfessionalTodaySessionsCard from '@/components/Dashboard/ProfessionalTodaySessionsCard.vue'
 import ProfessionalSessionsTab from '@/components/Dashboard/ProfessionalSessionsTab.vue'
 import ProfessionalPatientsTab from '@/components/Dashboard/ProfessionalPatientsTab.vue'
 import ProfessionalCalendarTab from '@/components/Dashboard/ProfessionalCalendarTab.vue'
@@ -156,13 +136,10 @@ const todaySessions = computed(() => {
     if (!raw) return false
     const d = new Date(raw)
     return d.toDateString() === today.toDateString() && !s.completed
-  }).map((s: any) => {
-    const patient = enrichedPatients.value.find((p: any) => p.id === s.patient_id)
-    return {
-      ...s,
-      patientName: patient ? patient.name : `Patient ${s.patient_id?.substring(0, 8)}`
-    }
-  })
+  }).map((s: any) => ({
+    ...s,
+    patientName: s.patient_name || `Patient ${s.patient_id?.substring(0, 8)}`
+  }))
 })
 
 const recentPatients = computed(() => {
@@ -225,7 +202,7 @@ const fetchPatientDetails = async () => {
     const patientsData = patientResponses.map(r => (r as any).data || r)
 
     // 3. Fetch all users to map names (since Patient only has user_id)
-    // Note: This might be heavy/restricted, but it's the only way currently
+    //TODO: a prof can't get all users, find a way to get only the patients of the prof
     const usersResponse = await UserService.getAllUsers()
     const allUsers = Array.isArray(usersResponse) ? usersResponse : (usersResponse as any).data || []
 
@@ -273,7 +250,6 @@ const fetchSessions = async () => {
     sessions.value = Array.isArray(sessData) ? sessData : []
     console.log('Sessions loaded:', sessions.value.length, sessions.value)
 
-    // Enrich with patient data
     await fetchPatientDetails()
 
   } catch (err: any) {
@@ -284,32 +260,32 @@ const fetchSessions = async () => {
   }
 }
 
-// const fetchPatients = async () => {
-//   loading.value = true
-//   error.value = ''
-//   try {
-//     const response = await PatientService.readAll()
-//     patients.value = Array.isArray(response) ? response : (response as any).data || []
-//   } catch (err: any) {
-//     error.value = err?.response?.data?.message || err?.message || 'Failed to load patients'
-//     console.error('Error fetching patients:', err)
-//   } finally {
-//     loading.value = false
-//   }
-// }
+const fetchProfPatients = async () => {
+  loading.value = true
+  error.value = ''
+  try {
+    if (!professional.value?.id) return
 
-// const fetchUsers = async () => {
-//   try {
-//     const response = await UserService.getAllUsers()
-//     users.value = Array.isArray(response) ? response : (response as any).data || []
-//   } catch (err: any) {
-//     console.error('Error fetching users:', err)
-//   }
-// }
+    const response = await PatientService.readByProfessional({ professional_id: professional.value.id })
+    patients.value = Array.isArray(response) ? response : (response as any).data || []
+    console.log('Patients loaded:', patients.value.length)
+  } catch (err: any) {
+    error.value = err?.response?.data?.message || err?.message || 'Failed to load patients'
+    console.error('Error fetching patients:', err)
+  } finally {
+    loading.value = false
+  }
+}
 
-// =========================================
-// LIFECYCLE HOOKS
-// =========================================
+const fetchUsers = async () => {
+  try {
+    const response = await UserService.getAllUsers()
+    users.value = Array.isArray(response) ? response : (response as any).data || []
+  } catch (err: any) {
+    console.error('Error fetching users:', err)
+  }
+}
+
 // =========================================
 // LIFECYCLE HOOKS
 // =========================================
@@ -321,13 +297,14 @@ onMounted(async () => {
   // Fetch data sequentially to avoid race conditions
   await Promise.all([
     fetchProfessional(),
-    // fetchPatients(),
-    // fetchUsers()
   ])
 
-  // Only fetch sessions after professional data is loaded
   if (professional.value?.id) {
-    await fetchSessions()
+    await Promise.all([
+      fetchSessions(),
+      fetchProfPatients(),
+      fetchUsers()
+    ])
   }
 })
 
@@ -346,7 +323,3 @@ const handleClickOutside = (event: any) => {
   }
 }
 </script>
-
-<style scoped>
-/* Scoped styles if needed */
-</style>

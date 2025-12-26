@@ -28,7 +28,6 @@
               </div>
               <div class="ml-4">
                 <h3 class="font-medium text-gray-900">{{ getProfessional(session.professional_id).name }}</h3>
-                <p class="text-sm text-gray-500">{{ getProfessional(session.professional_id).specialty }}</p>
                 <p class="text-sm text-gray-500 mt-1">
                   {{ formatSessionDate(session.session_date) }} - {{ formatSessionTime(session.session_date) }}
                 </p>
@@ -57,20 +56,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import {
   User,
   MoreVertical
 } from 'lucide-vue-next'
 import { type Session } from '@/services/session/session.service'
 import SessionService from '@/services/session/session.service'
+import ProfessionalService from '@/services/professional/professional.service'
 import { useAuthStore } from '@/stores/auth.module'
 
 interface Professional {
-  id: string
-  user_id?: string
+  professional_id: string
   name: string
-  specialty: string
 }
 
 const authStore = useAuthStore()
@@ -80,12 +78,7 @@ const props = defineProps({
     type: Array as () => Session[],
     required: true
   },
-  sessionFilter: String,
-  professionals: {
-    type: Array as () => Professional[],
-    required: false,
-    default: () => []
-  }
+  sessionFilter: String
 })
 
 const emit = defineEmits(['update:sessionFilter', 'session-created'])
@@ -98,6 +91,7 @@ const sessionFilter = computed({
 const showCreateModal = ref(false)
 const loading = ref(false)
 const error = ref('')
+const professionals = ref<Professional[]>([])
 
 const createForm = ref({
   professional_id: '',
@@ -105,6 +99,15 @@ const createForm = ref({
   time: '',
   notes: ''
 })
+
+const fetchProfessionals = async () => {
+  try {
+    const response = await ProfessionalService.selector()
+    professionals.value = response.data || response
+  } catch (err) {
+    console.error('Error fetching professionals:', err)
+  }
+}
 
 const formatSessionDate = (date: Date | string | null): string => {
   if (!date) return '—'
@@ -121,11 +124,13 @@ const formatSessionTime = (date: Date | string | null): string => {
 }
 
 const getProfessional = (id: string) => {
-  // console.log('Looking for professional:', id, 'in', props.professionals)
-  const pro = props.professionals.find(p => p.id === id || p.user_id === id)
-  if (!pro) console.warn('Professional not found for ID:', id)
+  const pro = professionals.value.find(p => p.professional_id === id)
   return pro || { name: 'Unknown Therapist', specialty: 'General' }
 }
+
+onMounted(() => {
+  fetchProfessionals()
+})
 
 const filteredSessions = computed(() => {
   if (sessionFilter.value === 'upcoming') {

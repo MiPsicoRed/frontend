@@ -79,7 +79,6 @@ import SessionsService, { type Session } from '@/services/session/session.servic
 import ProfessionalService, { type Professional } from '@/services/professional/professional.service'
 import SessionTypeService, { type SessionType } from '@/services/session_type/session_type.service'
 import PatientService, { type Patient } from '@/services/patient/patient.service'
-import UserService, { type User } from '@/services/user/user.service'
 import { useAuthStore } from '@/stores/auth.module'
 import DashboardNavBar from '@/components/Dashboard/NavBar.vue'
 import OnboardingModalForm from '@/components/Dashboard/NewPatientModal.vue'
@@ -91,6 +90,7 @@ import DashboardQuickActions from '@/components/Dashboard/QuickActions.vue'
 import DashboardSessionsTab from '@/components/Dashboard/SessionsTab.vue'
 import DashboardBookSessionTab from '@/components/Dashboard/BookSessionTab.vue'
 import DashboardSettingsTab from '@/components/Dashboard/SettingsTab.vue'
+import type { User } from '@/services/user/user.service'
 
 /*
 * =========================================
@@ -108,6 +108,7 @@ const users = ref<User[]>([])
 const sessionTypes = ref<SessionType[]>([])
 const loading = ref(false)
 const error = ref('')
+const auth = useAuthStore()
 
 /*
 * =========================================
@@ -127,8 +128,6 @@ const fetchSessions = async () => {
       return
     }
 
-    console.log
-
     const response = await SessionsService.readPatient({
       patient_id: patientData?.id
     })
@@ -145,12 +144,11 @@ const fetchPatient = async () => {
   loading.value = true
   error.value = ''
   try {
-    const authStore = useAuthStore()
-    if (!authStore.userId) {
+    //TODO: Do a better handling of this
+    if (!auth.userId) {
       throw new Error('User not logged in')
     }
-
-    const response = await PatientService.readSingleByUser({ user_id: authStore.userId })
+    const response = await PatientService.readSingleByUser({ user_id: auth.userId })
     patient.value = response.data || response
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load patient data'
@@ -186,15 +184,6 @@ const fetchProfessionals = async () => {
     console.error('Error fetching professionals:', err)
   } finally {
     loading.value = false
-  }
-}
-
-const fetchUsers = async () => {
-  try {
-    const response = await UserService.getAllUsers()
-    users.value = Array.isArray(response) ? response : (response as any).data || []
-  } catch (err: any) {
-    console.error('Error fetching users:', err)
   }
 }
 
@@ -283,8 +272,7 @@ const therapists = computed(() => {
 })
 
 const userName = computed(() => {
-  const authStore = useAuthStore()
-  return authStore.fullUserName?.split(' ')[0] || 'bienvenido'
+  return auth.fullUserName?.split(' ')[0]
 })
 
 const filteredProfessionals = computed(() =>
@@ -304,7 +292,6 @@ onBeforeMount(async () => {
   await Promise.all([
     fetchProfessionals(),
     fetchSessionTypes(),
-    fetchUsers()
   ])
 })
 
@@ -337,10 +324,9 @@ const saveSettings = (newSettings: any) => {
 }
 
 const currentUser = computed(() => {
-  const authStore = useAuthStore()
-  if (!authStore.userId || users.value.length === 0) return {}
+  if (!auth.userId || users.value.length === 0) return {}
 
-  const user = users.value.find((u: any) => u.id === authStore.userId)
+  const user = users.value.find((u: any) => u.id === auth.userId)
   return user || {}
 })
 

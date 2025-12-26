@@ -58,11 +58,12 @@ export interface UpdateResponse {
     success: boolean
 }
 
+export interface ProfessionalSelectorItem {
+    professional_id: string
+    name: string
+}
+
 export interface SelectorResponse {
-    // Maybe it would be better if this was another type I'm not sure if there's any difference in ts
-    data: {
-        professional_id: string,
-        name: string,
-    }
+    data: ProfessionalSelectorItem[]
     success: boolean
 }

@@ -9,7 +9,7 @@ export interface Patient {
     user_id: string | null
     gender: number
     sexual_orientation: number
-    birthdate: Date
+    birthdate: string | null
     phone: string
     emergency_contact_name: string | null
     emergency_contact_phone: string | null

@@ -146,7 +146,7 @@
 
             <div v-if="selectedProfessional">
               <p class="text-sm font-bold text-gray-900 mb-1">Profesional</p>
-              <p class="text-sm text-gray-600">{{ selectedProfessional.name }}</p>
+              <p class="text-sm text-gray-600">{{ selectedProfessionalName }}</p>
             </div>
 
             <div v-if="bookingForm.date">
@@ -189,6 +189,10 @@ import { Calendar, Clock, User, Check } from 'lucide-vue-next'
 import SessionsService, { type Session } from '@/services/session/session.service'
 import ProfessionalService, { type Professional } from '@/services/professional/professional.service'
 import type { ProfessionalSelectorItem } from '@/services/professional/professional.types'
+import { useAuthStore } from '@/stores/auth.module'
+import PatientService from '@/services/patient/patient.service'
+import type { CreatePayload as SessionCreatePayload } from '@/services/session/session.types'
+import type { ReadSingleByUserQuery } from '@/services/patient/patient.types'
 
 interface BookingFormData {
   therapist: string
@@ -229,6 +233,14 @@ const bookedSlots = ref<string[]>([])
 const availableProfessionals = ref<ProfessionalSelectorItem[]>([])
 const loadingProfessionals = ref(false)
 const selectedProfessional = ref<Professional | null>(null)
+const authStore = useAuthStore()
+
+console.log("EEUUUAUAUA " + authStore.userId)
+
+const selectedProfessionalName = computed(() => {
+  const pro = availableProfessionals.value.find(p => p.professional_id === bookingForm.value.therapist)
+  return pro ? pro.name : ''
+})
 
 const availableTimes = [
   '09:00', '10:00', '11:00', '12:00',
@@ -249,7 +261,7 @@ const selectTherapist = async (id: string) => {
 const fetchProfessionals = async () => {
   loadingProfessionals.value = true
   try {
-    const response = await ProfessionalService.getSelector()
+    const response = await ProfessionalService.selector()
     availableProfessionals.value = response.data || response
   } catch (err) {
     console.error('Error fetching professionals:', err)
@@ -301,12 +313,21 @@ watch(() => [bookingForm.value.therapist, bookingForm.value.date], () => {
 })
 
 const bookSession = async () => {
-  const finalPatientId = props.patientId
+  let finalPatientId = props.patientId
 
-  if (!finalPatientId) {
-    error.value = 'No se pudo identificar al paciente. Por favor recarga la página o contacta soporte.'
-    return
+  try {
+    if (authStore.userId) {
+      const readSingleByUserQuery: ReadSingleByUserQuery = {
+        user_id: authStore.userId.toString()
+      }
+      const response = await PatientService.readSingleByUser(readSingleByUserQuery)
+      const patient = response.data || response
+      finalPatientId = patient.id
+    }
+  } catch (err) {
+    console.error('Error fetching patient:', err)
   }
+
   if (!bookingForm.value.therapist) {
     error.value = 'Por favor selecciona un terapeuta'
     return
@@ -320,39 +341,37 @@ const bookSession = async () => {
     return
   }
 
-  let sessionDate: Date | null = null
+  let sessionDate: string | null = null
   try {
     if (bookingForm.value.time) {
-      sessionDate = new Date(`${bookingForm.value.date}T${bookingForm.value.time}:00`)
-    } else {
-      sessionDate = new Date(bookingForm.value.date)
+      sessionDate = `${bookingForm.value.date}T${bookingForm.value.time}:00`
+      console.log(sessionDate)
     }
-    if (isNaN(sessionDate.getTime())) sessionDate = null
   } catch (e) {
-    sessionDate = null
+    console.error('Error parsing session date:', e)
+    return
   }
 
-  let sessionDatePayload: string | null = null
-  if (sessionDate) {
-    const iso = sessionDate.toISOString()
-    sessionDatePayload = iso.slice(0, 19)
+  if (!finalPatientId) {
+    error.value = 'No se encontró un perfil de paciente válido. Si es tu primera vez, asegúrate de completar tus datos.'
+    return
   }
 
-  const payload = {
+  const sessionPayload: SessionCreatePayload = {
     patient_id: finalPatientId,
     professional_id: bookingForm.value.therapist,
-    session_type_id: props.sessionTypeId ?? null,
-    session_status_id: null,
-    session_date: sessionDatePayload,
+    session_type_id: props.sessionTypeId || null,
+    session_status_id: 1,
+    session_date: sessionDate || null,
     videocall_url: null,
     notes: bookingForm.value.notes || null,
-    session_duration: null
+    session_duration: 60
   }
 
   try {
     loading.value = true
     error.value = ''
-    await SessionsService.create(payload as any)
+    await SessionsService.create(sessionPayload)
     bookingForm.value = { therapist: '', date: '', time: '', notes: '' }
     emit('session-booked')
   } catch (err: any) {

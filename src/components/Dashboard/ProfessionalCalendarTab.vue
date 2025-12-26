@@ -14,7 +14,7 @@
                             <ChevronLeft class="h-5 w-5" />
                         </button>
                         <span class="text-lg font-semibold min-w-[140px] text-center text-gray-800">{{ currentMonthYear
-                            }}</span>
+                        }}</span>
                         <button @click="nextMonth"
                             class="p-2 hover:bg-white hover:shadow-sm rounded-md transition-all text-gray-600 hover:text-teal-600">
                             <ChevronRight class="h-5 w-5" />
@@ -82,8 +82,8 @@
 
             <div class="flex-1 p-6 overflow-y-auto max-h-[600px]">
                 <div v-if="selectedDate?.sessions.length > 0" class="space-y-4">
-                    <div v-for="session in selectedDate.sessions" :key="session.id"
-                        class="group p-4 rounded-xl border border-gray-100 hover:border-teal-200 hover:shadow-md transition-all bg-white">
+                    <div v-for="session in selectedDate.sessions" :key="session.id" @click="openModal(session)"
+                        class="group p-4 rounded-xl border border-gray-100 hover:border-teal-200 hover:shadow-md transition-all bg-white cursor-pointer">
 
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center gap-2 text-teal-700 font-bold">
@@ -106,15 +106,14 @@
                                 <User class="h-4 w-4" />
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900">{{ session.patient_name || 'Paciente Desconocido' }}
-                                </p>
+                                <p class="text-sm font-semibold text-gray-900">{{ session.patient_name }}</p>
                                 <p class="text-xs text-gray-500">Paciente</p>
                             </div>
                         </div>
 
                         <div v-if="!session.completed && session.videocall_url"
                             class="mt-3 pt-3 border-t border-gray-50">
-                            <a :href="session.videocall_url" target="_blank"
+                            <a :href="session.videocall_url" target="_blank" @click.stop
                                 class="flex items-center justify-center gap-2 w-full py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition-colors">
                                 <Video class="h-4 w-4" />
                                 Unirse a la llamada
@@ -130,19 +129,44 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <SessionDetailsModal :is-open="showModal" :session="selectedSession" @close="closeModal"
+        @session-updated="handleSessionUpdated" />
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { ChevronLeft, ChevronRight, Calendar, Clock, User, Video } from 'lucide-vue-next'
 import { type Session } from '@/services/session/session.service'
+import SessionDetailsModal from './SessionDetailsModal.vue'
 
 const props = defineProps<{
     sessions: Session[]
 }>()
 
+const emit = defineEmits(['session-updated'])
+
 const currentDate = ref(new Date())
 const selectedDate = ref<any>(null)
+
+// Modal state
+const selectedSession = ref<any | null>(null)
+const showModal = ref(false)
+
+const openModal = (session: Session) => {
+    selectedSession.value = session
+    showModal.value = true
+}
+
+const closeModal = () => {
+    selectedSession.value = null
+    showModal.value = false
+}
+
+const handleSessionUpdated = () => {
+    emit('session-updated')
+}
 
 const currentMonthYear = computed(() => {
     // Capitalize first letter

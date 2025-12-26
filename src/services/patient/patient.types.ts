@@ -4,7 +4,7 @@ export interface CreatePayload {
     user_id: string | null
     gender_id: number
     sexual_orientation_id: number
-    birthdate: Date
+    birthdate: string
     phone: string
     emergency_contact_name: string | null
     emergency_contact_phone: string | null
@@ -34,7 +34,7 @@ export interface UpdatePayload {
     id: string
     gender_id: number
     sexual_orientation_id: number
-    birthdate: Date
+    birthdate: string
     phone: string
     emergency_contact_name: string | null
     emergency_contact_phone: string | null

@@ -55,6 +55,10 @@
                                 class="text-teal-600 hover:text-teal-700 text-sm font-medium border border-teal-600 px-3 py-1 rounded-md hover:bg-teal-50 transition-colors">
                                 Unirse
                             </a>
+                            <button @click="openModal(session)"
+                                class="text-gray-500 hover:text-teal-600 text-sm font-medium">
+                                Ver Detalles
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -64,24 +68,48 @@
             </div>
         </div>
     </div>
+
+    <SessionDetailsModal :is-open="showModal" :session="selectedSession" @close="closeModal"
+        @session-updated="handleSessionUpdated" />
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { User as UserIcon } from 'lucide-vue-next'
 import { type Session } from '@/services/session/session.service'
+import SessionDetailsModal from './SessionDetailsModal.vue'
 
 const props = defineProps<{
     sessions: Session[]
 }>()
 
+//TODO: Update session state
+const emit = defineEmits(['session-updated'])
+
 const sessionFilter = ref('all')
+
+const selectedSession = ref<any | null>(null)
+const showModal = ref(false)
 
 const toLocalDateString = (date: Date) => {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
     return `${year}-${month}-${day}`
+}
+
+const openModal = (session: Session) => {
+    selectedSession.value = session
+    showModal.value = true
+}
+
+const closeModal = () => {
+    selectedSession.value = null
+    showModal.value = false
+}
+
+const handleSessionUpdated = () => {
+    emit('session-updated')
 }
 
 const filteredSessions = computed(() => {

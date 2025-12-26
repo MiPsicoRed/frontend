@@ -3,10 +3,8 @@
     <!-- Header with Create Button -->
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-semibold text-gray-900">Pacientes</h2>
-      <button
-        @click="showCreateModal = true"
-        class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium"
-      >
+      <button @click="showCreateModal = true"
+        class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium">
         + Crear Paciente
       </button>
     </div>
@@ -37,15 +35,14 @@
         <tbody class="divide-y">
           <tr v-for="patient in patients" :key="patient.id" class="hover:bg-gray-50">
             <td class="px-6 py-3 text-sm text-gray-900">{{ patient.id.substring(0, 8) }}...</td>
-            <td class="px-6 py-3 text-sm text-gray-600 font-mono">{{ patient.user_id ? patient.user_id.substring(0, 8) + '...' : 'N/A' }}</td>
+            <td class="px-6 py-3 text-sm text-gray-600 font-mono">{{ patient.user_id ? patient.user_id.substring(0, 8) +
+              '...' : 'N/A' }}</td>
             <td class="px-6 py-3 text-sm text-gray-600">{{ patient.gender }}</td>
             <td class="px-6 py-3 text-sm text-gray-600">{{ patient.phone }}</td>
             <td class="px-6 py-3 text-sm text-gray-600">{{ formatDate(patient.created_at) }}</td>
             <td class="px-6 py-3 text-right">
-              <button
-                @click="deletePatient(patient.id)"
-                class="px-3 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100 text-sm font-medium transition"
-              >
+              <button @click="deletePatient(patient.id)"
+                class="px-3 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100 text-sm font-medium transition">
                 Eliminar
               </button>
             </td>
@@ -69,11 +66,9 @@
             <!-- Usuario -->
             <div class="col-span-2">
               <label class="block text-sm font-medium text-gray-700 mb-1">Usuario *</label>
-              <select
-                v-model="patientCreateForm.user_id"
+              <select v-model="patientCreateForm.user_id"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                required
-              >
+                required>
                 <option value="">-- Seleccionar Usuario --</option>
                 <option v-for="user in users" :key="user.id" :value="user.id">
                   {{ user.username }} ({{ user.email }})
@@ -84,125 +79,90 @@
             <!-- Género ID -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Género ID *</label>
-              <input
-                v-model.number="patientCreateForm.gender_id"
-                type="number"
+              <input v-model.number="patientCreateForm.gender_id" type="number"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                required
-              />
+                required />
             </div>
 
             <!-- Orientación Sexual ID -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Orientación Sexual ID *</label>
-              <input
-                v-model.number="patientCreateForm.sexual_orientation_id"
-                type="number"
+              <input v-model.number="patientCreateForm.sexual_orientation_id" type="number"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                required
-              />
+                required />
             </div>
 
             <!-- Fecha de Nacimiento -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
-              <input
-                v-model="patientCreateForm.birthdate"
-                type="date"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-              />
+              <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento *</label>
+              <input v-model="patientCreateForm.birthdate" type="date"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" required/>
             </div>
 
             <!-- Teléfono -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono *</label>
-              <input
-                v-model="patientCreateForm.phone"
-                type="tel"
+              <input v-model="patientCreateForm.phone" type="tel"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                required
-              />
+                required />
             </div>
 
             <!-- Alergias -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Alergias</label>
-              <input
-                v-model="patientCreateForm.allergies"
-                type="text"
+              <input v-model="patientCreateForm.allergies" type="text"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                placeholder="Ej: Penicilina, Lactosa"
-              />
+                placeholder="Ej: Penicilina, Lactosa" />
             </div>
 
             <!-- Medicamentos Actuales -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Medicamentos Actuales</label>
-              <input
-                v-model="patientCreateForm.current_medications"
-                type="text"
+              <input v-model="patientCreateForm.current_medications" type="text"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                placeholder="Ej: Ibuprofeno, Paracetamol"
-              />
+                placeholder="Ej: Ibuprofeno, Paracetamol" />
             </div>
 
             <!-- Nombre Contacto Emergencia -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Contacto de Emergencia</label>
-              <input
-                v-model="patientCreateForm.emergency_contact_name"
-                type="text"
+              <input v-model="patientCreateForm.emergency_contact_name" type="text"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                placeholder="Nombre"
-              />
+                placeholder="Nombre" />
             </div>
 
             <!-- Teléfono Contacto Emergencia -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono Emergencia</label>
-              <input
-                v-model="patientCreateForm.emergency_contact_phone"
-                type="tel"
+              <input v-model="patientCreateForm.emergency_contact_phone" type="tel"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                placeholder="Teléfono"
-              />
+                placeholder="Teléfono" />
             </div>
 
             <!-- Número de Póliza -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Número de Póliza de Seguro</label>
-              <input
-                v-model="patientCreateForm.insurance_policy_number"
-                type="text"
+              <input v-model="patientCreateForm.insurance_policy_number" type="text"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                placeholder="Ej: POL-123456"
-              />
+                placeholder="Ej: POL-123456" />
             </div>
 
             <!-- Historial Médico -->
             <div class="col-span-2">
               <label class="block text-sm font-medium text-gray-700 mb-1">Historial Médico</label>
-              <textarea
-                v-model="patientCreateForm.medical_history"
-                rows="3"
+              <textarea v-model="patientCreateForm.medical_history" rows="3"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                placeholder="Describe el historial médico del paciente"
-              ></textarea>
+                placeholder="Describe el historial médico del paciente"></textarea>
             </div>
           </div>
 
           <div class="flex gap-3 pt-4 border-t">
-            <button
-              type="submit"
-              class="flex-1 bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition-colors font-medium"
-            >
+            <button type="submit"
+              class="flex-1 bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition-colors font-medium">
               Crear
             </button>
-            <button
-              type="button"
-              @click="showCreateModal = false"
-              class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium"
-            >
+            <button type="button" @click="showCreateModal = false"
+              class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium">
               Cancelar
             </button>
           </div>
@@ -215,6 +175,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import PatientService, { type Patient } from '@/services/patient/patient.service'
+import type { CreatePayload as PatientCreatePayload } from '@/services/patient/patient.types'
 import UserService, { type User } from '@/services/user/user.service'
 
 
@@ -283,15 +244,11 @@ const createPatient = async () => {
       return
     }
 
-    const birthdateString = patientCreateForm.value.birthdate
-      ? patientCreateForm.value.birthdate
-      : null
-
-    const payload = {
+    const payload: PatientCreatePayload = {
       user_id: patientCreateForm.value.user_id,
       gender_id: patientCreateForm.value.gender_id,
       sexual_orientation_id: patientCreateForm.value.sexual_orientation_id,
-      birthdate: birthdateString,
+      birthdate: patientCreateForm.value.birthdate,
       phone: patientCreateForm.value.phone,
       allergies: patientCreateForm.value.allergies || null,
       current_medications: patientCreateForm.value.current_medications || null,
@@ -302,7 +259,7 @@ const createPatient = async () => {
     }
 
     console.log('Patient payload:', payload)
-    await PatientService.create(payload as any)
+    await PatientService.create(payload)
     alert('Paciente creado exitosamente')
     showCreateModal.value = false
     patientCreateForm.value = {

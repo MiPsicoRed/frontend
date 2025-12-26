@@ -4,7 +4,7 @@
       <User class="h-5 w-5 text-teal-600" />
     </div>
     <div class="ml-4">
-      <p class="font-medium text-gray-900">{{ session.therapist }}</p>
+      <p class="font-medium text-gray-900">{{ getProfessionalName(session.professional_id) }}</p>
       <p class="text-sm text-gray-500">{{ session.date }} - {{ session.time }}</p>
     </div>
   </div>
@@ -19,15 +19,37 @@
 </template>
 
 <script setup>
-import { 
+import { ref, onMounted } from 'vue'
+import {
   User,
   MoreVertical
 } from 'lucide-vue-next'
+import ProfessionalService from '@/services/professional/professional.service'
 
 const props = defineProps({
   session: {
     type: Object,
     required: true
   }
+})
+
+const professionals = ref([])
+
+const fetchProfessionals = async () => {
+  try {
+    const response = await ProfessionalService.selector()
+    professionals.value = response.data || response
+  } catch (err) {
+    console.error('Error fetching professionals:', err)
+  }
+}
+
+const getProfessionalName = (professionalId) => {
+  const pro = professionals.value.find(p => p.professional_id === professionalId)
+  return pro ? pro.name : 'Cargando...'
+}
+
+onMounted(() => {
+  fetchProfessionals()
 })
 </script>
