@@ -70,6 +70,12 @@
                     class="font-bold text-gray-900 text-center text-sm mb-1 group-hover:text-teal-700 transition-colors">
                     {{ therapist.name }}
                   </h3>
+
+                  <button @click.stop="openProfessionalModal(therapist.professional_id, therapist.name)"
+                    class="mt-2 text-xs bg-white border border-gray-200 text-gray-600 px-3 py-1 rounded-full hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 transition-all flex items-center gap-1 shadow-sm">
+                    <Info class="h-3 w-3" />
+                    Ver info
+                  </button>
                   <!-- Optional: Specialty or Title -->
                   <!-- <p class="text-xs text-gray-500">Psicóloga</p> -->
                 </div>
@@ -180,12 +186,15 @@
       </aside>
 
     </div>
+
+    <ProfessionalCardModal :is-open="isModalOpen" :professional-id="modalProfessionalId"
+      :professional-name="modalProfessionalName" @close="isModalOpen = false" @book="handleBookFromModal" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue'
-import { Calendar, Clock, User, Check } from 'lucide-vue-next'
+import { Calendar, Clock, User, Check, Info } from 'lucide-vue-next'
 import SessionsService, { type Session } from '@/services/session/session.service'
 import ProfessionalService, { type Professional } from '@/services/professional/professional.service'
 import type { ProfessionalSelectorItem } from '@/services/professional/professional.types'
@@ -193,6 +202,7 @@ import { useAuthStore } from '@/stores/auth.module'
 import PatientService from '@/services/patient/patient.service'
 import type { CreatePayload as SessionCreatePayload } from '@/services/session/session.types'
 import type { ReadSingleByUserQuery } from '@/services/patient/patient.types'
+import ProfessionalCardModal from './ProfessionalCardModal.vue'
 
 interface BookingFormData {
   therapist: string
@@ -235,6 +245,22 @@ const loadingProfessionals = ref(false)
 const selectedProfessional = ref<Professional | null>(null)
 const authStore = useAuthStore()
 
+// Modal State
+const isModalOpen = ref(false)
+const modalProfessionalId = ref('')
+const modalProfessionalName = ref('')
+
+const openProfessionalModal = (id: string, name: string) => {
+  modalProfessionalId.value = id
+  modalProfessionalName.value = name
+  isModalOpen.value = true
+}
+
+const handleBookFromModal = (id: string) => {
+  selectTherapist(id)
+  isModalOpen.value = false
+}
+
 console.log("EEUUUAUAUA " + authStore.userId)
 
 const selectedProfessionalName = computed(() => {
@@ -274,6 +300,10 @@ const fetchProfessionals = async () => {
   } finally {
     loadingProfessionals.value = false
   }
+}
+
+const submitBooking = async () => {
+  window.location.href = 'https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_JhmjuhuOOrihtKkwIwSRwG47pzDXPHVVlMK2o0s4dLW/redirect'
 }
 
 const checkAvailability = async () => {
@@ -356,6 +386,8 @@ const bookSession = async () => {
     error.value = 'No se encontró un perfil de paciente válido. Si es tu primera vez, asegúrate de completar tus datos.'
     return
   }
+
+  window.open('https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_JhmjuhuOOrihtKkwIwSRwG47pzDXPHVVlMK2o0s4dLW/redirect', '_blank')
 
   const sessionPayload: SessionCreatePayload = {
     patient_id: finalPatientId,
