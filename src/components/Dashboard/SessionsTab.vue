@@ -40,7 +40,7 @@
               <span :class="getStatusClass(session.completed)" class="px-2 py-1 text-xs font-medium rounded-full">
                 {{ session.completed ? 'Completada' : 'Próxima' }}
               </span>
-              <a v-if="!session.completed && session.videocall_url" :href="session.videocall_url" target="_blank"
+              <a href="#" @click.prevent="handleJoinSession(session)"
                 class="text-teal-600 hover:text-teal-700 text-sm font-medium border border-teal-600 px-3 py-1 rounded-md hover:bg-teal-50 transition-colors">
                 Unirse
               </a>
@@ -62,6 +62,7 @@ import {
   MoreVertical
 } from 'lucide-vue-next'
 import { type Session } from '@/services/session/session.service'
+import type { CreatePayload } from '@/services/session/session.types'
 import SessionService from '@/services/session/session.service'
 import ProfessionalService from '@/services/professional/professional.service'
 import { useAuthStore } from '@/stores/auth.module'
@@ -72,6 +73,10 @@ interface Professional {
 }
 
 const authStore = useAuthStore()
+const showCreateModal = ref(false)
+const loading = ref(false)
+const error = ref('')
+const professionals = ref<Professional[]>([])
 
 const props = defineProps({
   allSessions: {
@@ -87,11 +92,6 @@ const sessionFilter = computed({
   get: () => props.sessionFilter,
   set: (value) => emit('update:sessionFilter', value)
 })
-
-const showCreateModal = ref(false)
-const loading = ref(false)
-const error = ref('')
-const professionals = ref<Professional[]>([])
 
 const createForm = ref({
   professional_id: '',
@@ -128,7 +128,7 @@ const getProfessional = (id: string) => {
   return pro || { name: 'Unknown Therapist', specialty: 'General' }
 }
 
-onMounted(() => {
+onMounted(async () => {
   fetchProfessionals()
 })
 
@@ -184,7 +184,7 @@ const createSession = async () => {
     sessionDatePayload = iso.slice(0, 19)
   }
 
-  const payload = {
+  const payload: CreatePayload = {
     patient_id: authStore.userId,
     professional_id: createForm.value.professional_id,
     session_type_id: null,
@@ -199,7 +199,7 @@ const createSession = async () => {
     loading.value = true
     error.value = ''
     console.log('Creating session payload:', payload)
-    await SessionService.create(payload as any)
+    await SessionService.create(payload)
     alert('¡Sesión creada exitosamente!')
     showCreateModal.value = false
     createForm.value = {
@@ -217,4 +217,5 @@ const createSession = async () => {
     loading.value = false
   }
 }
+
 </script>
