@@ -24,7 +24,7 @@ const therapists = ref([
 </script>
 
 <template>
-    <section id="terapeutas" class="py-16 bg-[url('/planta1.jpg')] bg-cover h-[65vh]">
+    <section id="terapeutas" class="py-16 bg-[url('/planta1.jpg')] bg-cover bg-center h-[65vh]">
         <div class="container mx-auto px-4">
             <div class="text-center max-w-3xl mx-auto mb-12">
                 <h2 class="text-3xl font-bold text-gray-800 mb-4">Conoce a nuestros psicológicos certificados</h2>
