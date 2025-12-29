@@ -21,9 +21,11 @@ const services = ref([
 </script>
 
 <template>
-    <section id="services" class="bg-[url('/fondo.jpg')] bg-cover bg-center relative overflow-hidden py-16">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-[#e8d5c4] rounded-full opacity-30 -mr-32 -mt-32"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#b8d8d8] rounded-full opacity-30 -ml-32 -mb-32"></div>
+    <section id="services" class="relative overflow-hidden py-16 h-[50vh] flex flex-col justify-center items-center">
+        <div
+            class="absolute inset-0 bg-[url('/planta3.jpg')] scale-x-[-1] bg-cover bg-bottom opacity-100">
+        </div>
+
         <div class="container mx-auto px-4 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-12">
                 <h2 class="text-3xl font-bold text-gray-800 mb-4">Terapias Online Personalizadas Para Tu Bienestar</h2>

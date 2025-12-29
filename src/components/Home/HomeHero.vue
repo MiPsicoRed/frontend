@@ -3,9 +3,9 @@
 </script>
 
 <template>
-    <section id="home" class="relative overflow-hidden py-20">
+    <section id="home" class="relative overflow-hidden py-20 h-[50vh] flex flex-col justify-center items-center">
         <div
-            class="absolute inset-0 bg-[url('/fondo7.png')] bg-cover opacity-100">
+            class="absolute inset-0 bg-[url('/planta2.jpg')] scale-x-[-1] bg-cover bg-bottom opacity-100">
         </div>
         <div class="absolute inset-0 bg-gradient-to-r from-[#f8f3eb]/90 to-[#e8d5c4]/50 opacity-0"></div>
         <div class="absolute top-0 right-0 w-96 h-96 bg-[#e8d5c4] rounded-full opacity-20 blur-3xl -mr-48 -mt-48"></div>
@@ -40,10 +40,6 @@
             </div>
             <div class="md:w-1/2 md:pl-10">
                 <div class="relative">
-                    <div class="absolute -top-4 -left-4 w-24 h-24 bg-[#e8d5c4] rounded-full opacity-70"></div>
-                    <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-[#b8d8d8] rounded-full opacity-70"></div>
-                    <img src="/other/bram.jpeg" alt="Sesión de terapia online"
-                        class="rounded-[2.5rem] shadow-lg w-full relative z-10 h-[500px] object-cover" />
                 </div>
             </div>
         </div>
