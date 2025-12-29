@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <section id="home" class="relative overflow-hidden py-20 h-[50vh] flex flex-col justify-center items-center">
+    <section id="home" class="relative overflow-hidden py-42 flex flex-col justify-center items-center">
         <div
             class="absolute inset-0 bg-[url('/planta2.jpg')] scale-x-[-1] bg-cover bg-bottom opacity-100">
         </div>

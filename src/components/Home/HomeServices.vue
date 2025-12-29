@@ -21,7 +21,7 @@ const services = ref([
 </script>
 
 <template>
-    <section id="services" class="relative overflow-hidden py-16 h-[50vh] flex flex-col justify-center items-center">
+    <section id="services" class="relative overflow-hidden py-24 flex flex-col justify-center items-center">
         <div
             class="absolute inset-0 bg-[url('/planta3.jpg')] scale-x-[-1] bg-cover bg-bottom opacity-100">
         </div>
