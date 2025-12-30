@@ -95,9 +95,9 @@
                             </div>
                             <span :class="[
                                 'px-2 py-0.5 rounded-full text-xs font-medium',
-                                session.completed ? 'bg-gray-100 text-gray-600' : 'bg-blue-50 text-blue-600'
+                                session.session_status_id == 2 ? 'bg-green-100 text-green-600' : 'bg-blue-50 text-blue-600'
                             ]">
-                                {{ session.completed ? 'Completada' : 'Pendiente' }}
+                                {{ session.session_status_id == 2 ? 'Completada' : 'Pendiente' }}
                             </span>
                         </div>
 

@@ -18,7 +18,7 @@
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <DoctorStatsCards :todaySessions="todaySessions" />
+          <DoctorStatsCards :todaySessions="todaySessions" :patients="patients" :sessions="sessions" :professional="professional"/>
         </div>
 
         <!-- Today's Sessions and Recent Patients -->
@@ -66,6 +66,11 @@
       <div v-if="activeTab === 'patients'">
         <ProfessionalPatientsTab :patients="enrichedPatients" />
       </div>
+
+      <!-- Settings Tab -->
+      <div v-if="activeTab === 'settings'">
+        <ProfessionalSettingsTab :professional="professional" @save="fetchProfessional" />
+      </div>
     </div>
   </div>
 </template>
@@ -87,6 +92,7 @@ import ProfessionalTodaySessionsCard from '@/components/Dashboard/ProfessionalTo
 import ProfessionalSessionsTab from '@/components/Dashboard/ProfessionalSessionsTab.vue'
 import ProfessionalPatientsTab from '@/components/Dashboard/ProfessionalPatientsTab.vue'
 import ProfessionalCalendarTab from '@/components/Dashboard/ProfessionalCalendarTab.vue'
+import ProfessionalSettingsTab from '@/components/Dashboard/ProfessionalSettingsTab.vue'
 
 // =========================================
 // Variables
@@ -248,6 +254,7 @@ const fetchSessions = async () => {
     }
 
     sessions.value = Array.isArray(sessData) ? sessData : []
+    sessions.value = sessions.value.sort((a: any, b: any) => new Date(b.session_date).getTime() - new Date(a.session_date).getTime())
     console.log('Sessions loaded:', sessions.value.length, sessions.value)
 
     await fetchPatientDetails()

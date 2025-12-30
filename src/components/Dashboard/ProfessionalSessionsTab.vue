@@ -38,7 +38,7 @@
                             </div>
                             <div class="ml-4">
                                 <h3 class="font-medium text-gray-900">{{ session.patient_name || 'Paciente Desconocido'
-                                }}</h3>
+                                    }}</h3>
                                 <p class="text-sm text-gray-500">{{ session.session_date ? new
                                     Date(session.session_date).toLocaleString() : '—' }}
                                 </p>
@@ -46,15 +46,21 @@
                             </div>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <span :class="getSessionStatusClass(session.completed ? 'Completada' : 'Próxima')"
+                            <span
+                                :class="getSessionStatusClass(session.session_status_id == 2 ? 'Completada' : 'Próxima')"
                                 class="px-2 py-1 text-xs font-medium rounded-full">
-                                {{ session.completed ? 'Completada' : 'Próxima' }}
+                                {{ session.session_status_id == 2 ? 'Completada' : 'Próxima' }}
                             </span>
-                            <a v-if="!session.completed && session.videocall_url" :href="session.videocall_url"
-                                target="_blank"
+                            <a v-if="session.session_status_id != 2 && session.videocall_url"
+                                :href="session.videocall_url" target="_blank"
                                 class="text-teal-600 hover:text-teal-700 text-sm font-medium border border-teal-600 px-3 py-1 rounded-md hover:bg-teal-50 transition-colors">
                                 Unirse
                             </a>
+                            <button v-if="session.session_status_id != 2" @click="completeSession(session)"
+                                :disabled="loadingId === session.id"
+                                class="text-green-600 hover:text-green-700 text-sm font-medium border border-green-600 px-3 py-1 rounded-md hover:bg-green-50 transition-colors disabled:opacity-50">
+                                {{ loadingId === session.id ? '...' : 'Completar' }}
+                            </button>
                             <button @click="openModal(session)"
                                 class="text-gray-500 hover:text-teal-600 text-sm font-medium">
                                 Ver Detalles
@@ -76,7 +82,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { User as UserIcon } from 'lucide-vue-next'
-import { type Session } from '@/services/session/session.service'
+import SessionsService, { type Session } from '@/services/session/session.service'
+import type { UpdatePayload } from '@/services/session/session.types'
 import SessionDetailsModal from './SessionDetailsModal.vue'
 
 const props = defineProps<{
@@ -90,6 +97,7 @@ const sessionFilter = ref('all')
 
 const selectedSession = ref<any | null>(null)
 const showModal = ref(false)
+const loadingId = ref<string | null>(null)
 
 const toLocalDateString = (date: Date) => {
     const year = date.getFullYear()
@@ -112,6 +120,34 @@ const handleSessionUpdated = () => {
     emit('session-updated')
 }
 
+const completeSession = async (session: Session) => {
+    if (!confirm('¿Estás seguro de marcar esta sesión como completada?')) return
+
+    console.log("SESSION DATE: ", session.session_date)
+
+    loadingId.value = session.id
+    try {
+        const payload: UpdatePayload = {
+            id: session.id,
+            patient_id: session.patient_id,
+            professional_id: session.professional_id,
+            session_type_id: session.session_type_id,
+            session_status_id: 2, // 2 = Completed/Confirmed
+            session_date: session.session_date,
+            videocall_url: session.videocall_url,
+            notes: session.notes,
+            session_duration: session.session_duration
+        }
+        await SessionsService.update(payload)
+        emit('session-updated')
+    } catch (error) {
+        console.error('Error completing session:', error)
+        alert('Error al completar la sesión')
+    } finally {
+        loadingId.value = null
+    }
+}
+
 const filteredSessions = computed(() => {
     // console.log('Filtering sessions. Total:', props.sessions.length, 'Filter:', sessionFilter.value)
     switch (sessionFilter.value) {
@@ -122,17 +158,12 @@ const filteredSessions = computed(() => {
                 const raw = s.session_date ?? s.date ?? s.start_at
                 if (!raw) return false
                 const d = new Date(raw)
-                return toLocalDateString(d) === todayStr && !s.completed
+                return toLocalDateString(d) === todayStr && s.session_status_id == 1
             })
         case 'upcoming':
-            return props.sessions.filter((s: any) => {
-                const raw = s.session_date ?? s.date ?? s.start_at
-                if (!raw) return false
-                const d = new Date(raw)
-                return !s.completed && d >= new Date()
-            })
+            return props.sessions.filter((s: any) => s.session_status_id == 1)
         case 'completed':
-            return props.sessions.filter((s: any) => s.completed)
+            return props.sessions.filter((s: any) => s.session_status_id == 2)
         case 'all':
         default:
             return props.sessions

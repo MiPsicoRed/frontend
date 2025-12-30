@@ -52,8 +52,8 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref, computed } from 'vue'
 import {
   Calendar, CheckCircle, Users, TrendingUp
 } from 'lucide-vue-next'
@@ -62,12 +62,28 @@ const props = defineProps({
   todaySessions: {
     type: Array,
     required: true
+  },
+  patients: {
+    type: Array,
+    required: true
+  },
+  sessions: {
+    type: Array,
+    required: true
+  },
+  professional: {
+    type: Object,
+    required: true
   }
 })
 
-const stats = ref({
-  activePatients: 24,
-  completedSessions: 18,
-  monthlyRevenue: 3200
-})
+const loading = ref(false)
+
+const stats = computed(() => ({
+  activePatients: props.patients.length,
+  completedSessions: props.sessions.filter((s: any) => s.session_status_id == 2).length,
+  monthlyRevenue: props.sessions
+    .filter((s: any) => s.session_status_id == 2)
+    .reduce((total: number, s: any) => total + (Number(props.professional.hourly_rate) || 0), 0)
+}))
 </script>

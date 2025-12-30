@@ -17,8 +17,8 @@
                     </div>
                     <div>
                         <p class="text-sm font-medium text-gray-500">Estado</p>
-                        <span :class="session.completed ? 'text-green-600' : 'text-yellow-600'" class="font-medium">
-                            {{ session.completed ? 'Completada' : 'Pendiente' }}
+                        <span :class="session.session_status_id == 2 ? 'text-green-600' : 'text-yellow-600'" class="font-medium">
+                            {{ session.session_status_id == 2 ? 'Completada' : 'Pendiente' }}
                         </span>
                     </div>
                     <div>
@@ -111,8 +111,8 @@ const confirmSession = async () => {
             patient_id: props.session.patient_id,
             professional_id: props.session.professional_id,
             session_type_id: props.session.session_type_id,
-            session_status_id: 2, // Assuming 2 is Confirmed
-            session_date: props.session.session_date ? new Date(props.session.session_date) : null,
+            session_status_id: props.session.session_status_id,
+            session_date: props.session.session_date,
             videocall_url: props.session.videocall_url,
             notes: props.session.notes,
             session_duration: props.session.session_duration
