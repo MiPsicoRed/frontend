@@ -189,6 +189,22 @@
 
     <ProfessionalCardModal :is-open="isModalOpen" :professional-id="modalProfessionalId"
       :professional-name="modalProfessionalName" @close="isModalOpen = false" @book="handleBookFromModal" />
+
+    <!-- Stripe Checkout Modal -->
+    <Teleport to="body">
+      <div v-if="showCheckoutModal" class="fixed inset-0 z-50 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/50" @click="closeCheckoutModal"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-auto p-6 z-10">
+          <button @click="closeCheckoutModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <h3 class="text-xl font-bold text-gray-900 mb-4 font-serif">Completar Pago</h3>
+          <div id="stripe-checkout-container" class="min-h-[400px]"></div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -203,6 +219,8 @@ import PatientService from '@/services/patient/patient.service'
 import type { CreatePayload as SessionCreatePayload } from '@/services/session/session.types'
 import type { ReadSingleByUserQuery } from '@/services/patient/patient.types'
 import ProfessionalCardModal from './ProfessionalCardModal.vue'
+import CheckoutService from '@/services/stripe/checkout.service'
+import { getStripe } from '@/services/stripe/stripe.service'
 
 interface BookingFormData {
   therapist: string
@@ -302,8 +320,65 @@ const fetchProfessionals = async () => {
   }
 }
 
-const submitBooking = async () => {
-  window.location.href = 'https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_JhmjuhuOOrihtKkwIwSRwG47pzDXPHVVlMK2o0s4dLW/redirect'
+/**
+ * Stripe Checkout Modal state
+ */
+const showCheckoutModal = ref(false)
+let stripeEmbeddedCheckout: any = null
+
+const closeCheckoutModal = () => {
+  showCheckoutModal.value = false
+  if (stripeEmbeddedCheckout) {
+    stripeEmbeddedCheckout.destroy()
+    stripeEmbeddedCheckout = null
+  }
+}
+
+/**
+ * Open embedded Stripe Checkout in a modal.
+ * Creates a checkout session on the backend, then mounts embedded checkout.
+ */
+const redirectToStripeCheckout = async (sessionData: {
+  patientId: string
+  professionalId: string
+  sessionTypeId: string | null
+  sessionDate: string | null
+  sessionDuration: number
+  notes: string | null
+}) => {
+  try {
+    // Create checkout session on backend - returns the client_secret
+    const { client_secret } = await CheckoutService.createCheckoutSession({
+      patient_id: sessionData.patientId,
+      professional_id: sessionData.professionalId,
+      session_type_id: sessionData.sessionTypeId,
+      session_date: sessionData.sessionDate,
+      session_duration: sessionData.sessionDuration,
+      notes: sessionData.notes
+    })
+
+    // Initialize Stripe
+    const stripe = await getStripe()
+    if (!stripe) {
+      throw new Error('Failed to load Stripe')
+    }
+
+    // Show the modal
+    showCheckoutModal.value = true
+
+    // Wait for modal to render
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    // Mount embedded checkout
+    stripeEmbeddedCheckout = await stripe.initEmbeddedCheckout({
+      clientSecret: client_secret
+    })
+    stripeEmbeddedCheckout.mount('#stripe-checkout-container')
+  } catch (err: any) {
+    console.error('Error during Stripe checkout:', err)
+    showCheckoutModal.value = false
+    throw err
+  }
 }
 
 const checkAvailability = async () => {
@@ -387,7 +462,23 @@ const bookSession = async () => {
     return
   }
 
-  window.open('https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_JhmjuhuOOrihtKkwIwSRwG47pzDXPHVVlMK2o0s4dLW/redirect', '_blank')
+  // Redirect to Stripe Checkout for payment
+  try {
+    await redirectToStripeCheckout({
+      patientId: finalPatientId,
+      professionalId: bookingForm.value.therapist,
+      sessionTypeId: props.sessionTypeId || null,
+      sessionDate: sessionDate,
+      sessionDuration: 60,
+      notes: bookingForm.value.notes || null
+    })
+    // Note: If successful, user is redirected to Stripe and won't return here.
+    // The session creation happens after successful payment via webhook.
+    return
+  } catch (err: any) {
+    error.value = err?.message || 'Error al procesar el pago. Inténtalo de nuevo.'
+    return
+  }
 
   const sessionPayload: SessionCreatePayload = {
     patient_id: finalPatientId,
