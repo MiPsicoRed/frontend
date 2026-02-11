@@ -189,6 +189,9 @@
 
     <ProfessionalCardModal :is-open="isModalOpen" :professional-id="modalProfessionalId"
       :professional-name="modalProfessionalName" @close="isModalOpen = false" @book="handleBookFromModal" />
+
+    <StripeCheckoutModal :is-open="isStripeModalOpen" :client-secret="stripeClientSecret"
+      @close="isStripeModalOpen = false" />
   </div>
 </template>
 
@@ -203,6 +206,8 @@ import PatientService from '@/services/patient/patient.service'
 import type { CreatePayload as SessionCreatePayload } from '@/services/session/session.types'
 import type { ReadSingleByUserQuery } from '@/services/patient/patient.types'
 import ProfessionalCardModal from './ProfessionalCardModal.vue'
+import StripeCheckoutModal from './StripeCheckoutModal.vue'
+import CheckoutService from '@/services/checkout/checkout.service'
 
 interface BookingFormData {
   therapist: string
@@ -253,8 +258,13 @@ const modalProfessionalName = ref('')
 const openProfessionalModal = (id: string, name: string) => {
   modalProfessionalId.value = id
   modalProfessionalName.value = name
+  modalProfessionalName.value = name
   isModalOpen.value = true
 }
+
+// Stripe Modal State
+const isStripeModalOpen = ref(false)
+const stripeClientSecret = ref('')
 
 const handleBookFromModal = (id: string) => {
   selectTherapist(id)
@@ -300,10 +310,6 @@ const fetchProfessionals = async () => {
   } finally {
     loadingProfessionals.value = false
   }
-}
-
-const submitBooking = async () => {
-  window.location.href = 'https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_JhmjuhuOOrihtKkwIwSRwG47pzDXPHVVlMK2o0s4dLW/redirect'
 }
 
 const checkAvailability = async () => {
@@ -387,8 +393,6 @@ const bookSession = async () => {
     return
   }
 
-  window.open('https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_JhmjuhuOOrihtKkwIwSRwG47pzDXPHVVlMK2o0s4dLW/redirect', '_blank')
-
   const sessionPayload: SessionCreatePayload = {
     patient_id: finalPatientId,
     professional_id: bookingForm.value.therapist,
@@ -403,11 +407,33 @@ const bookSession = async () => {
   try {
     loading.value = true
     error.value = ''
+
+    // 1. Create the session in the database first
     await SessionsService.create(sessionPayload)
+
+    // 2. Prepare Payment Link
+    const amount = selectedProfessional.value?.hourly_rate
+      ? Math.round(selectedProfessional.value.hourly_rate * 100) // Convert to cents
+      : 2000 // Default fallback or error handling
+
+    const checkoutResponse = await CheckoutService.createSession({
+      amount: amount,
+      currency: 'eur',
+      success_url: window.location.origin + '/dashboard?payment=success',
+      cancel_url: window.location.origin + '/dashboard?payment=cancel'
+    })
+
+    // 3. Open Modal with Client Secret
+    if (checkoutResponse.client_secret) {
+      stripeClientSecret.value = checkoutResponse.client_secret
+      isStripeModalOpen.value = true
+    } else {
+      error.value = "Error al iniciar el pago."
+    }
+
     bookingForm.value = { therapist: '', date: '', time: '', notes: '' }
-    emit('session-booked')
   } catch (err: any) {
-    console.error('Error creating session:', err)
+    console.error('Error creating session or payment:', err)
     if (err?.response?.status === 422) {
       error.value = 'El servidor no pudo procesar la solicitud (422). Revisa los campos requeridos.'
       return
