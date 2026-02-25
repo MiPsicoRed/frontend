@@ -25,9 +25,10 @@ class UserService {
   }
 
   async userOnboarded(payload: OnboardPayload): Promise<OnboardResponse> {
-    const response: AxiosResponse<any> = await axios.get(
+    const response: AxiosResponse<any> = await axios.post(
       API_URL + 'onboarded',
-      { headers: authHeader(), data: payload }
+      payload,
+      { headers: authHeader() }
     )
     return response.data.data
   }
