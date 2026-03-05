@@ -64,7 +64,7 @@ const handleRegister = async () => {
       password: model.password,
       confirmPassword: model.confirmPassword,
     })
-    router.push('/admin') // Redirect after successful login
+    router.push('/dashboard') // Redirect after successful login
   } catch (err: any) {
     error.value = err.response?.data?.message || 'Register failed. Please try again.'
   } finally {
