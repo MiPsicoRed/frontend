@@ -18,7 +18,8 @@
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <DoctorStatsCards :todaySessions="todaySessions" :patients="patients" :sessions="sessions" :professional="professional"/>
+          <DoctorStatsCards :todaySessions="todaySessions" :patients="patients" :sessions="sessions"
+            :professional="professional || {}" />
         </div>
 
         <!-- Today's Sessions and Recent Patients -->
@@ -107,15 +108,17 @@ const patients = ref<Patient[]>([])
 const users = ref<User[]>([])
 const loading = ref(false)
 const error = ref('')
+const currentUserData = ref<User | null>(null)
 
 // =========================================
 // COMPUTED PROPERTIES
 // =========================================
 const userProfile = computed(() => {
   const authStore = useAuthStore()
-  const name = authStore.fullUserName || 'Usuario'
+  const name = currentUserData.value?.username || authStore.fullUserName || 'Usuario'
   return {
-    first_name: name.split(' ')[0]
+    first_name: name.split(' ')[0],
+    profile_picture_url: currentUserData.value?.profile_picture_url || ''
   }
 })
 
@@ -185,6 +188,10 @@ const fetchProfessional = async () => {
       }
     }
 
+    if (currentUserData.value) {
+      proData.user = currentUserData.value
+    }
+
     professional.value = proData as Professional
     console.log('Professional loaded:', professional.value)
   } catch (err: any) {
@@ -192,6 +199,15 @@ const fetchProfessional = async () => {
     console.error('Error fetching professional:', err)
   } finally {
     loading.value = false
+  }
+}
+
+const fetchCurrentUser = async () => {
+  try {
+    const userMe = await UserService.getMe()
+    currentUserData.value = userMe
+  } catch (err: any) {
+    console.error('Failed to get current user:', err)
   }
 }
 
@@ -302,6 +318,9 @@ onMounted(async () => {
   }
 
   // Fetch data sequentially to avoid race conditions
+  await Promise.all([
+    fetchCurrentUser(),
+  ])
   await Promise.all([
     fetchProfessional(),
   ])

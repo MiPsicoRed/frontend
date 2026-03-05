@@ -21,7 +21,9 @@
                 <div class="relative">
                     <button @click="showUserMenu = !showUserMenu"
                         class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
-                        <div class="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
+                        <img v-if="profilePictureUrl" :src="fullProfilePictureUrl" alt="Avatar"
+                            class="w-8 h-8 rounded-full object-cover border border-gray-200" />
+                        <div v-else class="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
                             <User class="h-4 w-4 text-teal-600" />
                         </div>
                         <span class="text-sm font-medium">{{ profile?.first_name }}</span>
@@ -54,11 +56,19 @@ import {
 } from 'lucide-vue-next'
 import authService from '@/services/auth/auth.service'
 
-
 const props = defineProps({
     showUserMenu: Boolean,
     activeTab: String,
     profile: Object
+})
+
+const profilePictureUrl = computed(() => props.profile?.profile_picture_url || '')
+
+const fullProfilePictureUrl = computed(() => {
+    if (!profilePictureUrl.value) return ''
+    const base = import.meta.env.VITE_BASE_API_URL || 'http://localhost:3001/api/user/'
+    const appBaseUrl = base.split('/api/')[0] // Gets the http://localhost:3001
+    return `${appBaseUrl}${profilePictureUrl.value}`
 })
 
 const emit = defineEmits(['update:showUserMenu', 'update:activeTab', 'logout'])

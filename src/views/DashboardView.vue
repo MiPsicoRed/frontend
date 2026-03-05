@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
     <header class="bg-white shadow-sm border-b">
-      <DashboardNavBar v-model:showUserMenu="showUserMenu" v-model:activeTab="activeTab" />
+      <DashboardNavBar v-model:showUserMenu="showUserMenu" v-model:activeTab="activeTab" :profile="userProfile" />
     </header>
 
     <div v-if="onboard"
@@ -90,7 +90,7 @@ import DashboardQuickActions from '@/components/Dashboard/QuickActions.vue'
 import DashboardSessionsTab from '@/components/Dashboard/SessionsTab.vue'
 import DashboardBookSessionTab from '@/components/Dashboard/BookSessionTab.vue'
 import DashboardSettingsTab from '@/components/Dashboard/SettingsTab.vue'
-import type { User } from '@/services/user/user.service'
+import UserService, { type User } from '@/services/user/user.service'
 
 /*
 * =========================================
@@ -104,7 +104,7 @@ const onboard = ref(false)
 const sessions = ref<Session[]>([])
 const patient = ref<Patient>()
 const professionals = ref<Professional[]>([])
-const users = ref<User[]>([])
+const currentUserData = ref<User | null>(null)
 const sessionTypes = ref<SessionType[]>([])
 const loading = ref(false)
 const error = ref('')
@@ -115,6 +115,15 @@ const auth = useAuthStore()
 * Data fetching methods
 * =========================================
 */
+const fetchCurrentUser = async () => {
+  try {
+    const userMe = await UserService.getMe()
+    currentUserData.value = userMe
+  } catch (err: any) {
+    console.error('Failed to get current user:', err)
+  }
+}
+
 const fetchSessions = async () => {
   loading.value = true
   error.value = ''
@@ -256,19 +265,23 @@ const allSessions = computed(() => {
 })
 
 const therapists = computed(() => {
-  // console.log('Computing therapists. Professionals:', professionals.value.length, 'Users:', users.value.length)
   return professionals.value.map((p: any) => {
-    // Find the user associated with this professional
-    const user = users.value.find((u: any) => u.id === p.user_id)
-
     return {
       // Use professional id as the id, backend foreign key expects for sessions
       id: p.id,
       user_id: p.user_id,
-      name: user ? `${user.username} ${user.usersurname}`.trim() : `Prof ${p.user_id?.substring(0, 8) ?? 'Unknown'}`,
+      name: `Dr/Dra. ${p.user_id?.substring(0, 8) ?? 'Unknown'}`,
       specialty: p.specialty ?? (p.specializations && p.specializations[0]?.name) ?? 'General'
     }
   })
+})
+
+const userProfile = computed(() => {
+  const name = currentUserData.value?.username || auth.fullUserName || 'Usuario'
+  return {
+    first_name: name.split(' ')[0],
+    profile_picture_url: currentUserData.value?.profile_picture_url || ''
+  }
 })
 
 const userName = computed(() => {
@@ -290,6 +303,7 @@ const filteredProfessionals = computed(() =>
 */
 onBeforeMount(async () => {
   await Promise.all([
+    fetchCurrentUser(),
     fetchProfessionals(),
     fetchSessionTypes(),
   ])
@@ -320,14 +334,11 @@ const handleSessionBooked = async () => {
 
 const saveSettings = (newSettings: any) => {
   console.log('Settings saved:', newSettings)
-  // In a real app, we might refresh user data here
+  fetchCurrentUser() // Refresh profile picture and info
 }
 
 const currentUser = computed(() => {
-  if (!auth.userId || users.value.length === 0) return {}
-
-  const user = users.value.find((u: any) => u.id === auth.userId)
-  return user || {}
+  return currentUserData.value || {}
 })
 
 const handleClickOutside = (event: any) => {
