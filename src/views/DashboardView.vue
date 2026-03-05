@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
     <header class="bg-white shadow-sm border-b">
-      <DashboardNavBar v-model:showUserMenu="showUserMenu" v-model:activeTab="activeTab" />
+      <DashboardNavBar v-model:showUserMenu="showUserMenu" v-model:activeTab="activeTab" :profile="userProfile" />
     </header>
 
     <div v-if="onboard"
@@ -30,20 +30,31 @@
           <DashboardStatCards :nextSession="nextSession" :stats="stats" />
         </div>
 
-        <!-- Upcoming Sessions -->
-        <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-gray-900">Próximas Sesiones</h3>
-            <button @click="activeTab = 'sessions'" class="text-teal-600 hover:text-teal-700 text-sm font-medium">
-              Ver todas
-            </button>
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <!-- Upcoming Sessions -->
+          <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border p-6 h-full flex flex-col">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-lg font-semibold text-gray-900">Próximas Sesiones</h3>
+              <button @click="activeTab = 'sessions'" class="text-teal-600 hover:text-teal-700 text-sm font-medium">
+                Ver todas
+              </button>
+            </div>
+
+            <div class="space-y-4 flex-1">
+              <div v-if="upcomingSessions.length === 0" class="text-gray-500 text-sm py-4">
+                No tienes sesiones programadas.
+              </div>
+              <div v-else v-for="session in upcomingSessions" :key="session.id"
+                class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <DashboardUpcomingSession :session="session" />
+              </div>
+            </div>
           </div>
 
-          <div class="space-y-4">
-            <div v-for="session in upcomingSessions" :key="session.id"
-              class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <DashboardUpcomingSession :session="session" />
-            </div>
+          <!-- Notifications Box -->
+          <div class="lg:col-span-1">
+            <DashboardNotificationsBox />
           </div>
         </div>
 
@@ -86,11 +97,12 @@ import DashboardNavTabs from '@/components/Dashboard/NavTabs.vue'
 import DashboardWelcomeSection from '@/components/Dashboard/WelcomeSection.vue'
 import DashboardStatCards from '@/components/Dashboard/StatCards.vue'
 import DashboardUpcomingSession from '@/components/Dashboard/UpcomingSession.vue'
+import DashboardNotificationsBox from '@/components/Dashboard/NotificationsBox.vue'
 import DashboardQuickActions from '@/components/Dashboard/QuickActions.vue'
 import DashboardSessionsTab from '@/components/Dashboard/SessionsTab.vue'
 import DashboardBookSessionTab from '@/components/Dashboard/BookSessionTab.vue'
 import DashboardSettingsTab from '@/components/Dashboard/SettingsTab.vue'
-import type { User } from '@/services/user/user.service'
+import UserService, { type User } from '@/services/user/user.service'
 
 /*
 * =========================================
@@ -104,7 +116,7 @@ const onboard = ref(false)
 const sessions = ref<Session[]>([])
 const patient = ref<Patient>()
 const professionals = ref<Professional[]>([])
-const users = ref<User[]>([])
+const currentUserData = ref<User | null>(null)
 const sessionTypes = ref<SessionType[]>([])
 const loading = ref(false)
 const error = ref('')
@@ -115,6 +127,15 @@ const auth = useAuthStore()
 * Data fetching methods
 * =========================================
 */
+const fetchCurrentUser = async () => {
+  try {
+    const userMe = await UserService.getMe()
+    currentUserData.value = userMe
+  } catch (err: any) {
+    console.error('Failed to get current user:', err)
+  }
+}
+
 const fetchSessions = async () => {
   loading.value = true
   error.value = ''
@@ -131,7 +152,8 @@ const fetchSessions = async () => {
     const response = await SessionsService.readPatient({
       patient_id: patientData?.id
     })
-    sessions.value = response.data || response
+    const sessData = response.data || response
+    sessions.value = Array.isArray(sessData) ? sessData : []
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load sessions'
     console.error('Error fetching sessions:', err)
@@ -149,7 +171,8 @@ const fetchPatient = async () => {
       throw new Error('User not logged in')
     }
     const response = await PatientService.readSingleByUser({ user_id: auth.userId })
-    patient.value = response.data || response
+    const pData = response.data || response
+    patient.value = Array.isArray(pData) ? pData[0] : pData
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load patient data'
     console.error('Error fetching patient:', err)
@@ -163,7 +186,8 @@ const fetchSessionTypes = async () => {
   error.value = ''
   try {
     const response = await SessionTypeService.readAll()
-    sessionTypes.value = (response && (response.data ?? response)) || []
+    const stData = response.data || response;
+    sessionTypes.value = Array.isArray(stData) ? stData : []
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load session types'
     console.error('Error fetching session types:', err)
@@ -178,7 +202,8 @@ const fetchProfessionals = async () => {
   error.value = ''
   try {
     const response = await ProfessionalService.readAll()
-    professionals.value = (response && (response.data ?? response)) || []
+    const profData = response.data || response
+    professionals.value = Array.isArray(profData) ? profData : []
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load professionals'
     console.error('Error fetching professionals:', err)
@@ -256,19 +281,23 @@ const allSessions = computed(() => {
 })
 
 const therapists = computed(() => {
-  // console.log('Computing therapists. Professionals:', professionals.value.length, 'Users:', users.value.length)
   return professionals.value.map((p: any) => {
-    // Find the user associated with this professional
-    const user = users.value.find((u: any) => u.id === p.user_id)
-
     return {
       // Use professional id as the id, backend foreign key expects for sessions
       id: p.id,
       user_id: p.user_id,
-      name: user ? `${user.username} ${user.usersurname}`.trim() : `Prof ${p.user_id?.substring(0, 8) ?? 'Unknown'}`,
+      name: `Dr/Dra. ${p.user_id?.substring(0, 8) ?? 'Unknown'}`,
       specialty: p.specialty ?? (p.specializations && p.specializations[0]?.name) ?? 'General'
     }
   })
+})
+
+const userProfile = computed(() => {
+  const name = currentUserData.value?.username || auth.fullUserName || 'Usuario'
+  return {
+    first_name: name.split(' ')[0],
+    profile_picture_url: currentUserData.value?.profile_picture_url || ''
+  }
 })
 
 const userName = computed(() => {
@@ -290,6 +319,7 @@ const filteredProfessionals = computed(() =>
 */
 onBeforeMount(async () => {
   await Promise.all([
+    fetchCurrentUser(),
     fetchProfessionals(),
     fetchSessionTypes(),
   ])
@@ -320,14 +350,11 @@ const handleSessionBooked = async () => {
 
 const saveSettings = (newSettings: any) => {
   console.log('Settings saved:', newSettings)
-  // In a real app, we might refresh user data here
+  fetchCurrentUser() // Refresh profile picture and info
 }
 
 const currentUser = computed(() => {
-  if (!auth.userId || users.value.length === 0) return {}
-
-  const user = users.value.find((u: any) => u.id === auth.userId)
-  return user || {}
+  return currentUserData.value || {}
 })
 
 const handleClickOutside = (event: any) => {

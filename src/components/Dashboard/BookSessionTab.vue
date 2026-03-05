@@ -16,11 +16,11 @@
           </div>
 
           <h2 class="text-xl font-serif font-bold text-gray-900 mb-4 leading-tight">
-            Elige a la profesional con quien quieres reservar
+            Elige a el profesional con quien quieres reservar
           </h2>
 
           <p class="text-sm text-gray-600 leading-relaxed mb-8">
-            Reserva sesión con la profesional que tengas asignada o la primera consulta si aún no la has realizado.
+            Reserva sesión con el profesional que tengas asignado o la primera consulta si aún no la has realizado.
           </p>
 
           <div class="mt-auto pt-8 border-t border-gray-200 w-full">

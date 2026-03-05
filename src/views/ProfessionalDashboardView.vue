@@ -18,15 +18,18 @@
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <DoctorStatsCards :todaySessions="todaySessions" :patients="patients" :sessions="sessions" :professional="professional"/>
+          <DoctorStatsCards :todaySessions="todaySessions" :patients="patients" :sessions="sessions"
+            :professional="professional || {}" />
         </div>
 
-        <!-- Today's Sessions and Recent Patients -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <ProfessionalTodaySessionsCard :todaySessions="todaySessions" />
+        <!-- Today's Sessions, Recent Patients and Notifications -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div class="lg:col-span-1 h-full">
+            <ProfessionalTodaySessionsCard :todaySessions="todaySessions" class="h-full" />
+          </div>
 
           <!-- Recent Patients -->
-          <div class="bg-white rounded-xl shadow-sm border p-6">
+          <div class="bg-white rounded-xl shadow-sm border p-6 lg:col-span-1 h-full flex flex-col">
             <div class="flex items-center justify-between mb-6">
               <h3 class="text-lg font-semibold text-gray-900">Pacientes Recientes</h3>
               <button @click="activeTab = 'patients'" class="text-teal-600 hover:text-teal-700 text-sm font-medium">
@@ -34,8 +37,11 @@
               </button>
             </div>
 
-            <div class="space-y-4">
-              <div v-for="patient in recentPatients" :key="patient.id"
+            <div class="space-y-4 flex-1 overflow-y-auto">
+              <div v-if="recentPatients.length === 0" class="text-gray-500 text-sm py-4">
+                No tienes pacientes recientes.
+              </div>
+              <div v-else v-for="patient in recentPatients" :key="patient.id"
                 class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div class="flex items-center">
                   <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
@@ -48,6 +54,11 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Notifications Box -->
+          <div class="lg:col-span-1 h-full">
+            <DashboardNotificationsBox />
           </div>
         </div>
       </div>
@@ -92,6 +103,7 @@ import ProfessionalTodaySessionsCard from '@/components/Dashboard/ProfessionalTo
 import ProfessionalSessionsTab from '@/components/Dashboard/ProfessionalSessionsTab.vue'
 import ProfessionalPatientsTab from '@/components/Dashboard/ProfessionalPatientsTab.vue'
 import ProfessionalCalendarTab from '@/components/Dashboard/ProfessionalCalendarTab.vue'
+import DashboardNotificationsBox from '@/components/Dashboard/NotificationsBox.vue'
 import ProfessionalSettingsTab from '@/components/Dashboard/ProfessionalSettingsTab.vue'
 
 // =========================================
@@ -107,15 +119,17 @@ const patients = ref<Patient[]>([])
 const users = ref<User[]>([])
 const loading = ref(false)
 const error = ref('')
+const currentUserData = ref<User | null>(null)
 
 // =========================================
 // COMPUTED PROPERTIES
 // =========================================
 const userProfile = computed(() => {
   const authStore = useAuthStore()
-  const name = authStore.fullUserName || 'Usuario'
+  const name = currentUserData.value?.username || authStore.fullUserName || 'Usuario'
   return {
-    first_name: name.split(' ')[0]
+    first_name: name.split(' ')[0],
+    profile_picture_url: currentUserData.value?.profile_picture_url || ''
   }
 })
 
@@ -185,6 +199,10 @@ const fetchProfessional = async () => {
       }
     }
 
+    if (currentUserData.value) {
+      proData.user = currentUserData.value
+    }
+
     professional.value = proData as Professional
     console.log('Professional loaded:', professional.value)
   } catch (err: any) {
@@ -192,6 +210,15 @@ const fetchProfessional = async () => {
     console.error('Error fetching professional:', err)
   } finally {
     loading.value = false
+  }
+}
+
+const fetchCurrentUser = async () => {
+  try {
+    const userMe = await UserService.getMe()
+    currentUserData.value = userMe
+  } catch (err: any) {
+    console.error('Failed to get current user:', err)
   }
 }
 
@@ -246,12 +273,7 @@ const fetchSessions = async () => {
     console.log('Fetching sessions for professional ID:', professional.value.id)
 
     const response = await SessionsService.readProfessional({ professional_id: professional.value.id })
-    console.log('Sessions response:', response)
-
-    let sessData: any = response
-    if ((response as any).data) {
-      sessData = (response as any).data
-    }
+    const sessData = response.data || response
 
     sessions.value = Array.isArray(sessData) ? sessData : []
     sessions.value = sessions.value.sort((a: any, b: any) => new Date(b.session_date).getTime() - new Date(a.session_date).getTime())
@@ -274,7 +296,8 @@ const fetchProfPatients = async () => {
     if (!professional.value?.id) return
 
     const response = await PatientService.readByProfessional({ professional_id: professional.value.id })
-    patients.value = Array.isArray(response) ? response : (response as any).data || []
+    const patData = response.data || response
+    patients.value = Array.isArray(patData) ? patData : []
     console.log('Patients loaded:', patients.value.length)
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load patients'
@@ -287,7 +310,8 @@ const fetchProfPatients = async () => {
 const fetchUsers = async () => {
   try {
     const response = await UserService.getAllUsers()
-    users.value = Array.isArray(response) ? response : (response as any).data || []
+    const uData = response.data || response;
+    users.value = Array.isArray(uData) ? uData : []
   } catch (err: any) {
     console.error('Error fetching users:', err)
   }
@@ -302,6 +326,9 @@ onMounted(async () => {
   }
 
   // Fetch data sequentially to avoid race conditions
+  await Promise.all([
+    fetchCurrentUser(),
+  ])
   await Promise.all([
     fetchProfessional(),
   ])
