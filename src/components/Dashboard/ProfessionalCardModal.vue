@@ -1,9 +1,9 @@
 <template>
     <Transition enter-active-class="transition ease-out duration-300" enter-from-class="opacity-0"
-        enter-to-class="opacity-100" leave-active-class="transition ease-in duration-200" leave-from-class="opacity-100"
+        enter-to-class="opacity-30" leave-active-class="transition ease-in duration-200" leave-from-class="opacity-30"
         leave-to-class="opacity-0">
         <div v-if="isOpen" @click.self="close"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
             <div
                 class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100">
 

@@ -3,6 +3,31 @@
     <!-- Profile Settings -->
     <div class="bg-white rounded-xl shadow-sm border p-6">
       <h3 class="text-lg font-semibold text-gray-900 mb-4">Información Personal</h3>
+
+      <!-- Avatar Upload Section -->
+      <div class="mb-6 flex items-center space-x-6">
+        <div class="shrink-0 flex items-center justify-center">
+          <img v-if="profilePictureUrl" :src="fullProfilePictureUrl" class="h-24 w-24 object-cover rounded-full border border-gray-200" alt="Avatar">
+          <div v-else class="h-24 w-24 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center">
+            <UserIcon class="h-10 w-10 text-gray-400" />
+          </div>
+        </div>
+        <div>
+          <label class="block">
+            <span class="sr-only">Elegir foto de perfil</span>
+            <input type="file" @change="handleFileUpload" accept="image/jpeg, image/png, image/webp"
+              class="block w-full text-sm text-gray-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-lg file:border-0
+                file:text-sm file:font-semibold
+                file:bg-teal-50 file:text-teal-700
+                hover:file:bg-teal-100 file:cursor-pointer
+              "/>
+          </label>
+          <p class="mt-2 text-xs text-gray-500">PNG, JPG o WEBP (max. 5MB)</p>
+        </div>
+      </div>
+
       <form @submit.prevent="saveSettings" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -78,8 +103,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth.module'
+import UserService from '@/services/user/user.service'
+import { User as UserIcon } from 'lucide-vue-next'
 
 const props = defineProps({
   currentUser: {
@@ -104,6 +131,38 @@ const form = ref({
 const loading = ref(false)
 const successMessage = ref('')
 const errorMessage = ref('')
+const profilePictureUrl = ref('')
+
+const fullProfilePictureUrl = computed(() => {
+  if (!profilePictureUrl.value) return ''
+  const base = import.meta.env.VITE_BASE_API_URL || 'http://localhost:3001/api/user/'
+  const appBaseUrl = base.split('/api/')[0] // Gets the http://localhost:3001
+  return `${appBaseUrl}${profilePictureUrl.value}`
+})
+
+const handleFileUpload = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (target.files && target.files.length > 0) {
+    const selectedFile = target.files[0]
+    if (!selectedFile) return;
+
+    // Auto upload instantly
+    loading.value = true
+    successMessage.value = ''
+    errorMessage.value = ''
+
+    try {
+      const url = await UserService.uploadProfilePicture(selectedFile)
+      profilePictureUrl.value = url
+      successMessage.value = 'Foto de perfil actualizada exitosamente'
+    } catch (error) {
+      console.error('Error uploading profile picture:', error)
+      errorMessage.value = 'Error al subir la foto de perfil'
+    } finally {
+      loading.value = false
+    }
+  }
+}
 
 const initForm = () => {
   // Try to get from props
@@ -118,6 +177,7 @@ const initForm = () => {
   form.value.name = (user as any).username || ''
   form.value.surname = (user as any).usersurname || ''
   form.value.email = (user as any).email || ''
+  profilePictureUrl.value = (user as any).profile_picture_url || ''
 }
 
 onMounted(() => {

@@ -91,7 +91,7 @@ const toggleMobileMenu = () => {
                 {{ authStore.fullUserName || 'User' }}
               </span>
             </div>
-            <button @click="router.push('/admin')"
+            <button @click="router.push('/dashboard')"
               class="px-4 py-2 rounded-full text-[#5a7d7c] hover:bg-white hover:shadow-sm font-medium transition">
               Panel
             </button>

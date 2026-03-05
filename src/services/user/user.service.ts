@@ -12,6 +12,7 @@ export interface User {
   email: string
   verified: Boolean
   needs_onboarding: Boolean
+  profile_picture_url?: string
   created_at: Date
 }
 
@@ -24,6 +25,14 @@ class UserService {
     return response.data.data
   }
 
+  async getMe(): Promise<User> {
+    const response: AxiosResponse<any> = await axios.get(
+      API_URL + 'me',
+      { headers: authHeader() }
+    )
+    return response.data
+  }
+
   async userOnboarded(payload: OnboardPayload): Promise<OnboardResponse> {
     const response: AxiosResponse<any> = await axios.post(
       API_URL + 'onboarded',
@@ -31,6 +40,23 @@ class UserService {
       { headers: authHeader() }
     )
     return response.data.data
+  }
+
+  async uploadProfilePicture(file: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response: AxiosResponse<any> = await axios.post(
+      API_URL + 'profile-picture',
+      formData,
+      { 
+        headers: { 
+          ...authHeader(), 
+          'Content-Type': 'multipart/form-data' 
+        } 
+      }
+    )
+    return response.data
   }
 }
 
