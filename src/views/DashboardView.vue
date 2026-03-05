@@ -30,20 +30,31 @@
           <DashboardStatCards :nextSession="nextSession" :stats="stats" />
         </div>
 
-        <!-- Upcoming Sessions -->
-        <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-gray-900">Próximas Sesiones</h3>
-            <button @click="activeTab = 'sessions'" class="text-teal-600 hover:text-teal-700 text-sm font-medium">
-              Ver todas
-            </button>
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <!-- Upcoming Sessions -->
+          <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border p-6 h-full flex flex-col">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-lg font-semibold text-gray-900">Próximas Sesiones</h3>
+              <button @click="activeTab = 'sessions'" class="text-teal-600 hover:text-teal-700 text-sm font-medium">
+                Ver todas
+              </button>
+            </div>
+
+            <div class="space-y-4 flex-1">
+              <div v-if="upcomingSessions.length === 0" class="text-gray-500 text-sm py-4">
+                No tienes sesiones programadas.
+              </div>
+              <div v-else v-for="session in upcomingSessions" :key="session.id"
+                class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <DashboardUpcomingSession :session="session" />
+              </div>
+            </div>
           </div>
 
-          <div class="space-y-4">
-            <div v-for="session in upcomingSessions" :key="session.id"
-              class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <DashboardUpcomingSession :session="session" />
-            </div>
+          <!-- Notifications Box -->
+          <div class="lg:col-span-1">
+            <DashboardNotificationsBox />
           </div>
         </div>
 
@@ -86,6 +97,7 @@ import DashboardNavTabs from '@/components/Dashboard/NavTabs.vue'
 import DashboardWelcomeSection from '@/components/Dashboard/WelcomeSection.vue'
 import DashboardStatCards from '@/components/Dashboard/StatCards.vue'
 import DashboardUpcomingSession from '@/components/Dashboard/UpcomingSession.vue'
+import DashboardNotificationsBox from '@/components/Dashboard/NotificationsBox.vue'
 import DashboardQuickActions from '@/components/Dashboard/QuickActions.vue'
 import DashboardSessionsTab from '@/components/Dashboard/SessionsTab.vue'
 import DashboardBookSessionTab from '@/components/Dashboard/BookSessionTab.vue'

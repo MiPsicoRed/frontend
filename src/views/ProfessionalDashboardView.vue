@@ -22,12 +22,14 @@
             :professional="professional || {}" />
         </div>
 
-        <!-- Today's Sessions and Recent Patients -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <ProfessionalTodaySessionsCard :todaySessions="todaySessions" />
+        <!-- Today's Sessions, Recent Patients and Notifications -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div class="lg:col-span-1 h-full">
+            <ProfessionalTodaySessionsCard :todaySessions="todaySessions" class="h-full" />
+          </div>
 
           <!-- Recent Patients -->
-          <div class="bg-white rounded-xl shadow-sm border p-6">
+          <div class="bg-white rounded-xl shadow-sm border p-6 lg:col-span-1 h-full flex flex-col">
             <div class="flex items-center justify-between mb-6">
               <h3 class="text-lg font-semibold text-gray-900">Pacientes Recientes</h3>
               <button @click="activeTab = 'patients'" class="text-teal-600 hover:text-teal-700 text-sm font-medium">
@@ -35,8 +37,11 @@
               </button>
             </div>
 
-            <div class="space-y-4">
-              <div v-for="patient in recentPatients" :key="patient.id"
+            <div class="space-y-4 flex-1 overflow-y-auto">
+              <div v-if="recentPatients.length === 0" class="text-gray-500 text-sm py-4">
+                No tienes pacientes recientes.
+              </div>
+              <div v-else v-for="patient in recentPatients" :key="patient.id"
                 class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div class="flex items-center">
                   <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
@@ -49,6 +54,11 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Notifications Box -->
+          <div class="lg:col-span-1 h-full">
+            <DashboardNotificationsBox />
           </div>
         </div>
       </div>
@@ -93,6 +103,7 @@ import ProfessionalTodaySessionsCard from '@/components/Dashboard/ProfessionalTo
 import ProfessionalSessionsTab from '@/components/Dashboard/ProfessionalSessionsTab.vue'
 import ProfessionalPatientsTab from '@/components/Dashboard/ProfessionalPatientsTab.vue'
 import ProfessionalCalendarTab from '@/components/Dashboard/ProfessionalCalendarTab.vue'
+import DashboardNotificationsBox from '@/components/Dashboard/NotificationsBox.vue'
 import ProfessionalSettingsTab from '@/components/Dashboard/ProfessionalSettingsTab.vue'
 
 // =========================================
