@@ -262,12 +262,7 @@ const fetchSessions = async () => {
     console.log('Fetching sessions for professional ID:', professional.value.id)
 
     const response = await SessionsService.readProfessional({ professional_id: professional.value.id })
-    console.log('Sessions response:', response)
-
-    let sessData: any = response
-    if ((response as any).data) {
-      sessData = (response as any).data
-    }
+    const sessData = response.data || response
 
     sessions.value = Array.isArray(sessData) ? sessData : []
     sessions.value = sessions.value.sort((a: any, b: any) => new Date(b.session_date).getTime() - new Date(a.session_date).getTime())
@@ -290,7 +285,8 @@ const fetchProfPatients = async () => {
     if (!professional.value?.id) return
 
     const response = await PatientService.readByProfessional({ professional_id: professional.value.id })
-    patients.value = Array.isArray(response) ? response : (response as any).data || []
+    const patData = response.data || response
+    patients.value = Array.isArray(patData) ? patData : []
     console.log('Patients loaded:', patients.value.length)
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load patients'
@@ -303,7 +299,8 @@ const fetchProfPatients = async () => {
 const fetchUsers = async () => {
   try {
     const response = await UserService.getAllUsers()
-    users.value = Array.isArray(response) ? response : (response as any).data || []
+    const uData = response.data || response;
+    users.value = Array.isArray(uData) ? uData : []
   } catch (err: any) {
     console.error('Error fetching users:', err)
   }

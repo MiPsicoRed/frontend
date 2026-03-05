@@ -140,7 +140,8 @@ const fetchSessions = async () => {
     const response = await SessionsService.readPatient({
       patient_id: patientData?.id
     })
-    sessions.value = response.data || response
+    const sessData = response.data || response
+    sessions.value = Array.isArray(sessData) ? sessData : []
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load sessions'
     console.error('Error fetching sessions:', err)
@@ -158,7 +159,8 @@ const fetchPatient = async () => {
       throw new Error('User not logged in')
     }
     const response = await PatientService.readSingleByUser({ user_id: auth.userId })
-    patient.value = response.data || response
+    const pData = response.data || response
+    patient.value = Array.isArray(pData) ? pData[0] : pData
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load patient data'
     console.error('Error fetching patient:', err)
@@ -172,7 +174,8 @@ const fetchSessionTypes = async () => {
   error.value = ''
   try {
     const response = await SessionTypeService.readAll()
-    sessionTypes.value = (response && (response.data ?? response)) || []
+    const stData = response.data || response;
+    sessionTypes.value = Array.isArray(stData) ? stData : []
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load session types'
     console.error('Error fetching session types:', err)
@@ -187,7 +190,8 @@ const fetchProfessionals = async () => {
   error.value = ''
   try {
     const response = await ProfessionalService.readAll()
-    professionals.value = (response && (response.data ?? response)) || []
+    const profData = response.data || response
+    professionals.value = Array.isArray(profData) ? profData : []
   } catch (err: any) {
     error.value = err?.response?.data?.message || err?.message || 'Failed to load professionals'
     console.error('Error fetching professionals:', err)
