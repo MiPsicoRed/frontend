@@ -10,8 +10,8 @@ export interface User {
   username: string
   usersurname: string
   email: string
-  verified: Boolean
-  needs_onboarding: Boolean
+  verified: boolean
+  needs_onboarding: boolean
   profile_picture_url?: string
   created_at: Date
 }

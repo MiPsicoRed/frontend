@@ -5,9 +5,15 @@
       <DashboardNavBar v-model:showUserMenu="showUserMenu" v-model:activeTab="activeTab" :profile="userProfile" />
     </header>
 
-    <div v-if="onboard"
-      class="fixed inset-0 flex items-center justify-center bg-[#00000086] bg-opacity-50 w-full h-screen overflow-clip">
-      <div>
+    <div v-if="isCheckingOnboarding"
+      class="fixed inset-0 flex flex-col items-center justify-center bg-[#00000086] bg-opacity-50 w-full h-screen overflow-clip z-50">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-500 mb-4"></div>
+      <p class="text-white font-medium text-lg">Comprobando datos de usuario...</p>
+    </div>
+
+    <div v-if="!isCheckingOnboarding && onboard"
+      class="fixed inset-0 flex items-center justify-center bg-[#00000086] bg-opacity-50 w-full h-screen overflow-clip z-50">
+      <div class="w-full max-w-4xl mx-4">
         <ModalForm :onboarding="true" @closeOnboarding="handleCloseOnboarding" />
       </div>
     </div>
@@ -113,6 +119,7 @@ const activeTab = ref('dashboard')
 const showUserMenu = ref(false)
 const sessionFilter = ref('upcoming')
 const onboard = ref(false)
+const isCheckingOnboarding = ref(true)
 const sessions = ref<Session[]>([])
 const patient = ref<Patient>()
 const professionals = ref<Professional[]>([])
@@ -131,8 +138,17 @@ const fetchCurrentUser = async () => {
   try {
     const userMe = await UserService.getMe()
     currentUserData.value = userMe
+
+    // Check real backend status instead of JWT
+    if (userMe.needs_onboarding) {
+      onboard.value = true
+    } else {
+      onboard.value = false
+    }
   } catch (err: any) {
     console.error('Failed to get current user:', err)
+  } finally {
+    isCheckingOnboarding.value = false
   }
 }
 
@@ -305,8 +321,8 @@ const userName = computed(() => {
 })
 
 const filteredProfessionals = computed(() =>
-  professionals.value.filter(pro =>
-    sessions.value.some(session =>
+  professionals.value.filter((pro: any) =>
+    sessions.value.some((session: any) =>
       session.professional_id === pro.id && session.patient_id === patient.value?.id
     )
   )
@@ -330,9 +346,11 @@ onMounted(() => {
   if (typeof window !== 'undefined') {
     document.addEventListener('click', handleClickOutside)
   }
-  // Check if user needs onboarding
-  if (auth.needsOnboarding) {
-    onboard.value = true
+  // The onboarding check iw handled inside fetchCurrentUser
+  // since relying on auth.needsOnboarding causes the modal to reappear on refresh.
+  // We still initialize the loading state based on JWT.
+  if (!auth.needsOnboarding) {
+    isCheckingOnboarding.value = false;
   }
 })
 
@@ -361,8 +379,9 @@ const currentUser = computed(() => {
   return currentUserData.value || {}
 })
 
-const handleClickOutside = (event: any) => {
-  if (!event.target.closest('.relative')) {
+const handleClickOutside = (event: Event) => {
+  const target = event.target as HTMLElement;
+  if (!target.closest('.relative')) {
     showUserMenu.value = false
   }
 }
