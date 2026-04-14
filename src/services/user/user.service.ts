@@ -10,8 +10,8 @@ export interface User {
   username: string
   usersurname: string
   email: string
-  verified: Boolean
-  needs_onboarding: Boolean
+  verified: boolean
+  needs_onboarding: boolean
   profile_picture_url?: string
   created_at: Date
 }
@@ -34,9 +34,10 @@ class UserService {
   }
 
   async userOnboarded(payload: OnboardPayload): Promise<OnboardResponse> {
-    const response: AxiosResponse<any> = await axios.get(
+    const response: AxiosResponse<any> = await axios.post(
       API_URL + 'onboarded',
-      { headers: authHeader(), data: payload }
+      payload,
+      { headers: authHeader() }
     )
     return response.data.data
   }

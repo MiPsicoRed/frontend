@@ -20,7 +20,7 @@ const error = ref('')
 const handleRegister = async () => {
   error.value = ''
 
-  if (!acceptTerms) {
+  if (!acceptTerms.value) {
     error.value = "You have to accept the agreement"
     return
   }
