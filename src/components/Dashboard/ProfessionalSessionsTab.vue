@@ -51,11 +51,7 @@
                                 class="px-2 py-1 text-xs font-medium rounded-full">
                                 {{ session.session_status_id == 2 ? 'Completada' : 'Próxima' }}
                             </span>
-                            <a v-if="session.session_status_id != 2 && session.videocall_url"
-                                :href="session.videocall_url" target="_blank"
-                                class="text-teal-600 hover:text-teal-700 text-sm font-medium border border-teal-600 px-3 py-1 rounded-md hover:bg-teal-50 transition-colors">
-                                Unirse
-                            </a>
+                            <JoinMeetButton v-if="session.session_status_id != 2" :session="session" />
                             <button v-if="session.session_status_id != 2" @click="completeSession(session)"
                                 :disabled="loadingId === session.id"
                                 class="text-green-600 hover:text-green-700 text-sm font-medium border border-green-600 px-3 py-1 rounded-md hover:bg-green-50 transition-colors disabled:opacity-50">
@@ -85,6 +81,7 @@ import { User as UserIcon } from 'lucide-vue-next'
 import SessionsService, { type Session } from '@/services/session/session.service'
 import type { UpdatePayload } from '@/services/session/session.types'
 import SessionDetailsModal from './SessionDetailsModal.vue'
+import JoinMeetButton from './JoinMeetButton.vue'
 
 const props = defineProps<{
     sessions: Session[]

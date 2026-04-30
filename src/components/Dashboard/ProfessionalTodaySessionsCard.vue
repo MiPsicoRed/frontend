@@ -16,6 +16,7 @@
                         </p>
                     </div>
                 </div>
+                <JoinMeetButton :session="session" />
             </div>
             <div v-if="todaySessions.length === 0" class="text-center py-8 text-gray-500">
                 No hay sesiones programadas para hoy
@@ -26,6 +27,7 @@
 
 <script setup lang="ts">
 import { User as UserIcon } from 'lucide-vue-next'
+import JoinMeetButton from './JoinMeetButton.vue'
 
 defineProps<{
     todaySessions: any[]

@@ -145,7 +145,7 @@ const updateDate = async () => {
             professional_id: props.session.professional_id,
             session_type_id: props.session.session_type_id,
             session_status_id: props.session.session_status_id,
-            session_date: sessionDate,
+            session_date: sessionDate.toISOString().slice(0, 19),
             videocall_url: props.session.videocall_url,
             notes: props.session.notes,
             session_duration: props.session.session_duration
