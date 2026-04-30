@@ -16,6 +16,7 @@ export interface Session {
     completed: boolean
     session_duration: number | null
     created_at: Date
+    patient_name?: string
 }
 
 class SessionService {
@@ -75,6 +76,14 @@ class SessionService {
             { headers: authHeader() }
         )
         return response.data.data
+    }
+
+    async getMeetUrl(sessionId: string): Promise<string> {
+        const response: AxiosResponse<any> = await axios.get(
+            API_URL + `${sessionId}/videocall`,
+            { headers: authHeader() }
+        )
+        return response.data.url
     }
 }
 

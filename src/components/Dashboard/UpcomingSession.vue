@@ -12,6 +12,7 @@
     <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
       Confirmada
     </span>
+    <JoinMeetButton :session="session" />
     <button class="text-gray-400 hover:text-gray-600">
       <MoreVertical class="h-4 w-4" />
     </button>
@@ -25,6 +26,7 @@ import {
   MoreVertical
 } from 'lucide-vue-next'
 import ProfessionalService from '@/services/professional/professional.service'
+import JoinMeetButton from './JoinMeetButton.vue'
 
 const props = defineProps({
   session: {

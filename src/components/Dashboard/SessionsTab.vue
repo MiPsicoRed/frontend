@@ -40,10 +40,7 @@
               <span :class="getStatusClass(session.completed)" class="px-2 py-1 text-xs font-medium rounded-full">
                 {{ session.completed ? 'Completada' : 'Próxima' }}
               </span>
-              <a href="#" @click.prevent="handleJoinSession(session)"
-                class="text-teal-600 hover:text-teal-700 text-sm font-medium border border-teal-600 px-3 py-1 rounded-md hover:bg-teal-50 transition-colors">
-                Unirse
-              </a>
+              <JoinMeetButton v-if="!session.completed" :session="session" />
               <button class="text-gray-400 hover:text-gray-600">
                 <MoreVertical class="h-4 w-4" />
               </button>
@@ -66,6 +63,7 @@ import type { CreatePayload } from '@/services/session/session.types'
 import SessionService from '@/services/session/session.service'
 import ProfessionalService from '@/services/professional/professional.service'
 import { useAuthStore } from '@/stores/auth.module'
+import JoinMeetButton from './JoinMeetButton.vue'
 
 interface Professional {
   professional_id: string
