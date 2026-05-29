@@ -31,7 +31,7 @@ const saveMood = async () => {
       <button v-for="i in 5" :key="i" 
               @click="currentScore = i"
               :class="['p-4 rounded-full transition-all', currentScore === i ? 'bg-indigo-100 ring-2 ring-indigo-500 scale-110' : 'bg-gray-50 hover:bg-gray-100']">
-        <span class="text-2xl">{{ ['😢', '😟', '😐', '🙂', '😁'][i-1] }}</span>
+        <span class="text-2xl">{{ ['1', '2', '3', '4', '5'][i-1] }}</span>
       </button>
     </div>
     
@@ -54,7 +54,7 @@ const saveMood = async () => {
       <div class="flex flex-col gap-3 max-h-[300px] overflow-y-auto pr-2">
         <div v-for="log in moodStore.logs" :key="log.id" class="p-4 bg-gray-50 rounded-xl border border-gray-100">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xl">{{ ['😢', '😟', '😐', '🙂', '😁'][log.mood_score - 1] }}</span>
+            <span class="text-xl">{{ ['1', '2', '3', '4', '5'][log.mood_score - 1] }}</span>
             <span class="text-xs text-gray-500">{{ new Date(log.created_at).toLocaleDateString() }}</span>
           </div>
           <p v-if="log.note" class="text-sm text-gray-700">{{ log.note }}</p>
