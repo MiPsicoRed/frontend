@@ -1,51 +1,51 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 text-left">
     <!-- Blog Header -->
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-bold text-gray-900">Gestión de Blog</h2>
+    <div class="flex items-center justify-between gap-4">
+      <h2 class="text-lg font-bold font-serif text-brand-charcoal">Gestión de Blog</h2>
       <button @click="showNewPostForm = true"
-        class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">
-        <PenTool class="h-4 w-4 inline mr-2" />
+        class="bg-brand-teal text-white px-4 py-2.5 rounded-full hover:bg-brand-teal-hover transition-all active:scale-[0.98] font-bold text-xs uppercase tracking-wider cursor-pointer shadow-md shadow-brand-teal/5 flex items-center">
+        <PenTool class="h-3.5 w-3.5 mr-2" />
         Nuevo Artículo
       </button>
     </div>
 
     <!-- New Post Form -->
-    <div v-if="showNewPostForm" class="bg-white rounded-xl shadow-sm border p-6">
+    <div v-if="showNewPostForm" class="bg-white rounded-[2rem] border border-brand-border p-8 shadow-xs text-left">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-lg font-semibold text-gray-900">Crear Nuevo Artículo</h3>
-        <button @click="showNewPostForm = false" class="text-gray-400 hover:text-gray-600">
+        <h3 class="text-base font-bold font-serif text-brand-charcoal">Crear Nuevo Artículo</h3>
+        <button @click="showNewPostForm = false" class="text-brand-cool-gray hover:text-brand-charcoal cursor-pointer transition-colors">
           <X class="h-5 w-5" />
         </button>
       </div>
 
       <form @submit.prevent="createBlogPost" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Título</label>
+          <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Título</label>
           <input v-model="newPost.title" type="text" required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA]"
             placeholder="Título del artículo">
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Resumen</label>
+          <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Resumen</label>
           <textarea v-model="newPost.excerpt" rows="2"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA]"
             placeholder="Breve descripción del artículo"></textarea>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Contenido</label>
+          <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Contenido</label>
           <textarea v-model="newPost.content" rows="8" required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA]"
             placeholder="Contenido completo del artículo"></textarea>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
+            <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Categoría</label>
             <select v-model="newPost.category"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+              class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA]">
               <option value="">Selecciona una categoría</option>
               <option value="Ansiedad">Ansiedad</option>
               <option value="Depresión">Depresión</option>
@@ -56,22 +56,22 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
+            <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Estado</label>
             <select v-model="newPost.status"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+              class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA]">
               <option value="draft">Borrador</option>
               <option value="published">Publicado</option>
             </select>
           </div>
         </div>
 
-        <div class="flex justify-end space-x-3">
+        <div class="flex justify-end space-x-3 pt-2">
           <button type="button" @click="showNewPostForm = false"
-            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+            class="px-5 py-2.5 border border-brand-border text-brand-cool-gray hover:text-brand-charcoal bg-white rounded-full transition-all text-xs font-bold uppercase tracking-wider cursor-pointer shadow-xs">
             Cancelar
           </button>
           <button type="submit"
-            class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors">
+            class="px-5 py-2.5 bg-brand-teal text-white rounded-full hover:bg-brand-teal-hover transition-all active:scale-[0.98] text-xs font-bold uppercase tracking-wider cursor-pointer shadow-md shadow-brand-teal/5">
             Crear Artículo
           </button>
         </div>
@@ -79,38 +79,41 @@
     </div>
 
     <!-- Blog Posts List -->
-    <div class="bg-white rounded-xl shadow-sm border">
-      <div class="p-6 border-b border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900">Mis Artículos</h3>
+    <div class="bg-white rounded-[2rem] border border-brand-border shadow-xs text-left">
+      <div class="p-8 border-b border-brand-border">
+        <h3 class="text-base font-bold font-serif text-brand-charcoal">Mis Artículos</h3>
       </div>
 
-      <div class="p-6">
+      <div class="p-8">
         <div class="space-y-4">
-          <div v-for="post in blogPosts" :key="post.id" class="border rounded-lg p-4">
-            <div class="flex items-start justify-between">
+          <div v-for="post in blogPosts" :key="post.id" class="p-5 bg-brand-bg rounded-2xl border border-brand-border hover:border-brand-sage-border transition-all">
+            <div class="flex items-start justify-between flex-wrap sm:flex-nowrap gap-4">
               <div class="flex-1">
-                <h4 class="font-medium text-gray-900 mb-2">{{ post.title }}</h4>
-                <p class="text-sm text-gray-600 mb-3">{{ post.excerpt }}</p>
-                <div class="flex items-center space-x-4 text-sm text-gray-500">
-                  <span>{{ post.category }}</span>
+                <h4 class="text-xs font-bold text-brand-charcoal mb-2">{{ post.title }}</h4>
+                <p class="text-xs text-brand-muted-teal mb-3">{{ post.excerpt }}</p>
+                <div class="flex items-center space-x-4 text-[11px] text-brand-cool-gray">
+                  <span class="bg-brand-sage-bg text-brand-teal font-bold px-2 py-0.5 rounded-md border border-brand-sage-border">{{ post.category }}</span>
                   <span>{{ post.publishDate }}</span>
-                  <span>{{ post.views }} visualizaciones</span>
+                  <span>{{ post.views }} vistas</span>
                 </div>
               </div>
-              <div class="flex items-center space-x-3 ml-4">
+              <div class="flex items-center space-x-3 ml-4 shrink-0">
                 <span
-                  :class="post.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'"
-                  class="px-2 py-1 text-xs font-medium rounded-full">
+                  :class="post.status === 'published' ? 'bg-emerald-55/40 border border-emerald-200 text-emerald-800' : 'bg-brand-sage-bg border border-brand-sage-border text-brand-teal'"
+                  class="px-2.5 py-0.5 text-[9.5px] font-black uppercase tracking-wider rounded-full">
                   {{ post.status === 'published' ? 'Publicado' : 'Borrador' }}
                 </span>
-                <button class="text-teal-600 hover:text-teal-700 text-sm font-medium">
+                <button class="text-brand-teal hover:text-brand-teal-hover text-xs font-bold transition-all cursor-pointer">
                   Editar
                 </button>
-                <button class="text-gray-400 hover:text-gray-600">
+                <button class="text-brand-cool-gray hover:text-brand-charcoal cursor-pointer">
                   <MoreVertical class="h-4 w-4" />
                 </button>
               </div>
             </div>
+          </div>
+          <div v-if="blogPosts.length === 0" class="text-center py-12 text-brand-cool-gray text-xs font-medium">
+            No tienes artículos creados todavía.
           </div>
         </div>
       </div>
@@ -121,7 +124,9 @@
 <script setup>
 import { ref } from 'vue'
 import { 
-  MoreVertical
+  MoreVertical,
+  PenTool,
+  X
 } from 'lucide-vue-next'
 
 const showNewPostForm = ref(false)

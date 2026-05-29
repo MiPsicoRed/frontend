@@ -140,6 +140,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import UserService, { type User } from '@/services/user/user.service'
+import AuthService from '@/services/auth/auth.service'
 
 const users = ref<User[]>([])
 const loading = ref(false)
@@ -191,7 +192,7 @@ const fetchUsers = async () => {
 const createUser = async () => {
   try {
     loading.value = true
-    await UserService.register(createForm.value)
+    await AuthService.register(createForm.value)
     alert('Usuario creado exitosamente')
     showCreateModal.value = false
     createForm.value = { username: '', email: '', password: '', usersurname: '' }

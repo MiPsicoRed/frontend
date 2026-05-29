@@ -1,108 +1,108 @@
 <!-- NewPatientModal.vue -->
 <template>
-  <div v-if="modelValue" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
-      <div class="p-6 border-b border-gray-200">
+  <div v-if="modelValue" class="fixed inset-0 bg-brand-charcoal/40 backdrop-blur-xs flex items-center justify-center z-50">
+    <div class="bg-white rounded-[2rem] border border-brand-border shadow-lg max-w-md w-full mx-4 max-h-[85vh] overflow-y-auto text-left">
+      <div class="p-8 border-b border-brand-border">
         <div class="flex items-center justify-between">
-          <h3 class="text-xl font-semibold text-gray-900">Nuevo Paciente No Registrado</h3>
-          <button @click="$emit('update:modelValue', false)" class="text-gray-400 hover:text-gray-600">
-            <X class="h-6 w-6" />
+          <h3 class="text-base font-bold font-serif text-brand-charcoal">Nuevo Paciente No Registrado</h3>
+          <button @click="$emit('update:modelValue', false)" class="text-brand-cool-gray hover:text-brand-charcoal cursor-pointer transition-colors">
+            <X class="h-5 w-5" />
           </button>
         </div>
       </div>
       
-      <div class="p-6">
+      <div class="p-8">
         <form @submit.prevent="handleCreatePatient" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+              <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Nombre</label>
               <input 
                 v-model="patientForm.firstName" 
                 type="text" 
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA] transition-all"
               >
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
+              <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Apellido</label>
               <input 
                 v-model="patientForm.surname" 
                 type="text" 
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA] transition-all"
               >
             </div>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Email</label>
             <input 
               v-model="patientForm.email" 
               type="email" 
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+              class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA] transition-all"
             >
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+            <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Teléfono</label>
             <input 
               v-model="patientForm.phone" 
               type="tel"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+              class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA] transition-all"
             >
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento</label>
+            <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Fecha de Nacimiento</label>
             <input 
               v-model="patientForm.dateOfBirth" 
               type="date"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+              class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA] transition-all"
             >
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Contacto de Emergencia</label>
+            <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Contacto de Emergencia</label>
             <input 
               v-model="patientForm.emergencyContactName" 
               type="text"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+              class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA] transition-all"
               placeholder="Nombre del contacto"
             >
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono de Emergencia</label>
+            <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Teléfono de Emergencia</label>
             <input 
               v-model="patientForm.emergencyContactPhone" 
               type="tel"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+              class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA] transition-all"
             >
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Notas</label>
+            <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Notas</label>
             <textarea 
               v-model="patientForm.notes" 
               rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+              class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA] transition-all"
               placeholder="Notas adicionales sobre el paciente"
             ></textarea>
           </div>
 
-          <div class="flex justify-end space-x-3">
+          <div class="flex justify-end space-x-3 pt-2">
             <button 
               type="button" 
               @click="$emit('update:modelValue', false)"
-              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              class="px-5 py-2.5 border border-brand-border text-brand-cool-gray hover:text-brand-charcoal bg-white rounded-full transition-all text-xs font-bold uppercase tracking-wider cursor-pointer shadow-xs"
             >
               Cancelar
             </button>
             <button 
               type="submit" 
               :disabled="loading"
-              class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50"
+              class="px-5 py-2.5 bg-brand-teal text-white rounded-full hover:bg-brand-teal-hover transition-all active:scale-[0.98] text-xs font-bold uppercase tracking-wider cursor-pointer shadow-md shadow-brand-teal/5 disabled:opacity-50"
             >
               {{ loading ? 'Creando...' : 'Crear Paciente' }}
             </button>
@@ -115,6 +115,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import { X } from 'lucide-vue-next'
 
 const props = defineProps({
   modelValue: Boolean

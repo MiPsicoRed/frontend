@@ -2,10 +2,10 @@
   <button 
     @click="handleJoin" 
     :disabled="isJoining"
-    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50 transition-colors"
+    class="inline-flex items-center px-4 py-2 text-xs font-bold rounded-full text-white bg-brand-teal hover:bg-brand-teal-hover transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer shadow-md shadow-brand-teal/5"
   >
-    <Video v-if="!isJoining" class="h-4 w-4 mr-2" />
-    <Loader2 v-else class="h-4 w-4 mr-2 animate-spin" />
+    <Video v-if="!isJoining" class="h-3.5 w-3.5 mr-1.5" />
+    <Loader2 v-else class="h-3.5 w-3.5 mr-1.5 animate-spin" />
     {{ isJoining ? 'Entrando...' : 'Entrar' }}
   </button>
 </template>

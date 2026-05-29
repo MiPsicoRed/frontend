@@ -3,24 +3,24 @@
         enter-to-class="opacity-30" leave-active-class="transition ease-in duration-200" leave-from-class="opacity-30"
         leave-to-class="opacity-0">
         <div v-if="isOpen" @click.self="close"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+            class="fixed inset-0 z-50 flex items-center justify-center bg-brand-charcoal/40 backdrop-blur-xs p-4">
             <div
-                class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100">
+                class="bg-white rounded-[2rem] border border-brand-border shadow-lg w-full max-w-md overflow-hidden transform transition-all text-left">
 
                 <!-- Header / Image Area -->
-                <div class="relative h-32 bg-gradient-to-r from-teal-500 to-teal-600">
+                <div class="relative h-32 bg-brand-sage-bg border-b border-brand-border">
                     <button @click="close"
-                        class="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full text-white transition-colors">
-                        <X class="h-5 w-5" />
+                        class="absolute top-4 right-4 p-2 bg-white border border-brand-border hover:bg-brand-bg rounded-full text-brand-cool-gray hover:text-brand-charcoal cursor-pointer transition-colors shadow-xs z-10">
+                        <X class="h-4 w-4" />
                     </button>
 
                     <div class="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
                         <div
-                            class="w-24 h-24 rounded-full border-4 border-white bg-white shadow-md overflow-hidden flex items-center justify-center">
+                            class="w-24 h-24 rounded-full border-4 border-white bg-brand-sage-bg shadow-sm overflow-hidden flex items-center justify-center">
                             <img v-if="professionalImage" :src="professionalImage" alt="Professional"
                                 class="w-full h-full object-cover" />
                             <div v-else
-                                class="w-full h-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold text-3xl">
+                                class="w-full h-full bg-brand-sage-bg flex items-center justify-center text-brand-teal font-bold font-serif text-3xl">
                                 {{ professionalName ? professionalName.charAt(0) : '?' }}
                             </div>
                         </div>
@@ -28,50 +28,50 @@
                 </div>
 
                 <!-- Content -->
-                <div class="pt-16 pb-8 px-6 text-center">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-1">{{ professionalName }}</h2>
-                    <p class="text-teal-600 font-medium text-sm mb-4">Psicólogo Profesional</p>
+                <div class="pt-16 pb-8 px-8 text-center">
+                    <h2 class="text-lg font-bold font-serif text-brand-charcoal mb-1">{{ professionalName }}</h2>
+                    <p class="text-brand-teal font-extrabold text-xs uppercase tracking-wider mb-4">Psicólogo Profesional</p>
 
                     <div v-if="loading" class="py-8 flex justify-center">
-                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-teal"></div>
                     </div>
 
                     <div v-else-if="details" class="space-y-6">
                         <!-- Bio -->
-                        <p class="text-gray-600 text-sm leading-relaxed">
+                        <p class="text-xs text-brand-muted-teal leading-relaxed font-medium">
                             {{ details.bio || 'Sin descripción disponible.' }}
                         </p>
 
                         <!-- Stats / Info Grid -->
-                        <div class="grid grid-cols-2 gap-4 border-t border-b border-gray-100 py-4">
+                        <div class="grid grid-cols-2 gap-4 border-t border-b border-brand-border py-4">
                             <div class="text-center">
-                                <p class="text-xs text-gray-400 uppercase tracking-wide">Experiencia</p>
-                                <p class="font-bold text-gray-900">{{ details.experience_years || 0 }} años</p>
+                                <p class="text-[10px] text-brand-cool-gray font-black uppercase tracking-wider">Experiencia</p>
+                                <p class="text-xs font-bold text-brand-charcoal">{{ details.experience_years || 0 }} años</p>
                             </div>
                             <div class="text-center">
-                                <p class="text-xs text-gray-400 uppercase tracking-wide">Tarifa</p>
-                                <p class="font-bold text-gray-900">{{ formatPrice(details.hourly_rate) }} /h</p>
+                                <p class="text-[10px] text-brand-cool-gray font-black uppercase tracking-wider">Tarifa</p>
+                                <p class="text-xs font-bold text-brand-charcoal">{{ formatPrice(details.hourly_rate) }} /h</p>
                             </div>
                         </div>
 
                         <!-- Education -->
-                        <div v-if="details.education" class="text-left bg-gray-50 p-4 rounded-xl">
-                            <h4 class="text-xs font-bold text-gray-900 uppercase mb-2 flex items-center gap-2">
-                                <GraduationCap class="h-4 w-4 text-teal-600" />
+                        <div v-if="details.education" class="text-left bg-[#F9FBFA] border border-brand-border p-4 rounded-2xl">
+                            <h4 class="text-[10px] font-black text-brand-charcoal uppercase tracking-wider mb-2 flex items-center gap-2">
+                                <GraduationCap class="h-4 w-4 text-brand-teal" />
                                 Formación
                             </h4>
-                            <p class="text-sm text-gray-600">{{ details.education }}</p>
+                            <p class="text-xs text-brand-muted-teal font-medium">{{ details.education }}</p>
                         </div>
 
                         <!-- Action Button -->
                         <button @click="bookSession"
-                            class="w-full bg-teal-600 text-white py-3 px-6 rounded-xl hover:bg-teal-700 transition-all duration-200 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-                            <Calendar class="h-5 w-5" />
+                            class="w-full bg-brand-teal text-white py-3 px-6 rounded-full hover:bg-brand-teal-hover transition-all active:scale-[0.98] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-brand-teal/5">
+                            <Calendar class="h-4 w-4" />
                             Reservar Sesión
                         </button>
                     </div>
 
-                    <div v-else class="text-gray-500 py-4">
+                    <div v-else class="text-brand-cool-gray py-4 text-xs font-medium">
                         No se pudo cargar la información.
                     </div>
                 </div>

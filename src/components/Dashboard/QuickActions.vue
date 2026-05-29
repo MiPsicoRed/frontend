@@ -1,36 +1,36 @@
 <template>
-  <div class="bg-white rounded-xl shadow-sm border p-6">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Acciones Rápidas</h3>
+  <div class="bg-white rounded-[2rem] border border-brand-border p-8 text-left hover:border-brand-sage-border transition-all">
+    <h3 class="text-base font-bold text-brand-charcoal mb-5 font-serif">Acciones Rápidas</h3>
     <div class="space-y-3">
-      <button @click="activeTab = 'book'" class="w-full flex items-center justify-center px-4 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors">
+      <button @click="activeTab = 'book'" class="w-full flex items-center justify-center px-4 py-3 bg-brand-teal text-white rounded-full hover:bg-brand-teal-hover transition-all text-xs font-bold cursor-pointer shadow-md shadow-brand-teal/5">
         <Plus class="h-4 w-4 mr-2" />
         Reservar Nueva Sesión
       </button>
-      <button class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+      <button class="w-full flex items-center justify-center px-4 py-3 border border-brand-border text-brand-charcoal rounded-full hover:bg-brand-bg transition-all text-xs font-bold cursor-pointer">
         <MessageCircle class="h-4 w-4 mr-2" />
         Contactar Terapeuta
       </button>
     </div>
   </div>
 
-  <div class="bg-white rounded-xl shadow-sm border p-6">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Recursos</h3>
+  <div class="bg-white rounded-[2rem] border border-brand-border p-8 text-left hover:border-brand-sage-border transition-all">
+    <h3 class="text-base font-bold text-brand-charcoal mb-5 font-serif">Recursos</h3>
     <div class="space-y-3">
-      <a href="#" class="block p-3 rounded-lg hover:bg-gray-50 transition-colors">
+      <a href="#" class="block p-3.5 rounded-xl hover:bg-brand-sage-bg/30 border border-transparent hover:border-brand-sage-border/50 transition-colors">
         <div class="flex items-center">
-          <FileText class="h-5 w-5 text-gray-400 mr-3" />
+          <FileText class="h-4.5 w-4.5 text-brand-teal mr-3" />
           <div>
-            <p class="font-medium text-gray-900">Ejercicios de Relajación</p>
-            <p class="text-sm text-gray-500">Técnicas para el bienestar</p>
+            <p class="text-xs font-bold text-brand-charcoal">Ejercicios de Relajación</p>
+            <p class="text-[11px] text-brand-cool-gray mt-0.5">Técnicas para el bienestar</p>
           </div>
         </div>
       </a>
-      <a href="#" class="block p-3 rounded-lg hover:bg-gray-50 transition-colors">
+      <a href="#" class="block p-3.5 rounded-xl hover:bg-brand-sage-bg/30 border border-transparent hover:border-brand-sage-border/50 transition-colors">
         <div class="flex items-center">
-          <BookOpen class="h-5 w-5 text-gray-400 mr-3" />
+          <BookOpen class="h-4.5 w-4.5 text-brand-teal mr-3" />
           <div>
-            <p class="font-medium text-gray-900">Biblioteca de Recursos</p>
-            <p class="text-sm text-gray-500">Artículos y guías</p>
+            <p class="text-xs font-bold text-brand-charcoal">Biblioteca de Recursos</p>
+            <p class="text-[11px] text-brand-cool-gray mt-0.5">Artículos y guías</p>
           </div>
         </div>
       </a>

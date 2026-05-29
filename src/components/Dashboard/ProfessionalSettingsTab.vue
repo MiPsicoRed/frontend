@@ -1,91 +1,86 @@
 <template>
-    <div class="max-w-2xl mx-auto space-y-6">
+    <div class="max-w-2xl mx-auto space-y-6 text-left">
         <!-- Professional Settings -->
-        <div class="bg-white rounded-xl shadow-sm border p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Información Profesional</h3>
+        <div class="bg-white rounded-[2rem] border border-brand-border p-8 shadow-xs">
+            <h3 class="text-base font-bold font-serif text-brand-charcoal mb-6">Información Profesional</h3>
 
             <!-- Avatar Upload Section -->
             <div class="mb-6 flex items-center space-x-6">
                 <div class="shrink-0 flex items-center justify-center">
-                    <img v-if="profilePictureUrl" :src="fullProfilePictureUrl" class="h-24 w-24 object-cover rounded-full border border-gray-200" alt="Avatar">
-                    <div v-else class="h-24 w-24 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center">
-                        <UserIcon class="h-10 w-10 text-gray-400" />
+                    <img v-if="profilePictureUrl" :src="fullProfilePictureUrl" class="h-20 w-20 object-cover rounded-full border border-brand-border shadow-xs" alt="Avatar">
+                    <div v-else class="h-20 w-20 rounded-full bg-brand-sage-bg border border-brand-sage-border flex items-center justify-center shadow-xs">
+                        <UserIcon class="h-8 w-8 text-brand-teal" />
                     </div>
                 </div>
                 <div>
                     <label class="block">
                         <span class="sr-only">Elegir foto de perfil</span>
                         <input type="file" @change="handleFileUpload" accept="image/jpeg, image/png, image/webp"
-                            class="block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-lg file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-teal-50 file:text-teal-700
-                                hover:file:bg-teal-100 file:cursor-pointer
-                            "/>
+                            class="block w-full text-xs text-brand-cool-gray file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-brand-sage-bg file:text-brand-teal hover:file:bg-brand-sage-border/50 file:cursor-pointer transition-colors"
+                        />
                     </label>
-                    <p class="mt-2 text-xs text-gray-500">PNG, JPG o WEBP (max. 5MB)</p>
+                    <p class="mt-2 text-[10px] text-brand-cool-gray font-mono">PNG, JPG o WEBP (max. 5MB)</p>
                 </div>
             </div>
 
             <form @submit.prevent="saveSettings" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Biografía</label>
+                    <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Biografía</label>
                     <textarea v-model="professionalForm.bio" rows="4"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA]"
                         placeholder="Cuéntanos sobre ti..."></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Número de Licencia</label>
+                        <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Número de Licencia</label>
                         <input v-model="professionalForm.license_number" type="text"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                            class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA]">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tarifa por Hora ($)</label>
+                        <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Tarifa por Hora (€)</label>
                         <input v-model.number="professionalForm.hourly_rate" type="number" min="0" step="0.01"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                            class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA]">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Educación</label>
+                    <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Educación</label>
                     <input v-model="professionalForm.education" type="text"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA]"
                         placeholder="Ej: Licenciatura en Psicología, Universidad X">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Años de Experiencia</label>
+                        <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Años de Experiencia</label>
                         <input v-model.number="professionalForm.experience_years" type="number" min="0"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                            class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA]">
                     </div>
                     <div class="flex items-center pt-6">
-                        <label class="flex items-center space-x-3 cursor-pointer">
+                        <label class="flex items-center space-x-3 cursor-pointer select-none">
                             <input v-model="professionalForm.accepts_insurance" type="checkbox"
-                                class="form-checkbox h-5 w-5 text-teal-600 rounded focus:ring-teal-500 border-gray-300">
-                            <span class="text-sm font-medium text-gray-700">Acepta Seguro Médico</span>
+                                class="form-checkbox h-4.5 w-4.5 text-brand-teal rounded-lg focus:ring-brand-teal border-brand-border bg-[#F9FBFA]">
+                            <span class="text-xs font-bold text-brand-charcoal">Acepta Seguro Médico</span>
                         </label>
                     </div>
                 </div>
 
                 <!-- Success Message -->
                 <div v-if="successMessage"
-                    class="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+                    class="p-4 bg-emerald-50 border border-emerald-250 rounded-xl text-emerald-800 text-xs font-medium">
                     {{ successMessage }}
                 </div>
 
                 <!-- Error Message -->
-                <div v-if="errorMessage" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                <div v-if="errorMessage" class="p-4 bg-red-50/50 border border-red-200 rounded-xl text-red-800 text-xs font-medium">
                     {{ errorMessage }}
                 </div>
 
                 <!-- Save Button -->
                 <div class="flex justify-end pt-4">
                     <button type="submit" :disabled="loading"
-                        class="bg-teal-600 text-white py-2 px-6 rounded-lg hover:bg-teal-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="bg-brand-teal text-white py-3 px-6 rounded-full hover:bg-brand-teal-hover transition-all active:scale-[0.98] font-bold text-xs uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-md shadow-brand-teal/5">
                         {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
                     </button>
                 </div>
