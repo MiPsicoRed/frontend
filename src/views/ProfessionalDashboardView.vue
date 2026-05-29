@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-brand-bg font-sans text-brand-charcoal selection:bg-brand-sage-bg selection:text-brand-teal">
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b">
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-brand-border">
       <DashboardNavBar v-model:showUserMenu="showUserMenu" v-model:activeTab="activeTab" :profile="userProfile" />
     </header>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Navigation Tabs -->
-      <div class="border-b border-gray-200 mb-8">
+      <div class="border-b border-brand-border mb-8">
         <ProfessionalNavTabs v-model:activeTab="activeTab" />
       </div>
 
@@ -23,33 +23,33 @@
         </div>
 
         <!-- Today's Sessions, Recent Patients and Notifications -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           <div class="lg:col-span-1 h-full">
             <ProfessionalTodaySessionsCard :todaySessions="todaySessions" class="h-full" />
           </div>
 
           <!-- Recent Patients -->
-          <div class="bg-white rounded-xl shadow-sm border p-6 lg:col-span-1 h-full flex flex-col">
+          <div class="bg-white rounded-[2rem] border border-brand-border p-8 lg:col-span-1 h-full flex flex-col hover:border-brand-sage-border transition-all shadow-xs text-left">
             <div class="flex items-center justify-between mb-6">
-              <h3 class="text-lg font-semibold text-gray-900">Pacientes Recientes</h3>
-              <button @click="activeTab = 'patients'" class="text-teal-600 hover:text-teal-700 text-sm font-medium">
+              <h3 class="text-base font-bold font-serif text-brand-charcoal">Pacientes Recientes</h3>
+              <button @click="activeTab = 'patients'" class="text-brand-teal hover:text-brand-teal-hover text-xs font-bold transition-all cursor-pointer">
                 Ver todos
               </button>
             </div>
 
-            <div class="space-y-4 flex-1 overflow-y-auto">
-              <div v-if="recentPatients.length === 0" class="text-gray-500 text-sm py-4">
+            <div class="space-y-3 flex-1 overflow-y-auto">
+              <div v-if="recentPatients.length === 0" class="text-brand-cool-gray text-xs py-4">
                 No tienes pacientes recientes.
               </div>
               <div v-else v-for="patient in recentPatients" :key="patient.id"
-                class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                class="flex items-center justify-between p-4 bg-[#F9FBFA] border border-brand-border hover:border-brand-sage-border rounded-xl transition-all">
                 <div class="flex items-center">
-                  <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <UserIcon class="h-5 w-5 text-blue-600" />
+                  <div class="w-9 h-9 bg-brand-sage-bg rounded-full border border-brand-sage-border flex items-center justify-center shrink-0">
+                    <UserIcon class="h-4.5 w-4.5 text-brand-teal" />
                   </div>
-                  <div class="ml-4">
-                    <p class="font-medium text-gray-900">{{ patient.name }}</p>
-                    <p class="text-sm text-gray-500">{{ patient.lastSession }}</p>
+                  <div class="ml-3">
+                    <p class="text-xs font-bold text-brand-charcoal">{{ patient.name }}</p>
+                    <p class="text-[11px] text-brand-cool-gray mt-0.5">Última: {{ patient.lastSession }}</p>
                   </div>
                 </div>
               </div>
@@ -82,6 +82,19 @@
       <div v-if="activeTab === 'settings'">
         <ProfessionalSettingsTab :professional="professional" @save="fetchProfessional" />
       </div>
+
+      <!-- Messages Tab -->
+      <div v-if="activeTab === 'messages'">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="text-2xl font-serif font-bold text-brand-charcoal mb-6">Mensajes</h2>
+          <div v-if="recentPatients.length > 0">
+            <ChatWidget :otherUserId="recentPatients[0].id" :otherUserName="recentPatients[0].name" />
+          </div>
+          <div v-else class="text-center text-gray-500 py-12 bg-white rounded-[2rem] border border-gray-100">
+            Aún no tienes pacientes recientes para enviar mensajes.
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -105,6 +118,7 @@ import ProfessionalPatientsTab from '@/components/Dashboard/ProfessionalPatients
 import ProfessionalCalendarTab from '@/components/Dashboard/ProfessionalCalendarTab.vue'
 import DashboardNotificationsBox from '@/components/Dashboard/NotificationsBox.vue'
 import ProfessionalSettingsTab from '@/components/Dashboard/ProfessionalSettingsTab.vue'
+import ChatWidget from '@/components/shared/ChatWidget.vue'
 
 // =========================================
 // Variables
