@@ -1,54 +1,83 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { Smile, Users, Compass, Leaf, ShieldAlert, Eye } from 'lucide-vue-next'
 
-const services = ref([
-    {
-        title: "Terapia Individual",
-        description: "Sesiones personalizadas con un terapeuta compasivo adaptadas a tu viaje único y crecimiento personal.",
-        icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z",
-    },
-    {
-        title: "Terapia de Parejas",
-        description: "Nutre tu relación en un espacio seguro y guiado donde ambos pueden crecer juntos y sanar.",
-        icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
-    },
-    {
-        title: "Mindfulness y Alivio del Estrés",
-        description: "Aprende técnicas naturales para manejar la ansiedad, reducir el estrés y cultivar la paz interior en tu vida diaria.",
-        icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
-    },
-])
+const services = [
+  {
+    icon: Smile,
+    title: 'Terapia Individual',
+    description: 'Supera la ansiedad, depresión, fobias y bloqueos. Diseñado para que reencuentres la tranquilidad y crezcas a nivel personal.',
+  },
+  {
+    icon: Users,
+    title: 'Terapia de Pareja y Familiar',
+    description: 'Espacios neutros para mejorar la resolución de problemas, resolver dinámicas disfuncionales de convivencia y reconstruir el afecto.',
+  },
+  {
+    icon: Compass,
+    title: 'Psicoanálisis y Autoconocimiento',
+    description: 'Explora tu subconsciente, repeticiones de patrones y la raíz histórica de tu conducta para lograr cambios profundos y verdaderamente permanentes.',
+  },
+  {
+    icon: Leaf,
+    title: 'Mindfulness y Estrés',
+    description: 'Integra técnicas orientales cognitivas y de respiración respaldadas científicamente para vivir en el presente libre de fatigas crónicas.',
+  },
+  {
+    icon: ShieldAlert,
+    title: 'Terapia del Trauma y Duelo',
+    description: 'Procesamiento emocional enfocado (EMDR, ACT) para sanar eventos adversos significativos, pérdidas profundas y reestructurar tu resiliencia.',
+  },
+  {
+    icon: Eye,
+    title: 'Psicología Infantil y Adolescente',
+    description: 'Diagnósticos especializados de aprendizaje, TDAH, y acompañamiento integrador para regular emociones de los más jóvenes.',
+  },
+]
 </script>
 
 <template>
-    <section id="services" class="relative overflow-hidden py-24 flex flex-col justify-center items-center">
-        <div
-            class="absolute inset-0 bg-[url('/planta3.jpg')] scale-x-[-1] bg-cover bg-bottom opacity-100">
-        </div>
+  <section class="bg-white py-20 border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-2xl mx-auto space-y-4 mb-16">
+        <p class="font-sans text-xs font-bold uppercase tracking-widest text-brand-teal bg-brand-sage-bg px-3 py-1 rounded-full w-fit mx-auto">
+          Terapias Especializadas
+        </p>
+        <h2 class="text-3xl sm:text-4xl font-serif font-medium text-brand-dark-text tracking-tight">
+          Consultas Adaptadas a tu Bienestar
+        </h2>
+        <p class="text-[#526663] text-sm leading-relaxed font-sans">
+          Combinamos metodologías psicológicas avanzadas y científicamente validadas para garantizar que recibes el trato idóneo para tus objetivos reales.
+        </p>
+      </div>
 
-        <div class="container mx-auto px-4 relative z-10">
-            <div class="text-center max-w-3xl mx-auto mb-12">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Terapias Online Personalizadas Para Tu Bienestar</h2>
-                <p class="text-gray-600">
-                    Terapias adaptadas a ti: combinamos distintos métodos psicológicos para ofrecer el tratamiento que
-                    mejor se
-                    ajuste a tus necesidades
-                </p>
+      <!-- Services Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div 
+          v-for="(service, index) in services" 
+          :key="index"
+          class="bg-white p-8 rounded-3xl border border-brand-border hover:border-brand-sage-border hover:shadow-xl hover:shadow-brand-teal/5 transition-all duration-300 transform hover:-translate-y-1 text-left flex flex-col justify-between"
+        >
+          <div class="space-y-4">
+            <div class="w-12 h-12 rounded-xl bg-brand-sage-bg flex items-center justify-center">
+              <component :is="service.icon" class="w-6 h-6 text-brand-teal" />
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div v-for="(service, index) in services" :key="index"
-                    class="bg-white p-8 rounded-[2rem] shadow-md hover:shadow-xl transition duration-300 border border-[#e8d5c4]/30">
-                    <div
-                        class="w-16 h-16 bg-gradient-to-br from-[#b8d8d8]/50 to-[#e8d5c4]/50 rounded-2xl flex items-center justify-center mb-6 transform -rotate-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#5a7d7c]" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="service.icon" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">{{ service.title }}</h3>
-                    <p class="text-gray-600">{{ service.description }}</p>
-                </div>
-            </div>
+            <h3 class="text-[19px] font-bold text-brand-charcoal font-sans tracking-tight">
+              {{ service.title }}
+            </h3>
+            <p class="text-[#526663] text-xs leading-relaxed font-sans">
+              {{ service.description }}
+            </p>
+          </div>
+
+          <div class="pt-5 mt-6 border-t border-brand-border/60 flex items-center justify-between text-[11px] text-brand-teal font-bold uppercase tracking-wider font-sans">
+            <span>Consulta en línea</span>
+            <span>Duración: 50 min</span>
+          </div>
         </div>
-    </section>
+      </div>
+
+    </div>
+  </section>
 </template>

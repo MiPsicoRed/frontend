@@ -1,15 +1,15 @@
 <template>
-  <div class="max-w-2xl mx-auto space-y-6">
+  <div class="max-w-2xl mx-auto space-y-6 text-left">
     <!-- Subtabs Navigation -->
-    <div class="border-b border-gray-200 mb-6" v-if="onboardingForm">
+    <div class="border-b border-brand-border mb-6" v-if="onboardingForm">
       <nav class="-mb-px flex space-x-8" aria-label="Tabs">
         <button
           @click="activeSubTab = 'profile'"
           :class="[
             activeSubTab === 'profile'
-              ? 'border-teal-500 text-teal-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-            'whitespace-nowrap flex py-4 px-1 border-b-2 font-medium text-sm',
+              ? 'border-brand-teal text-brand-teal font-extrabold'
+              : 'border-transparent text-brand-cool-gray hover:text-brand-charcoal hover:border-brand-sage-border',
+            'whitespace-nowrap py-3.5 px-1 border-b-2 font-sans text-xs uppercase tracking-wider transition-all cursor-pointer',
           ]"
         >
           Perfil General
@@ -18,9 +18,9 @@
           @click="activeSubTab = 'onboarding'"
           :class="[
             activeSubTab === 'onboarding'
-              ? 'border-teal-500 text-teal-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-            'whitespace-nowrap flex py-4 px-1 border-b-2 font-medium text-sm',
+              ? 'border-brand-teal text-brand-teal font-extrabold'
+              : 'border-transparent text-brand-cool-gray hover:text-brand-charcoal hover:border-brand-sage-border',
+            'whitespace-nowrap py-3.5 px-1 border-b-2 font-sans text-xs uppercase tracking-wider transition-all cursor-pointer',
           ]"
         >
           Consentimientos y Registro
@@ -31,23 +31,23 @@
     <!-- Tab Content: Profile -->
     <div v-show="activeSubTab === 'profile'" class="space-y-6">
       <!-- Profile Settings -->
-      <div class="bg-white rounded-xl shadow-sm border p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Información Personal</h3>
-
+      <div class="bg-white rounded-[2rem] border border-brand-border p-8 shadow-xs">
+        <h3 class="text-base font-bold font-serif text-brand-charcoal mb-6">Información Personal</h3>
+ 
         <!-- Avatar Upload Section -->
         <div class="mb-6 flex items-center space-x-6">
           <div class="shrink-0 flex items-center justify-center">
             <img
               v-if="profilePictureUrl"
               :src="fullProfilePictureUrl"
-              class="h-24 w-24 object-cover rounded-full border border-gray-200"
+              class="h-20 w-20 object-cover rounded-full border border-brand-border shadow-xs"
               alt="Avatar"
             />
             <div
               v-else
-              class="h-24 w-24 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center"
+              class="h-20 w-20 rounded-full bg-brand-sage-bg border border-brand-sage-border flex items-center justify-center shadow-xs"
             >
-              <UserIcon class="h-10 w-10 text-gray-400" />
+              <UserIcon class="h-8 w-8 text-brand-teal" />
             </div>
           </div>
           <div>
@@ -57,58 +57,58 @@
                 type="file"
                 @change="handleFileUpload"
                 accept="image/jpeg, image/png, image/webp"
-                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 file:cursor-pointer"
+                class="block w-full text-xs text-brand-cool-gray file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-brand-sage-bg file:text-brand-teal hover:file:bg-brand-sage-border/50 file:cursor-pointer transition-colors"
               />
             </label>
-            <p class="mt-2 text-xs text-gray-500">PNG, JPG o WEBP (max. 5MB)</p>
+            <p class="mt-2 text-[10px] text-brand-cool-gray font-mono">PNG, JPG o WEBP (max. 5MB)</p>
           </div>
         </div>
 
         <form @submit.prevent="saveSettings" class="space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+              <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Nombre</label>
               <input
                 v-model="form.name"
                 type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-bold bg-[#F9FBFA] transition-all"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
+              <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Apellidos</label>
               <input
                 v-model="form.surname"
                 type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-bold bg-[#F9FBFA] transition-all"
               />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Email</label>
             <input
               v-model="form.email"
               type="email"
               disabled
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+              class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl bg-brand-bg text-brand-cool-gray/70 cursor-not-allowed text-xs font-bold"
             />
-            <p class="mt-1 text-xs text-gray-500">El correo electrónico no se puede cambiar.</p>
+            <p class="mt-1 text-[10px] text-brand-cool-gray">El correo electrónico no se puede cambiar.</p>
           </div>
         </form>
       </div>
 
       <!-- Notification Settings -->
-      <div class="bg-white rounded-xl shadow-sm border p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Notificaciones</h3>
-        <div class="space-y-4">
+      <div class="bg-white rounded-[2rem] border border-brand-border p-8 shadow-xs">
+        <h3 class="text-base font-bold font-serif text-brand-charcoal mb-6">Notificaciones</h3>
+        <div class="space-y-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="font-medium text-gray-900">Recordatorios de sesión</p>
-              <p class="text-sm text-gray-500">Recibe recordatorios antes de tus sesiones</p>
+              <p class="text-xs font-bold text-brand-charcoal">Recordatorios de sesión</p>
+              <p class="text-[11px] text-brand-muted-teal mt-0.5">Recibe recordatorios antes de tus sesiones</p>
             </div>
             <button
               @click="form.notifications.sessions = !form.notifications.sessions"
-              :class="form.notifications.sessions ? 'bg-teal-600' : 'bg-gray-200'"
-              class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+              :class="form.notifications.sessions ? 'bg-brand-teal' : 'bg-brand-border'"
+              class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
             >
               <span
                 :class="form.notifications.sessions ? 'translate-x-6' : 'translate-x-1'"
@@ -119,13 +119,13 @@
 
           <div class="flex items-center justify-between">
             <div>
-              <p class="font-medium text-gray-900">Nuevos recursos</p>
-              <p class="text-sm text-gray-500">Notificaciones sobre nuevos materiales</p>
+              <p class="text-xs font-bold text-brand-charcoal">Nuevos recursos</p>
+              <p class="text-[11px] text-brand-muted-teal mt-0.5">Notificaciones sobre nuevos materiales</p>
             </div>
             <button
               @click="form.notifications.resources = !form.notifications.resources"
-              :class="form.notifications.resources ? 'bg-teal-600' : 'bg-gray-200'"
-              class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+              :class="form.notifications.resources ? 'bg-brand-teal' : 'bg-brand-border'"
+              class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
             >
               <span
                 :class="form.notifications.resources ? 'translate-x-6' : 'translate-x-1'"
@@ -139,47 +139,47 @@
 
     <!-- Tab Content: Onboarding -->
     <div v-if="onboardingForm" v-show="activeSubTab === 'onboarding'" class="space-y-6">
-      <div class="bg-white rounded-xl shadow-sm border p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Información de Registro</h3>
-        <div class="space-y-4 text-sm form-grid">
+      <div class="bg-white rounded-[2rem] border border-brand-border p-8 shadow-xs">
+        <h3 class="text-base font-bold font-serif text-brand-charcoal mb-6">Información de Registro</h3>
+        <div class="space-y-5 text-xs">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div v-if="onboardingForm.birthdate">
-              <p class="block text-sm font-medium text-gray-700 mb-1">Fecha de nacimiento</p>
-              <p class="px-3 py-2 text-gray-600 bg-gray-50 rounded-lg border border-gray-200">
+              <p class="block text-xs font-bold text-brand-charcoal mb-1.5">Fecha de nacimiento</p>
+              <p class="px-3.5 py-2.5 text-xs text-brand-muted-teal bg-brand-bg rounded-xl border border-brand-border font-medium">
                 {{ onboardingForm.birthdate }}
               </p>
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Motivo de consulta</label>
+              <label class="block text-xs font-bold text-brand-charcoal mb-1.5">Motivo de consulta</label>
               <textarea
                 v-model="onboardingForm.reason"
                 rows="3"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                class="w-full px-3.5 py-2.5 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA]"
               ></textarea>
             </div>
 
             <div v-if="onboardingForm.guardian_name">
-              <p class="block text-sm font-medium text-gray-700 mb-1">Nombre Tutor Legal 1</p>
-              <p class="px-3 py-2 text-gray-600 bg-gray-50 rounded-lg border border-gray-200">
+              <p class="block text-xs font-bold text-brand-charcoal mb-1.5">Nombre Tutor Legal 1</p>
+              <p class="px-3.5 py-2.5 text-xs text-brand-muted-teal bg-brand-bg rounded-xl border border-brand-border font-medium">
                 {{ onboardingForm.guardian_name }}
               </p>
             </div>
             <div v-if="onboardingForm.guardian_id_document">
-              <p class="block text-sm font-medium text-gray-700 mb-1">DNI/ID Tutor Legal 1</p>
-              <p class="px-3 py-2 text-gray-600 bg-gray-50 rounded-lg border border-gray-200">
+              <p class="block text-xs font-bold text-brand-charcoal mb-1.5">DNI/ID Tutor Legal 1</p>
+              <p class="px-3.5 py-2.5 text-xs text-brand-muted-teal bg-brand-bg rounded-xl border border-brand-border font-medium">
                 {{ onboardingForm.guardian_id_document }}
               </p>
             </div>
 
             <div v-if="!onboardingForm.is_monoparental && onboardingForm.guardian2_name">
-              <p class="block text-sm font-medium text-gray-700 mb-1">Nombre Tutor Legal 2</p>
-              <p class="px-3 py-2 text-gray-600 bg-gray-50 rounded-lg border border-gray-200">
+              <p class="block text-xs font-bold text-brand-charcoal mb-1.5">Nombre Tutor Legal 2</p>
+              <p class="px-3.5 py-2.5 text-xs text-brand-muted-teal bg-brand-bg rounded-xl border border-brand-border font-medium">
                 {{ onboardingForm.guardian2_name }}
               </p>
             </div>
             <div v-if="!onboardingForm.is_monoparental && onboardingForm.guardian2_id_document">
-              <p class="block text-sm font-medium text-gray-700 mb-1">DNI/ID Tutor Legal 2</p>
-              <p class="px-3 py-2 text-gray-600 bg-gray-50 rounded-lg border border-gray-200">
+              <p class="block text-xs font-bold text-brand-charcoal mb-1.5">DNI/ID Tutor Legal 2</p>
+              <p class="px-3.5 py-2.5 text-xs text-brand-muted-teal bg-brand-bg rounded-xl border border-brand-border font-medium">
                 {{ onboardingForm.guardian2_id_document }}
               </p>
             </div>
@@ -188,22 +188,22 @@
           <!-- Signatures (Read-Only as they require the canvas pad to re-sign easily) -->
           <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6" v-if="onboardingForm.signature">
             <div>
-              <p class="block text-sm font-medium text-gray-700 mb-1">Firma Tutor Legal 1</p>
-              <div class="border border-gray-300 rounded-lg p-2 bg-gray-50 flex justify-center">
+              <p class="block text-xs font-bold text-brand-charcoal mb-1.5">Firma Tutor Legal 1</p>
+              <div class="border border-brand-border rounded-2xl p-4 bg-brand-bg flex justify-center">
                 <img
                   :src="onboardingForm.signature"
-                  class="max-h-32 object-contain"
+                  class="max-h-24 object-contain"
                   alt="Firma Tutor 1"
                 />
               </div>
-              <p class="text-xs text-gray-500 mt-1">La firma no se puede modificar por aquí.</p>
+              <p class="text-[10px] text-brand-cool-gray mt-1.5">La firma no se puede modificar por aquí.</p>
             </div>
             <div v-if="onboardingForm.signature2">
-              <p class="block text-sm font-medium text-gray-700 mb-1">Firma Tutor Legal 2</p>
-              <div class="border border-gray-300 rounded-lg p-2 bg-gray-50 flex justify-center">
+              <p class="block text-xs font-bold text-brand-charcoal mb-1.5">Firma Tutor Legal 2</p>
+              <div class="border border-brand-border rounded-2xl p-4 bg-brand-bg flex justify-center">
                 <img
                   :src="onboardingForm.signature2"
-                  class="max-h-32 object-contain"
+                  class="max-h-24 object-contain"
                   alt="Firma Tutor 2"
                 />
               </div>
@@ -216,7 +216,7 @@
     <!-- Success Message -->
     <div
       v-if="successMessage"
-      class="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm"
+      class="p-4 bg-emerald-50 border border-emerald-250 rounded-xl text-emerald-800 text-xs font-medium"
     >
       {{ successMessage }}
     </div>
@@ -224,7 +224,7 @@
     <!-- Error Message -->
     <div
       v-if="errorMessage"
-      class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
+      class="p-4 bg-red-50/50 border border-red-200 rounded-xl text-red-800 text-xs font-medium"
     >
       {{ errorMessage }}
     </div>
@@ -234,7 +234,7 @@
       <button
         @click="saveSettings"
         :disabled="loading"
-        class="bg-teal-600 text-white py-2 px-6 rounded-lg hover:bg-teal-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        class="bg-brand-teal text-white py-3 px-6 rounded-full hover:bg-brand-teal-hover transition-all active:scale-[0.98] font-bold text-xs uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-md shadow-brand-teal/5"
       >
         {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
       </button>

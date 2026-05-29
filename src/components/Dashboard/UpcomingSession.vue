@@ -1,19 +1,19 @@
 <template>
-  <div class="flex items-center">
-    <div class="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
-      <User class="h-5 w-5 text-teal-600" />
+  <div class="flex items-center text-left">
+    <div class="w-10 h-10 bg-brand-sage-bg rounded-full flex items-center justify-center border border-brand-sage-border shrink-0">
+      <User class="h-4.5 w-4.5 text-brand-teal" />
     </div>
     <div class="ml-4">
-      <p class="font-medium text-gray-900">{{ getProfessionalName(session.professional_id) }}</p>
-      <p class="text-sm text-gray-500">{{ session.date }} - {{ session.time }}</p>
+      <p class="text-xs font-bold text-brand-charcoal">{{ getProfessionalName(session.professional_id) }}</p>
+      <p class="text-[11px] text-brand-cool-gray mt-0.5">{{ session.date }} • {{ session.time }} hrs</p>
     </div>
   </div>
-  <div class="flex items-center space-x-2">
-    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+  <div class="flex items-center space-x-2.5">
+    <span class="px-2.5 py-0.5 bg-emerald-55/40 border border-emerald-200 text-emerald-800 text-[10px] font-black uppercase tracking-wider rounded-full">
       Confirmada
     </span>
     <JoinMeetButton :session="session" />
-    <button class="text-gray-400 hover:text-gray-600">
+    <button class="text-brand-cool-gray hover:text-brand-charcoal transition-colors cursor-pointer p-1">
       <MoreVertical class="h-4 w-4" />
     </button>
   </div>

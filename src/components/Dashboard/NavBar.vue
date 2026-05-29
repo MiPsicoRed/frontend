@@ -1,15 +1,15 @@
 <template>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
             <!-- Logo -->
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <RouterLink to="/">
-                        <img src="/logo.svg" alt="MiPsicoRed Logo" class="h-8 w-auto" />
+                        <img src="/logo.svg" alt="MiPsicoRed Logo" class="h-7 w-auto" />
                     </RouterLink>
                 </div>
                 <div class="ml-3">
-                    <h1 class="text-xl font-semibold text-gray-900">Mi Panel</h1>
+                    <h1 class="text-base font-bold text-brand-dark-text font-serif tracking-tight">Mi Panel</h1>
                 </div>
             </div>
 
@@ -18,22 +18,22 @@
                 <!-- Notifications Dropdown -->
                 <div class="relative">
                     <button @click="showNotifications = !showNotifications"
-                        class="text-gray-500 hover:text-gray-700 relative p-1 mt-1">
-                        <Bell class="h-5 w-5" />
+                        class="text-brand-cool-gray hover:text-brand-teal relative p-1.5 transition-colors cursor-pointer">
+                        <Bell class="h-4.5 w-4.5" />
                         <!-- Unread badge -->
                         <span v-if="unreadCount > 0"
-                            class="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white transform translate-x-1 -translate-y-1">
+                            class="absolute top-0.5 right-0.5 inline-flex items-center justify-center w-3.5 h-3.5 text-[8.5px] font-black text-white bg-amber-600 rounded-full border border-white">
                             {{ unreadCount }}
                         </span>
                     </button>
 
                     <!-- Notifications Dropdown Menu -->
                     <div v-if="showNotifications"
-                        class="absolute right-0 mt-3 w-80 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden">
-                        <div class="p-3 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                            <h3 class="text-sm font-semibold text-gray-900">Notificaciones</h3>
+                        class="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-xl border border-brand-border z-50 overflow-hidden animate-fade-in">
+                        <div class="p-4 border-b border-brand-border flex justify-between items-center bg-brand-sage-bg/30">
+                            <h3 class="text-xs font-black uppercase tracking-wider text-brand-charcoal font-sans">Notificaciones</h3>
                             <button v-if="notifications.length > 0" @click="clearNotifications"
-                                class="text-xs text-teal-600 hover:text-teal-700 font-medium">
+                                class="text-[11px] text-brand-teal hover:text-brand-teal-hover font-bold transition-colors cursor-pointer">
                                 Marcar leídas
                             </button>
                         </div>
@@ -41,34 +41,34 @@
                         <div class="max-h-80 overflow-y-auto">
                             <div v-if="notifications.length > 0">
                                 <a href="#" v-for="notif in notifications" :key="notif.id"
-                                    class="block p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors"
-                                    :class="{ 'bg-blue-50/30': notif.unread }">
+                                    class="block p-4 border-b border-brand-border hover:bg-brand-bg transition-colors"
+                                    :class="{ 'bg-brand-sage-bg/20': notif.unread }">
                                     <div class="flex gap-3">
                                         <div class="flex-shrink-0 mt-0.5">
-                                            <div class="w-2 h-2 rounded-full mt-1.5" :class="{
-                                                'bg-blue-500': notif.type === 'info',
-                                                'bg-green-500': notif.type === 'success',
-                                                'bg-orange-500': notif.type === 'warning'
+                                            <div class="w-1.5 h-1.5 rounded-full mt-1.5" :class="{
+                                                'bg-brand-teal': notif.type === 'info',
+                                                'bg-emerald-500': notif.type === 'success',
+                                                'bg-amber-500': notif.type === 'warning'
                                             }">
                                             </div>
                                         </div>
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-900 mb-0.5">{{ notif.title }}</p>
-                                            <p class="text-xs text-gray-500 line-clamp-2 mb-1">{{ notif.message }}</p>
-                                            <p class="text-[10px] text-gray-400">{{ notif.time }}</p>
+                                        <div class="text-left">
+                                            <p class="text-xs font-bold text-brand-charcoal mb-0.5">{{ notif.title }}</p>
+                                            <p class="text-[11px] text-brand-muted-teal leading-relaxed mb-1">{{ notif.message }}</p>
+                                            <p class="text-[9.5px] text-brand-cool-gray font-mono">{{ notif.time }}</p>
                                         </div>
                                     </div>
                                 </a>
                             </div>
                             <div v-else class="p-6 text-center">
-                                <Bell class="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                                <p class="text-sm text-gray-500">No tienes notificaciones nuevas</p>
+                                <Bell class="h-6 w-6 text-brand-cool-gray/40 mx-auto mb-2" />
+                                <p class="text-xs text-brand-cool-gray font-medium">No tienes notificaciones nuevas</p>
                             </div>
                         </div>
 
                         <div v-if="notifications.length > 0"
-                            class="p-2 border-t border-gray-100 text-center bg-gray-50/50">
-                            <a href="#" class="text-xs font-medium text-teal-600 hover:text-teal-700">Ver todas las
+                            class="p-3 border-t border-brand-border text-center bg-brand-bg">
+                            <a href="#" class="text-[11px] font-bold text-brand-teal hover:text-brand-teal-hover transition-colors">Ver todas las
                                 notificaciones</a>
                         </div>
                     </div>
@@ -76,25 +76,25 @@
 
                 <div class="relative">
                     <button @click="showUserMenu = !showUserMenu"
-                        class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
+                        class="flex items-center space-x-2 text-brand-charcoal hover:text-brand-teal transition-colors cursor-pointer">
                         <img v-if="profilePictureUrl" :src="fullProfilePictureUrl" alt="Avatar"
-                            class="w-8 h-8 rounded-full object-cover border border-gray-200" />
-                        <div v-else class="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                            <User class="h-4 w-4 text-teal-600" />
+                            class="w-7 h-7 rounded-full object-cover border border-brand-border" />
+                        <div v-else class="w-7 h-7 bg-brand-sage-bg rounded-full flex items-center justify-center border border-brand-sage-border">
+                            <User class="h-3.5 w-3.5 text-brand-teal" />
                         </div>
-                        <span class="text-sm font-medium">{{ profile?.first_name }}</span>
-                        <ChevronDown class="h-4 w-4" />
+                        <span class="text-xs font-bold font-sans">{{ profile?.first_name }}</span>
+                        <ChevronDown class="h-3.5 w-3.5 text-brand-cool-gray" />
                     </button>
 
                     <!-- Dropdown Menu -->
                     <div v-if="showUserMenu"
-                        class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-10">
+                        class="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-lg border border-brand-border z-50 py-1.5 animate-fade-in">
                         <div class="py-1">
                             <a href="#" @click.prevent="activeTab = 'settings'"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Configuración</a>
-                            <hr class="my-1">
+                                class="block px-4.5 py-2.5 text-xs font-bold text-brand-charcoal hover:bg-brand-sage-bg/40 hover:text-brand-teal transition-all cursor-pointer">Configuración</a>
+                            <hr class="border-brand-border my-1">
                             <a @click.prevent="logout()"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">Cerrar
+                                class="block px-4.5 py-2.5 text-xs font-bold text-red-650 hover:bg-red-50/50 transition-all cursor-pointer">Cerrar
                                 Sesión</a>
                         </div>
                     </div>

@@ -1,24 +1,23 @@
 <template>
-    <div class="bg-white rounded-xl shadow-sm border p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-6">Sesiones de Hoy</h3>
-        <div class="space-y-4">
+    <div class="bg-white rounded-[2rem] border border-brand-border p-8 hover:border-brand-sage-border hover:shadow-xs transition-all text-left">
+        <h3 class="text-base font-bold font-serif text-brand-charcoal mb-6">Sesiones de Hoy</h3>
+        <div class="space-y-3">
             <div v-for="session in todaySessions" :key="session.id"
-                class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                class="flex items-center justify-between p-4 bg-[#F9FBFA] border border-brand-border hover:border-brand-sage-border rounded-xl transition-all">
                 <div class="flex items-center">
-                    <div class="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
-                        <UserIcon class="h-5 w-5 text-teal-600" />
+                    <div class="w-9 h-9 bg-brand-sage-bg border border-brand-sage-border rounded-full flex items-center justify-center shrink-0">
+                        <UserIcon class="h-4.5 w-4.5 text-brand-teal" />
                     </div>
-                    <div class="ml-4">
-                        <p class="font-medium text-gray-900">{{ session.patientName }}</p>
-                        <p class="text-sm text-gray-500">{{ session.session_date ? new
-                            Date(session.session_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) :
-                            '—' }}
+                    <div class="ml-3">
+                        <p class="text-xs font-bold text-brand-charcoal">{{ session.patientName }}</p>
+                        <p class="text-[11px] text-brand-cool-gray mt-0.5">
+                            Hora: {{ session.session_date ? new Date(session.session_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—' }}
                         </p>
                     </div>
                 </div>
                 <JoinMeetButton :session="session" />
             </div>
-            <div v-if="todaySessions.length === 0" class="text-center py-8 text-gray-500">
+            <div v-if="todaySessions.length === 0" class="text-center py-8 text-xs text-brand-cool-gray">
                 No hay sesiones programadas para hoy
             </div>
         </div>

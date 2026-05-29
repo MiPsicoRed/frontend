@@ -1,33 +1,32 @@
 <template>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 text-left">
         <!-- Calendar Section -->
-        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="p-6 border-b border-gray-100">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-                        <Calendar class="h-6 w-6 text-teal-600" />
-                        Calendario
+        <div class="lg:col-span-2 bg-white rounded-[2rem] border border-brand-border overflow-hidden shadow-xs">
+            <div class="p-8 border-b border-brand-border">
+                <div class="flex items-center justify-between gap-4 flex-wrap">
+                    <h2 class="text-base font-bold font-serif text-brand-charcoal flex items-center gap-2">
+                        <Calendar class="h-5 w-5 text-brand-teal" />
+                        Calendario de Citas
                     </h2>
-                    <div class="flex items-center space-x-2 bg-gray-50 rounded-lg p-1">
+                    <div class="flex items-center space-x-1.5 bg-brand-bg border border-brand-border rounded-xl p-1">
                         <button @click="previousMonth"
-                            class="p-2 hover:bg-white hover:shadow-sm rounded-md transition-all text-gray-600 hover:text-teal-600">
-                            <ChevronLeft class="h-5 w-5" />
+                            class="p-1.5 hover:bg-white hover:shadow-xs rounded-lg transition-all text-brand-cool-gray hover:text-brand-teal cursor-pointer">
+                            <ChevronLeft class="h-4 w-4" />
                         </button>
-                        <span class="text-lg font-semibold min-w-[140px] text-center text-gray-800">{{ currentMonthYear
-                        }}</span>
+                        <span class="text-xs font-black uppercase tracking-wider min-w-[140px] text-center text-brand-charcoal">{{ currentMonthYear }}</span>
                         <button @click="nextMonth"
-                            class="p-2 hover:bg-white hover:shadow-sm rounded-md transition-all text-gray-600 hover:text-teal-600">
-                            <ChevronRight class="h-5 w-5" />
+                            class="p-1.5 hover:bg-white hover:shadow-xs rounded-lg transition-all text-brand-cool-gray hover:text-brand-teal cursor-pointer">
+                            <ChevronRight class="h-4 w-4" />
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="p-6">
+            <div class="p-8">
                 <!-- Days Header -->
                 <div class="grid grid-cols-7 gap-2 mb-4">
                     <div v-for="day in ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']" :key="day"
-                        class="text-center text-xs font-bold text-gray-400 uppercase tracking-wider">
+                        class="text-center text-[10px] font-black text-brand-cool-gray uppercase tracking-wider">
                         {{ day }}
                     </div>
                 </div>
@@ -35,31 +34,31 @@
                 <!-- Calendar Grid -->
                 <div class="grid grid-cols-7 gap-2">
                     <div v-for="date in calendarDays" :key="date.date" @click="selectDate(date)"
-                        class="relative min-h-[100px] p-2 rounded-xl border transition-all duration-200 cursor-pointer group"
+                        class="relative min-h-[90px] p-2 rounded-2xl border transition-all duration-200 cursor-pointer group"
                         :class="[
-                            date.isCurrentMonth ? 'bg-white hover:border-teal-300 hover:shadow-md' : 'bg-gray-50 text-gray-400 border-transparent',
-                            date.isToday ? 'ring-2 ring-teal-500 ring-offset-2' : 'border-gray-100',
-                            selectedDate?.date === date.date ? 'bg-teal-50 border-teal-500 shadow-sm' : ''
+                            date.isCurrentMonth ? 'bg-white border-brand-border hover:border-brand-sage-border hover:shadow-xs' : 'bg-brand-bg text-brand-cool-gray/50 border-transparent cursor-default',
+                            date.isToday ? 'ring-2 ring-brand-teal ring-offset-2' : '',
+                            selectedDate?.date === date.date ? 'bg-brand-sage-bg border-brand-teal shadow-xs' : ''
                         ]">
 
                         <div class="flex justify-between items-start">
-                            <span class="text-sm font-semibold"
-                                :class="date.isToday ? 'text-teal-600' : 'text-gray-700'">
+                            <span class="text-xs font-bold"
+                                :class="date.isToday ? 'text-brand-teal font-extrabold' : 'text-brand-charcoal'">
                                 {{ date.day }}
                             </span>
                             <span v-if="date.sessions.length > 0"
-                                class="flex h-5 w-5 items-center justify-center rounded-full bg-teal-100 text-[10px] font-bold text-teal-700">
+                                class="flex h-4 w-4 items-center justify-center rounded-full bg-brand-teal text-[9px] font-bold text-white">
                                 {{ date.sessions.length }}
                             </span>
                         </div>
 
                         <!-- Session Dots -->
                         <div class="mt-2 flex flex-wrap gap-1">
-                            <div v-for="(session, idx) in date.sessions.slice(0, 4)" :key="session.id"
+                            <div v-for="session in date.sessions.slice(0, 3)" :key="session.id"
                                 class="h-1.5 w-1.5 rounded-full"
-                                :class="session.completed ? 'bg-gray-300' : 'bg-teal-500'"></div>
-                            <span v-if="date.sessions.length > 4"
-                                class="text-[10px] text-gray-400 leading-none">+</span>
+                                :class="session.session_status_id == 2 ? 'bg-brand-cool-gray/50' : 'bg-brand-teal'"></div>
+                            <span v-if="date.sessions.length > 3"
+                                class="text-[9px] text-brand-cool-gray leading-none">+</span>
                         </div>
                     </div>
                 </div>
@@ -67,64 +66,64 @@
         </div>
 
         <!-- Selected Date Details -->
-        <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
-            <div class="p-6 border-b border-gray-100 bg-gray-50/50">
-                <h3 class="text-lg font-bold text-gray-900">
+        <div class="lg:col-span-1 bg-white rounded-[2rem] border border-brand-border overflow-hidden flex flex-col h-full shadow-xs">
+            <div class="p-8 border-b border-brand-border bg-brand-bg/50">
+                <h3 class="text-base font-bold font-serif text-brand-charcoal">
                     {{ selectedDate ? new Date(selectedDate.date).toLocaleDateString('es-ES', {
                         weekday: 'long', day:
                             'numeric', month: 'long'
                     }) : 'Selecciona una fecha' }}
                 </h3>
-                <p class="text-sm text-gray-500 mt-1">
-                    {{ selectedDate?.sessions.length || 0 }} sesiones programadas
+                <p class="text-xs text-brand-muted-teal mt-1">
+                    {{ selectedDate?.sessions.length || 0 }} {{ (selectedDate?.sessions.length === 1) ? 'sesión programada' : 'sesiones programadas' }}
                 </p>
             </div>
 
-            <div class="flex-1 p-6 overflow-y-auto max-h-[600px]">
+            <div class="flex-1 p-8 overflow-y-auto max-h-[600px] space-y-4">
                 <div v-if="selectedDate?.sessions.length > 0" class="space-y-4">
                     <div v-for="session in selectedDate.sessions" :key="session.id" @click="openModal(session)"
-                        class="group p-4 rounded-xl border border-gray-100 hover:border-teal-200 hover:shadow-md transition-all bg-white cursor-pointer">
+                        class="group p-4 rounded-2xl border border-brand-border hover:border-brand-sage-border hover:shadow-xs transition-all bg-[#F9FBFA] cursor-pointer">
 
                         <div class="flex justify-between items-start mb-3">
-                            <div class="flex items-center gap-2 text-teal-700 font-bold">
-                                <Clock class="h-4 w-4" />
+                            <div class="flex items-center gap-2 text-brand-teal font-extrabold text-xs">
+                                <Clock class="h-3.5 w-3.5" />
                                 {{ session.session_date ? new Date(session.session_date).toLocaleTimeString([], {
                                     hour:
                                         '2-digit', minute: '2-digit'
-                                }) : '—' }}
+                                }) : '—' }} hrs
                             </div>
                             <span :class="[
-                                'px-2 py-0.5 rounded-full text-xs font-medium',
-                                session.session_status_id == 2 ? 'bg-green-100 text-green-600' : 'bg-blue-50 text-blue-600'
+                                'px-2.5 py-0.5 rounded-full text-[9.5px] font-black uppercase tracking-wider',
+                                session.session_status_id == 2 ? 'bg-emerald-55/40 border border-emerald-200 text-emerald-800' : 'bg-brand-sage-bg border border-brand-sage-border text-brand-teal'
                             ]">
                                 {{ session.session_status_id == 2 ? 'Completada' : 'Pendiente' }}
                             </span>
                         </div>
 
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="h-8 w-8 rounded-full bg-teal-50 flex items-center justify-center text-teal-600">
+                        <div class="flex items-center gap-3">
+                            <div class="h-8 w-8 rounded-full bg-brand-sage-bg border border-brand-sage-border flex items-center justify-center text-brand-teal shrink-0">
                                 <User class="h-4 w-4" />
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900">{{ session.patient_name }}</p>
-                                <p class="text-xs text-gray-500">Paciente</p>
+                                <p class="text-xs font-bold text-brand-charcoal">{{ session.patient_name }}</p>
+                                <p class="text-[10px] text-brand-cool-gray mt-0.5">Paciente</p>
                             </div>
                         </div>
 
-                        <div v-if="!session.completed && session.videocall_url"
-                            class="mt-3 pt-3 border-t border-gray-50">
+                        <div v-if="session.session_status_id != 2 && session.videocall_url"
+                            class="mt-4 pt-4 border-t border-brand-border">
                             <a :href="session.videocall_url" target="_blank" @click.stop
-                                class="flex items-center justify-center gap-2 w-full py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition-colors">
-                                <Video class="h-4 w-4" />
-                                Unirse a la llamada
+                                class="flex items-center justify-center gap-2 w-full py-2 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold uppercase tracking-wider rounded-full transition-all active:scale-[0.98]">
+                                <Video class="h-3.5 w-3.5" />
+                                Unirse a llamada
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <div v-else class="h-full flex flex-col items-center justify-center text-gray-400 py-12">
-                    <Calendar class="h-12 w-12 mb-3 opacity-20" />
-                    <p class="text-sm">No hay sesiones para este día</p>
+                <div v-else class="h-full flex flex-col items-center justify-center text-brand-cool-gray/70 py-12">
+                    <Calendar class="h-10 w-10 mb-3 opacity-20 text-brand-teal" />
+                    <p class="text-xs font-medium">No hay sesiones para este día</p>
                 </div>
             </div>
         </div>

@@ -1,71 +1,68 @@
 <template>
-    <div class="bg-white rounded-xl shadow-sm border">
-        <div class="p-6 border-b border-gray-200">
-            <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold text-gray-900">Gestión de Sesiones</h2>
+    <div class="bg-white rounded-[2rem] border border-brand-border shadow-xs text-left">
+        <div class="p-8 border-b border-brand-border">
+            <div class="flex items-center justify-between gap-4 flex-wrap">
+                <h2 class="text-lg font-bold font-serif text-brand-dark-text">Gestión de Sesiones</h2>
                 <div class="flex space-x-2">
                     <button @click="sessionFilter = 'all'"
-                        :class="sessionFilter === 'all' ? 'bg-teal-100 text-teal-700' : 'text-gray-500 hover:text-gray-700'"
-                        class="px-3 py-1 rounded-md text-sm font-medium">
+                        :class="sessionFilter === 'all' ? 'bg-brand-sage-bg border-brand-sage-border text-brand-teal font-extrabold' : 'border-transparent text-brand-cool-gray hover:text-brand-charcoal'"
+                        class="px-4 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer">
                         Todas
                     </button>
                     <button @click="sessionFilter = 'today'"
-                        :class="sessionFilter === 'today' ? 'bg-teal-100 text-teal-700' : 'text-gray-500 hover:text-gray-700'"
-                        class="px-3 py-1 rounded-md text-sm font-medium">
+                        :class="sessionFilter === 'today' ? 'bg-brand-sage-bg border-brand-sage-border text-brand-teal font-extrabold' : 'border-transparent text-brand-cool-gray hover:text-brand-charcoal'"
+                        class="px-4 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer">
                         Hoy
                     </button>
                     <button @click="sessionFilter = 'upcoming'"
-                        :class="sessionFilter === 'upcoming' ? 'bg-teal-100 text-teal-700' : 'text-gray-500 hover:text-gray-700'"
-                        class="px-3 py-1 rounded-md text-sm font-medium">
+                        :class="sessionFilter === 'upcoming' ? 'bg-brand-sage-bg border-brand-sage-border text-brand-teal font-extrabold' : 'border-transparent text-brand-cool-gray hover:text-brand-charcoal'"
+                        class="px-4 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer">
                         Próximas
                     </button>
                     <button @click="sessionFilter = 'completed'"
-                        :class="sessionFilter === 'completed' ? 'bg-teal-100 text-teal-700' : 'text-gray-500 hover:text-gray-700'"
-                        class="px-3 py-1 rounded-md text-sm font-medium">
+                        :class="sessionFilter === 'completed' ? 'bg-brand-sage-bg border-brand-sage-border text-brand-teal font-extrabold' : 'border-transparent text-brand-cool-gray hover:text-brand-charcoal'"
+                        class="px-4 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer">
                         Completadas
                     </button>
                 </div>
             </div>
         </div>
 
-        <div class="p-6">
+        <div class="p-8">
             <div class="space-y-4">
-                <div v-for="session in filteredSessions" :key="session.id" class="border rounded-lg p-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
-                                <UserIcon class="h-6 w-6 text-teal-600" />
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="font-medium text-gray-900">{{ session.patient_name || 'Paciente Desconocido'
-                                    }}</h3>
-                                <p class="text-sm text-gray-500">{{ session.session_date ? new
-                                    Date(session.session_date).toLocaleString() : '—' }}
-                                </p>
-                                <p class="text-sm text-gray-600 mt-1">{{ session.notes }}</p>
-                            </div>
+                <div v-for="session in filteredSessions" :key="session.id" class="p-5 bg-brand-bg rounded-2xl border border-brand-border hover:border-brand-sage-border transition-all flex items-center justify-between flex-wrap sm:flex-nowrap gap-4">
+                    <div class="flex items-center">
+                        <div class="w-11 h-11 bg-brand-sage-bg border border-brand-sage-border rounded-full flex items-center justify-center shrink-0">
+                            <UserIcon class="h-5 w-5 text-brand-teal" />
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <span
-                                :class="getSessionStatusClass(session.session_status_id == 2 ? 'Completada' : 'Próxima')"
-                                class="px-2 py-1 text-xs font-medium rounded-full">
-                                {{ session.session_status_id == 2 ? 'Completada' : 'Próxima' }}
-                            </span>
-                            <JoinMeetButton v-if="session.session_status_id != 2" :session="session" />
-                            <button v-if="session.session_status_id != 2" @click="completeSession(session)"
-                                :disabled="loadingId === session.id"
-                                class="text-green-600 hover:text-green-700 text-sm font-medium border border-green-600 px-3 py-1 rounded-md hover:bg-green-50 transition-colors disabled:opacity-50">
-                                {{ loadingId === session.id ? '...' : 'Completar' }}
-                            </button>
-                            <button @click="openModal(session)"
-                                class="text-gray-500 hover:text-teal-600 text-sm font-medium">
-                                Ver Detalles
-                            </button>
+                        <div class="ml-4 text-left">
+                            <h3 class="text-xs font-bold text-brand-charcoal">{{ session.patient_name || 'Paciente Desconocido' }}</h3>
+                            <p class="text-[11px] text-brand-cool-gray mt-0.5">
+                                {{ session.session_date ? new Date(session.session_date).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' }) : '—' }} hrs
+                            </p>
+                            <p v-if="session.notes" class="text-xs text-brand-muted-teal mt-1.5 line-clamp-1 italic max-w-md">"{{ session.notes }}"</p>
                         </div>
                     </div>
+                    <div class="flex items-center space-x-3 shrink-0 w-full sm:w-auto justify-end">
+                        <span
+                            :class="getSessionStatusClass(session.session_status_id == 2 ? 'Completada' : 'Próxima')"
+                            class="px-2.5 py-0.5 text-[9.5px] font-black uppercase tracking-wider rounded-full">
+                            {{ session.session_status_id == 2 ? 'Completada' : 'Próxima' }}
+                        </span>
+                        <JoinMeetButton v-if="session.session_status_id != 2" :session="session" />
+                        <button v-if="session.session_status_id != 2" @click="completeSession(session)"
+                            :disabled="loadingId === session.id"
+                            class="text-emerald-700 hover:text-emerald-800 text-[10px] font-bold border border-emerald-200 bg-emerald-50 hover:bg-emerald-100/60 px-3 py-1.5 rounded-full transition-all disabled:opacity-50 cursor-pointer uppercase tracking-wider">
+                            {{ loadingId === session.id ? '...' : 'Completar' }}
+                        </button>
+                        <button @click="openModal(session)"
+                            class="text-brand-cool-gray hover:text-brand-teal text-[10px] font-bold border border-brand-border hover:border-brand-sage-border bg-white px-3 py-1.5 rounded-full transition-all cursor-pointer uppercase tracking-wider shadow-xs">
+                            Ver Detalles
+                        </button>
+                    </div>
                 </div>
-                <div v-if="filteredSessions.length === 0" class="text-center py-8 text-gray-500">
-                    No hay sesiones en esta categoría (Total: {{ sessions.length }})
+                <div v-if="filteredSessions.length === 0" class="text-center py-12 text-brand-cool-gray text-xs font-medium">
+                    No hay sesiones en esta categoría.
                 </div>
             </div>
         </div>
@@ -170,13 +167,13 @@ const filteredSessions = computed(() => {
 const getSessionStatusClass = (status: string) => {
     switch (status) {
         case 'Próxima':
-            return 'bg-blue-100 text-blue-800'
+            return 'bg-brand-sage-bg border border-brand-sage-border text-brand-teal'
         case 'Completada':
-            return 'bg-green-100 text-green-800'
+            return 'bg-emerald-55/40 border border-emerald-200 text-emerald-800'
         case 'Cancelada':
-            return 'bg-red-100 text-red-800'
+            return 'bg-red-50/50 border border-red-200 text-red-800'
         default:
-            return 'bg-gray-100 text-gray-800'
+            return 'bg-brand-bg border border-brand-border text-brand-cool-gray'
     }
 }
 </script>

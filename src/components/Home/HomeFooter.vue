@@ -1,80 +1,103 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+import { Brain, ShieldAlert } from 'lucide-vue-next'
 
+const emit = defineEmits<{
+  (e: 'click-view', view: string): void
+}>()
+
+const router = useRouter()
+
+const handleMySpace = () => {
+  router.push('/dashboard')
+}
 </script>
 
 <template>
-    <footer class="bg-[#f8f3eb] py-12 border-t border-[#e8d5c4]/30">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="mb-4">
-                        <img src="/logo.svg" alt="NatureMind Logo" class="h-10 w-auto" />
-                    </div>
-                    <p class="text-gray-600">
-                        Tu red de apoyo emocional, estés donde estés
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Enlaces Rápidos</h4>
-                    <ul class="space-y-2">
-                        <li>
-                            <a href="#services" class="text-gray-600 hover:text-[#7a9e9f] transition">Servicios</a>
-                        </li>
-                        <li>
-                            <a href="#therapists" class="text-gray-600 hover:text-[#7a9e9f] transition">Nuestros
-                                Terapeutas</a>
-                        </li>
-                        <li>
-                            <a href="#how-it-works" class="text-gray-600 hover:text-[#7a9e9f] transition">Cómo
-                                Funciona</a>
-                        </li>
-                        <li>
-                            <a href="#pricing" class="text-gray-600 hover:text-[#7a9e9f] transition">Precios</a>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Contacto</h4>
-                    <ul class="space-y-2 text-gray-600">
-                        <li class="flex items-start">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#7a9e9f] mr-2 mt-0.5"
-                                viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                            </svg>
-                            <span>info@mipsicored.com</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#7a9e9f] mr-2 mt-0.5"
-                                viewBox="0 0 20 20" fill="currentColor">
-                                <path
-                                    d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                            </svg>
-                            <span>(555) 123-4567</span>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Boletín</h4>
-                    <p class="text-gray-600 mb-4">Recibe consejos de psicología y mindfulness</p>
-                    <div class="flex">
-                        <input type="email" placeholder="Tu correo"
-                            class="px-4 py-2 rounded-l-xl w-full focus:outline-none border border-gray-200 text-gray-800" />
-                        <button
-                            class="bg-gradient-to-r from-[#7a9e9f] to-[#b8d8d8] px-4 py-2 rounded-r-xl hover:shadow-md transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-[#e8d5c4]/30 mt-12 pt-8 text-center text-gray-500">
-                <p>&copy; {{ new Date().getFullYear() }} MiPsicoRed. Todos los derechos reservados.</p>
-            </div>
+  <footer class="bg-stone-900 text-stone-300 py-16 border-t border-stone-850">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        <!-- Branding Column -->
+        <div class="space-y-4 text-left">
+          <div class="flex items-center gap-2 text-white">
+            <Brain class="w-6 h-6 text-teal-400" />
+            <span class="font-bold font-sans text-lg tracking-tight">MiPsicoRed</span>
+          </div>
+          <p class="text-stone-400 text-xs leading-relaxed max-w-sm font-sans">
+            Plataforma integrada de psicología para conectar a personas con terapeutas certificados bajo soporte de triaje inteligente de IA.
+          </p>
         </div>
-    </footer>
+
+        <!-- Quick Navigation Links -->
+        <div class="space-y-4 text-left">
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider font-sans">Enlaces</h4>
+          <ul class="space-y-2 text-xs font-sans">
+            <li>
+              <button @click="emit('click-view', 'home')" class="hover:text-teal-400 bg-transparent border-0 p-0 text-left cursor-pointer text-stone-300">
+                Inicio
+              </button>
+            </li>
+            <li>
+              <button @click="emit('click-view', 'terapeutas')" class="hover:text-teal-400 bg-transparent border-0 p-0 text-left cursor-pointer text-stone-300">
+                Encontrar Terapeuta
+              </button>
+            </li>
+            <li>
+              <button @click="emit('click-view', 'asistente')" class="hover:text-teal-400 bg-transparent border-0 p-0 text-left cursor-pointer text-stone-300">
+                Derivador IA
+              </button>
+            </li>
+            <li>
+              <button @click="handleMySpace" class="hover:text-teal-400 bg-transparent border-0 p-0 text-left cursor-pointer text-stone-300">
+                Mi Espacio
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Security Compliance Column -->
+        <div class="space-y-4 text-left">
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider font-sans">Garantía Clínica</h4>
+          <ul class="space-y-2 text-xs text-stone-400 leading-normal font-sans">
+            <li class="flex items-start gap-1">
+              <span class="text-teal-400 text-xs shrink-0">✔</span>
+              <span>Colegio de Psicólogos validado</span>
+            </li>
+            <li class="flex items-start gap-1">
+              <span class="text-teal-400 text-xs shrink-0">✔</span>
+              <span>Estándar HIPAA de protección de datos clínicos</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Crisis / Support Line emergency Column -->
+        <div class="space-y-4 text-left bg-stone-850 p-4 rounded-2xl border border-stone-800">
+          <div class="flex items-center gap-1.5 text-white">
+            <ShieldAlert class="w-5 h-5 text-red-500" />
+            <span class="text-xs font-black uppercase tracking-wider font-sans">¿Estás en Crisis Súbita?</span>
+          </div>
+          <p class="text-[10px] text-stone-400 leading-tight font-sans">
+            Si experimentas ideas de autolesión o peligro inminente para tu integridad, llama inmediatamente al servicio de emergencias o al fono de contención regional.
+          </p>
+          <div class="flex gap-2 pt-1 font-mono text-white text-xs font-black">
+            <span>Chile: 4141</span>
+            <span>•</span>
+            <span>España: 024</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Copy bottom row -->
+      <div class="border-t border-stone-800 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center text-[11px] text-stone-500 gap-4">
+        <p class="font-sans">© {{ new Date().getFullYear() }} MiPsicoRed. Todos los derechos reservados.</p>
+        <div class="flex gap-4 font-sans">
+          <a href="#" class="hover:text-stone-300">Términos de Servicio y Consentimiento Clínico Informado</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
 </template>

@@ -1,203 +1,320 @@
 <template>
-  <div class="max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <div class="max-w-5xl mx-auto">
 
-      <!-- Left Sidebar: Context & Help -->
-      <aside class="lg:col-span-3 space-y-6">
-        <div
-          class="bg-[#f4f3f0] rounded-2xl p-6 text-center h-full flex flex-col justify-center items-center relative overflow-hidden">
-          <!-- Decorative circle/icon placeholder -->
-          <div class="mb-6 relative">
-            <div
-              class="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mx-auto border-2 border-gray-800">
-              <User class="h-10 w-10 text-gray-700" />
-            </div>
-            <!-- Decorative elements could go here -->
-          </div>
+    <!-- Page header -->
+    <div class="mb-8">
+      <h2 class="text-xl font-bold font-serif text-brand-charcoal">Reservar Sesión</h2>
+      <p class="text-xs text-brand-cool-gray font-medium mt-1">Sigue los pasos para programar tu próxima cita.</p>
+    </div>
 
-          <h2 class="text-xl font-serif font-bold text-gray-900 mb-4 leading-tight">
-            Elige a el profesional con quien quieres reservar
-          </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-          <p class="text-sm text-gray-600 leading-relaxed mb-8">
-            Reserva sesión con el profesional que tengas asignado o la primera consulta si aún no la has realizado.
-          </p>
+      <!-- ── WIZARD (left 2/3) ── -->
+      <div class="lg:col-span-2 space-y-6">
 
-          <div class="mt-auto pt-8 border-t border-gray-200 w-full">
-            <h3 class="font-bold text-gray-900 text-sm mb-1">¿Tienes dudas?</h3>
-            <p class="text-xs text-gray-500 mb-1">Escríbenos a</p>
-            <a href="mailto:info@mipsicopito.com"
-              class="text-teal-600 underline text-sm hover:text-teal-800">info@mipsicopito.com</a>
+        <!-- Step progress bar -->
+        <div class="bg-white rounded-[2rem] border border-brand-border p-6 shadow-xs">
+          <div class="flex items-center gap-0">
+            <template v-for="(step, i) in steps" :key="i">
+              <!-- Step pill -->
+              <div class="flex items-center gap-2 flex-1 min-w-0">
+                <div
+                  class="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[10px] font-black transition-all"
+                  :class="currentStep > i
+                    ? 'bg-brand-teal text-white'
+                    : currentStep === i
+                      ? 'bg-brand-sage-bg border-2 border-brand-teal text-brand-teal'
+                      : 'bg-brand-bg border border-brand-border text-brand-cool-gray'"
+                >
+                  <Check v-if="currentStep > i" class="w-3.5 h-3.5" />
+                  <span v-else>{{ i + 1 }}</span>
+                </div>
+                <span
+                  class="text-[10px] font-bold uppercase tracking-wider truncate transition-colors"
+                  :class="currentStep >= i ? 'text-brand-charcoal' : 'text-brand-cool-gray'"
+                >{{ step }}</span>
+              </div>
+              <!-- Connector -->
+              <div v-if="i < steps.length - 1"
+                class="h-px flex-1 mx-3 transition-colors"
+                :class="currentStep > i ? 'bg-brand-teal' : 'bg-brand-border'"
+              />
+            </template>
           </div>
         </div>
-      </aside>
 
-      <!-- Center Content: Selection Flow -->
-      <main class="lg:col-span-6">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 min-h-[600px]">
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-bold text-gray-900 font-serif">¿Con quién vas a reservar?</h2>
-            <!-- Close button placeholder if needed, or just empty -->
+        <!-- ── STEP 1: Choose therapist ── -->
+        <div v-show="currentStep === 0" class="bg-white rounded-[2rem] border border-brand-border p-8 shadow-xs">
+          <h3 class="text-base font-bold font-serif text-brand-charcoal mb-1">Elige tu terapeuta</h3>
+          <p class="text-xs text-brand-cool-gray font-medium mb-6">Selecciona con quién quieres trabajar.</p>
+
+          <div v-if="loadingProfessionals" class="flex items-center justify-center py-12 gap-3">
+            <div class="w-5 h-5 border-2 border-brand-teal border-t-transparent rounded-full animate-spin" />
+            <span class="text-xs text-brand-cool-gray font-medium">Cargando profesionales...</span>
           </div>
 
-          <form @submit.prevent="bookSession" class="space-y-8">
-
-            <!-- Step 1: Therapist Selection -->
-            <section>
-              <div v-if="loadingProfessionals" class="text-center py-8 text-gray-500">
-                Cargando profesionales...
-              </div>
-              <div v-else-if="availableProfessionals.length === 0" class="text-center py-8 text-gray-500">
-                No hay profesionales disponibles en este momento.
-              </div>
-              <div v-else class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div v-for="therapist in availableProfessionals" :key="therapist.professional_id"
-                  @click="selectTherapist(therapist.professional_id)"
-                  class="cursor-pointer group flex flex-col items-center p-4 rounded-xl border transition-all duration-200"
-                  :class="bookingForm.therapist === therapist.professional_id
-                    ? 'border-teal-500 bg-teal-50 shadow-sm'
-                    : 'border-gray-200 hover:border-teal-300 hover:shadow-md bg-white'">
-
-                  <div class="w-20 h-20 rounded-full bg-gray-100 mb-3 overflow-hidden border border-gray-100">
-                    <!-- Placeholder for image, using initials -->
-                    <div
-                      class="w-full h-full flex items-center justify-center bg-teal-100 text-teal-700 font-bold text-xl">
-                      {{ therapist.name.charAt(0) }}
-                    </div>
-                  </div>
-
-                  <h3
-                    class="font-bold text-gray-900 text-center text-sm mb-1 group-hover:text-teal-700 transition-colors">
-                    {{ therapist.name }}
-                  </h3>
-
-                  <button @click.stop="openProfessionalModal(therapist.professional_id, therapist.name)"
-                    class="mt-2 text-xs bg-white border border-gray-200 text-gray-600 px-3 py-1 rounded-full hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 transition-all flex items-center gap-1 shadow-sm">
-                    <Info class="h-3 w-3" />
-                    Ver info
-                  </button>
-                  <!-- Optional: Specialty or Title -->
-                  <!-- <p class="text-xs text-gray-500">Psicóloga</p> -->
-                </div>
-              </div>
-            </section>
-
-            <!-- Step 2: Date Selection (Only visible after therapist selected) -->
-            <section v-if="bookingForm.therapist" class="animate-in fade-in slide-in-from-top-4 duration-300">
-              <h3 class="text-lg font-bold text-gray-900 mb-4 font-serif">Elige una fecha</h3>
-              <div class="max-w-xs mx-auto sm:mx-0">
-                <input v-model="bookingForm.date" type="date"
-                  class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-gray-700">
-              </div>
-            </section>
-
-            <!-- Step 3: Time Selection -->
-            <section v-if="bookingForm.date" class="animate-in fade-in slide-in-from-top-4 duration-300">
-              <h3 class="text-lg font-bold text-gray-900 mb-4 font-serif">Selecciona la hora</h3>
-              <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                <button v-for="time in availableTimes" :key="time" type="button" @click="bookingForm.time = time"
-                  :disabled="bookedSlots.includes(time)"
-                  class="py-2 px-2 rounded-lg text-sm font-medium transition-all duration-200 border" :class="[
-                    bookedSlots.includes(time)
-                      ? 'bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed'
-                      : bookingForm.time === time
-                        ? 'bg-teal-600 border-teal-600 text-white shadow-md'
-                        : 'bg-white border-gray-200 text-gray-700 hover:border-teal-500 hover:text-teal-600'
-                  ]">
-                  {{ time }}
-                </button>
-              </div>
-            </section>
-
-            <!-- Step 4: Notes -->
-            <section v-if="bookingForm.time" class="animate-in fade-in slide-in-from-top-4 duration-300">
-              <h3 class="text-lg font-bold text-gray-900 mb-4 font-serif">Notas</h3>
-              <textarea v-model="bookingForm.notes" rows="2"
-                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-gray-700 text-sm"
-                placeholder="Mensaje opcional..."></textarea>
-            </section>
-
-            <!-- Error Alert -->
-            <div v-if="error"
-              class="p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 text-red-700 text-sm">
-              <span>⚠️</span>
-              <p>{{ error }}</p>
+          <div v-else-if="availableProfessionals.length === 0" class="text-center py-12">
+            <div class="w-12 h-12 bg-brand-sage-bg rounded-full flex items-center justify-center mx-auto mb-3 border border-brand-sage-border">
+              <User class="w-5 h-5 text-brand-teal" />
             </div>
+            <p class="text-xs text-brand-cool-gray font-medium">No hay profesionales disponibles en este momento.</p>
+          </div>
 
-            <!-- Submit Button -->
-            <div class="pt-4" v-if="bookingForm.time">
-              <button type="submit" :disabled="loading"
-                class="w-full bg-teal-600 text-white py-3 px-6 rounded-xl hover:bg-teal-700 transition-all duration-200 font-bold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                <span v-if="loading" class="animate-spin">⏳</span>
-                {{ loading ? 'Procesando...' : 'Confirmar Reserva' }}
+          <div v-else class="space-y-3">
+            <div
+              v-for="therapist in availableProfessionals"
+              :key="therapist.professional_id"
+              @click="selectTherapist(therapist.professional_id)"
+              class="flex items-center gap-4 p-4 rounded-2xl border cursor-pointer transition-all group"
+              :class="bookingForm.therapist === therapist.professional_id
+                ? 'bg-brand-sage-bg border-brand-teal shadow-xs'
+                : 'border-brand-border hover:border-brand-sage-border hover:bg-brand-bg'"
+            >
+              <!-- Avatar -->
+              <div class="w-12 h-12 rounded-full bg-brand-sage-bg border border-brand-sage-border flex items-center justify-center shrink-0 overflow-hidden">
+                <span class="text-brand-teal font-bold font-serif text-base">{{ therapist.name.charAt(0) }}</span>
+              </div>
+
+              <!-- Info -->
+              <div class="flex-1 min-w-0 text-left">
+                <p class="text-xs font-bold text-brand-charcoal">{{ therapist.name }}</p>
+                <p class="text-[10px] text-brand-cool-gray mt-0.5">Psicólogo Clínico</p>
+              </div>
+
+              <!-- Info button -->
+              <button
+                @click.stop="openProfessionalModal(therapist.professional_id, therapist.name)"
+                class="text-[10px] font-bold border border-brand-border text-brand-cool-gray px-3 py-1.5 rounded-full hover:bg-white hover:text-brand-teal hover:border-brand-sage-border transition-all flex items-center gap-1 cursor-pointer shrink-0"
+              >
+                <Info class="w-3 h-3" /> Perfil
+              </button>
+
+              <!-- Selected indicator -->
+              <div
+                class="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all"
+                :class="bookingForm.therapist === therapist.professional_id
+                  ? 'bg-brand-teal border-brand-teal'
+                  : 'border-brand-border'"
+              >
+                <Check v-if="bookingForm.therapist === therapist.professional_id" class="w-3 h-3 text-white" />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end mt-8">
+            <button
+              @click="currentStep = 1"
+              :disabled="!bookingForm.therapist"
+              class="px-6 py-2.5 bg-brand-teal text-white rounded-full hover:bg-brand-teal-hover transition-all active:scale-[0.98] text-xs font-bold uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-md shadow-brand-teal/5 flex items-center gap-2"
+            >
+              Continuar <ArrowRight class="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        <!-- ── STEP 2: Date & Time ── -->
+        <div v-show="currentStep === 1" class="space-y-5">
+
+          <!-- Date picker -->
+          <div class="bg-white rounded-[2rem] border border-brand-border p-8 shadow-xs">
+            <h3 class="text-base font-bold font-serif text-brand-charcoal mb-1">Elige una fecha</h3>
+            <p class="text-xs text-brand-cool-gray font-medium mb-6">Selecciona el día de tu sesión.</p>
+            <input
+              v-model="bookingForm.date"
+              type="date"
+              :min="minDate"
+              class="w-full sm:max-w-xs px-4 py-3 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-bold bg-[#F9FBFA] cursor-pointer transition-all"
+            />
+          </div>
+
+          <!-- Time slots -->
+          <div v-if="bookingForm.date" class="bg-white rounded-[2rem] border border-brand-border p-8 shadow-xs">
+            <h3 class="text-base font-bold font-serif text-brand-charcoal mb-1">Elige la hora</h3>
+            <p class="text-xs text-brand-cool-gray font-medium mb-6">
+              Las franjas en gris ya están reservadas.
+            </p>
+
+            <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+              <button
+                v-for="time in availableTimes"
+                :key="time"
+                type="button"
+                @click="bookingForm.time = time"
+                :disabled="bookedSlots.includes(time)"
+                class="py-3 px-2 rounded-xl text-xs font-bold transition-all border cursor-pointer"
+                :class="[
+                  bookedSlots.includes(time)
+                    ? 'bg-brand-bg border-brand-border text-brand-cool-gray/40 cursor-not-allowed line-through'
+                    : bookingForm.time === time
+                      ? 'bg-brand-teal border-brand-teal text-white shadow-md shadow-brand-teal/10'
+                      : 'bg-white border-brand-border text-brand-charcoal hover:border-brand-sage-border hover:text-brand-teal hover:bg-brand-sage-bg/30'
+                ]"
+              >
+                {{ time }}
               </button>
             </div>
+          </div>
 
-          </form>
+          <div class="flex justify-between">
+            <button
+              @click="currentStep = 0"
+              class="px-6 py-2.5 border border-brand-border text-brand-cool-gray bg-white rounded-full hover:bg-brand-bg hover:text-brand-charcoal transition-all text-xs font-bold uppercase tracking-wider cursor-pointer flex items-center gap-2"
+            >
+              <ArrowLeft class="w-3.5 h-3.5" /> Atrás
+            </button>
+            <button
+              @click="currentStep = 2"
+              :disabled="!bookingForm.date || !bookingForm.time"
+              class="px-6 py-2.5 bg-brand-teal text-white rounded-full hover:bg-brand-teal-hover transition-all active:scale-[0.98] text-xs font-bold uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-md shadow-brand-teal/5 flex items-center gap-2"
+            >
+              Continuar <ArrowRight class="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
-      </main>
 
-      <!-- Right Sidebar: Summary -->
-      <aside class="lg:col-span-3">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 h-full">
-          <h3 class="font-serif font-bold text-xl text-gray-900 mb-6 pb-4 border-b border-gray-100 border-dashed">
-            Resumen
+        <!-- ── STEP 3: Notes & Confirm ── -->
+        <div v-show="currentStep === 2" class="space-y-5">
+
+          <div class="bg-white rounded-[2rem] border border-brand-border p-8 shadow-xs">
+            <h3 class="text-base font-bold font-serif text-brand-charcoal mb-1">Mensaje al terapeuta</h3>
+            <p class="text-xs text-brand-cool-gray font-medium mb-6">Opcional — comparte cualquier contexto previo.</p>
+            <textarea
+              v-model="bookingForm.notes"
+              rows="4"
+              class="w-full px-4 py-3 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-[#F9FBFA] resize-none"
+              placeholder="Ej: Hace tiempo que no duermo bien y me gustaría hablar sobre eso..."
+            />
+          </div>
+
+          <!-- Error alert -->
+          <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3 text-red-800 text-xs font-medium">
+            <AlertCircle class="w-4 h-4 shrink-0 mt-0.5" />
+            <p>{{ error }}</p>
+          </div>
+
+          <div class="flex justify-between">
+            <button
+              @click="currentStep = 1"
+              class="px-6 py-2.5 border border-brand-border text-brand-cool-gray bg-white rounded-full hover:bg-brand-bg hover:text-brand-charcoal transition-all text-xs font-bold uppercase tracking-wider cursor-pointer flex items-center gap-2"
+            >
+              <ArrowLeft class="w-3.5 h-3.5" /> Atrás
+            </button>
+            <button
+              @click="bookSession"
+              :disabled="loading"
+              class="px-8 py-3 bg-brand-teal text-white rounded-full hover:bg-brand-teal-hover transition-all active:scale-[0.98] text-xs font-bold uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-md shadow-brand-teal/5 flex items-center gap-2"
+            >
+              <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
+              <CalendarCheck v-else class="w-4 h-4" />
+              {{ loading ? 'Procesando...' : 'Confirmar Reserva' }}
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── BOOKING SUMMARY (right 1/3, sticky) ── -->
+      <aside class="lg:col-span-1">
+        <div class="bg-white rounded-[2rem] border border-brand-border p-7 shadow-xs sticky top-24 text-left space-y-5">
+          <h3 class="text-sm font-bold font-serif text-brand-charcoal pb-4 border-b border-brand-border">
+            Resumen de Reserva
           </h3>
 
-          <div class="space-y-6">
-            <div>
-              <p class="text-sm font-bold text-gray-900 mb-1">Tipo de sesión</p>
-              <p class="text-sm text-gray-600">Sesión de Psicología</p>
+          <!-- Summary rows -->
+          <div class="space-y-4">
+
+            <!-- Therapist -->
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 bg-brand-sage-bg border border-brand-sage-border rounded-xl flex items-center justify-center shrink-0">
+                <User class="w-3.5 h-3.5 text-brand-teal" />
+              </div>
+              <div class="min-w-0">
+                <p class="text-[9px] font-black text-brand-cool-gray uppercase tracking-widest">Terapeuta</p>
+                <p class="text-xs font-bold text-brand-charcoal mt-0.5 truncate">
+                  {{ selectedProfessionalName || '—' }}
+                </p>
+              </div>
             </div>
 
-            <div v-if="selectedProfessional">
-              <p class="text-sm font-bold text-gray-900 mb-1">Profesional</p>
-              <p class="text-sm text-gray-600">{{ selectedProfessionalName }}</p>
+            <!-- Date -->
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 bg-brand-sage-bg border border-brand-sage-border rounded-xl flex items-center justify-center shrink-0">
+                <Calendar class="w-3.5 h-3.5 text-brand-teal" />
+              </div>
+              <div class="min-w-0">
+                <p class="text-[9px] font-black text-brand-cool-gray uppercase tracking-widest">Fecha</p>
+                <p class="text-xs font-bold text-brand-charcoal mt-0.5">
+                  {{ bookingForm.date ? formatDate(bookingForm.date) : '—' }}
+                </p>
+              </div>
             </div>
 
-            <div v-if="bookingForm.date">
-              <p class="text-sm font-bold text-gray-900 mb-1">Fecha</p>
-              <p class="text-sm text-gray-600">{{ formatDate(bookingForm.date) }}</p>
+            <!-- Time -->
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 bg-brand-sage-bg border border-brand-sage-border rounded-xl flex items-center justify-center shrink-0">
+                <Clock class="w-3.5 h-3.5 text-brand-teal" />
+              </div>
+              <div class="min-w-0">
+                <p class="text-[9px] font-black text-brand-cool-gray uppercase tracking-widest">Hora</p>
+                <p class="text-xs font-bold text-brand-charcoal mt-0.5">
+                  {{ bookingForm.time ? bookingForm.time + ' hrs' : '—' }}
+                </p>
+              </div>
             </div>
 
-            <div v-if="bookingForm.time">
-              <p class="text-sm font-bold text-gray-900 mb-1">Hora</p>
-              <p class="text-sm text-gray-600">{{ bookingForm.time }}</p>
-            </div>
           </div>
 
-          <div class="mt-12 pt-6 border-t border-gray-200">
-            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Desglose de costes</h4>
-            <div class="flex justify-between items-center mb-2">
-              <span class="text-sm text-gray-600">Sesión</span>
-              <span class="text-sm font-medium text-gray-900">
+          <!-- Price -->
+          <div class="pt-5 border-t border-brand-border space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-brand-muted-teal font-medium">Sesión (60 min)</span>
+              <span class="text-xs font-extrabold text-brand-charcoal">
                 {{ selectedProfessional?.hourly_rate ? formatPrice(selectedProfessional.hourly_rate) : '--' }}
               </span>
             </div>
-            <div class="flex justify-between items-center pt-4 border-t border-gray-100 mt-4">
-              <span class="font-bold text-gray-900">Precio total</span>
-              <span class="font-bold text-xl text-gray-900">
+            <div class="flex justify-between items-center pt-3 border-t border-brand-border">
+              <span class="text-xs font-black text-brand-charcoal">Total</span>
+              <span class="text-base font-black text-brand-teal font-serif">
                 {{ selectedProfessional?.hourly_rate ? formatPrice(selectedProfessional.hourly_rate) : '--' }}
               </span>
             </div>
           </div>
 
+          <!-- Help -->
+          <div class="pt-4 border-t border-brand-border text-center">
+            <p class="text-[10px] text-brand-cool-gray font-medium">¿Tienes dudas?</p>
+            <a href="mailto:info@mipsicored.com" class="text-xs text-brand-teal font-bold hover:text-brand-teal-hover transition-colors">
+              info@mipsicored.com
+            </a>
+          </div>
         </div>
       </aside>
 
     </div>
 
-    <ProfessionalCardModal :is-open="isModalOpen" :professional-id="modalProfessionalId"
-      :professional-name="modalProfessionalName" @close="isModalOpen = false" @book="handleBookFromModal" />
+    <!-- Modals -->
+    <ProfessionalCardModal
+      :is-open="isModalOpen"
+      :professional-id="modalProfessionalId"
+      :professional-name="modalProfessionalName"
+      @close="isModalOpen = false"
+      @book="handleBookFromModal"
+    />
+    <StripeCheckoutModal
+      :is-open="isStripeModalOpen"
+      :client-secret="stripeClientSecret"
+      @close="isStripeModalOpen = false"
+    />
 
-    <StripeCheckoutModal :is-open="isStripeModalOpen" :client-secret="stripeClientSecret"
-      @close="isStripeModalOpen = false" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue'
-import { Calendar, Clock, User, Check, Info } from 'lucide-vue-next'
+import {
+  Calendar, Clock, User, Check, Info,
+  ArrowRight, ArrowLeft, AlertCircle, Loader2, CalendarCheck
+} from 'lucide-vue-next'
 import SessionsService, { type Session } from '@/services/session/session.service'
 import ProfessionalService, { type Professional } from '@/services/professional/professional.service'
 import type { ProfessionalSelectorItem } from '@/services/professional/professional.types'
@@ -217,31 +334,18 @@ interface BookingFormData {
 }
 
 const props = defineProps({
-  professionals: {
-    type: Array as () => any[], // Keeping loose type for compatibility
-    required: false,
-    default: () => []
-  },
-  sessionTypeId: {
-    type: String,
-    required: false,
-    default: null
-  },
-  patientId: {
-    type: String,
-    required: false,
-    default: null
-  }
-})
-
-const bookingForm = ref<BookingFormData>({
-  therapist: '',
-  date: '',
-  time: '',
-  notes: ''
+  professionals: { type: Array as () => any[], required: false, default: () => [] },
+  sessionTypeId: { type: String, required: false, default: null },
+  patientId: { type: String, required: false, default: null }
 })
 
 const emit = defineEmits(['session-booked'])
+
+// ── State ──────────────────────────────────────────────
+const currentStep = ref(0)
+const steps = ['Terapeuta', 'Fecha y hora', 'Confirmación']
+
+const bookingForm = ref<BookingFormData>({ therapist: '', date: '', time: '', notes: '' })
 const loading = ref(false)
 const error = ref('')
 const bookedSlots = ref<string[]>([])
@@ -250,42 +354,39 @@ const loadingProfessionals = ref(false)
 const selectedProfessional = ref<Professional | null>(null)
 const authStore = useAuthStore()
 
-// Modal State
 const isModalOpen = ref(false)
 const modalProfessionalId = ref('')
 const modalProfessionalName = ref('')
-
-const openProfessionalModal = (id: string, name: string) => {
-  modalProfessionalId.value = id
-  modalProfessionalName.value = name
-  modalProfessionalName.value = name
-  isModalOpen.value = true
-}
-
-// Stripe Modal State
 const isStripeModalOpen = ref(false)
 const stripeClientSecret = ref('')
 
-const handleBookFromModal = (id: string) => {
-  selectTherapist(id)
-  isModalOpen.value = false
-}
-
-console.log("EEUUUAUAUA " + authStore.userId)
-
+// ── Computed ───────────────────────────────────────────
 const selectedProfessionalName = computed(() => {
   const pro = availableProfessionals.value.find(p => p.professional_id === bookingForm.value.therapist)
   return pro ? pro.name : ''
 })
+
+const minDate = computed(() => new Date().toISOString().split('T')[0])
 
 const availableTimes = [
   '09:00', '10:00', '11:00', '12:00',
   '14:00', '15:00', '16:00', '17:00', '18:00'
 ]
 
+// ── Methods ────────────────────────────────────────────
+const openProfessionalModal = (id: string, name: string) => {
+  modalProfessionalId.value = id
+  modalProfessionalName.value = name
+  isModalOpen.value = true
+}
+
+const handleBookFromModal = (id: string) => {
+  selectTherapist(id)
+  isModalOpen.value = false
+}
+
 const selectTherapist = async (id: string) => {
   bookingForm.value.therapist = id
-  // Fetch full professional details to get price
   try {
     const response = await ProfessionalService.readSingle({ professional_id: id })
     selectedProfessional.value = response.data || response
@@ -317,27 +418,20 @@ const checkAvailability = async () => {
     bookedSlots.value = []
     return
   }
-
   try {
-    const response = await SessionsService.readProfessional({
-      professional_id: bookingForm.value.therapist
-    })
-
+    const response = await SessionsService.readProfessional({ professional_id: bookingForm.value.therapist })
     const sessions = (response.data || response) as Session[]
     const selectedDateStr = bookingForm.value.date
-
     bookedSlots.value = sessions
       .filter(s => {
         if (s.completed || !s.session_date) return false
         const d = new Date(s.session_date)
-        const dateStr = d.toISOString().split('T')[0]
-        return dateStr === selectedDateStr
+        return d.toISOString().split('T')[0] === selectedDateStr
       })
       .map(s => {
         const d = new Date(s.session_date!)
         return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
       })
-
   } catch (err) {
     console.error('Error checking availability:', err)
   }
@@ -350,55 +444,29 @@ watch(() => [bookingForm.value.therapist, bookingForm.value.date], () => {
 
 const bookSession = async () => {
   let finalPatientId = props.patientId
-
   try {
     if (authStore.userId) {
-      const readSingleByUserQuery: ReadSingleByUserQuery = {
-        user_id: authStore.userId.toString()
-      }
-      const response = await PatientService.readSingleByUser(readSingleByUserQuery)
-      const patient = response.data || response
-      finalPatientId = patient.id
+      const query: ReadSingleByUserQuery = { user_id: authStore.userId.toString() }
+      const response = await PatientService.readSingleByUser(query)
+      finalPatientId = (response.data || response).id
     }
   } catch (err) {
     console.error('Error fetching patient:', err)
   }
 
-  if (!bookingForm.value.therapist) {
-    error.value = 'Por favor selecciona un terapeuta'
-    return
-  }
-  if (!bookingForm.value.date) {
-    error.value = 'Por favor selecciona una fecha'
-    return
-  }
-  if (!bookingForm.value.time) {
-    error.value = 'Por favor selecciona una hora'
-    return
-  }
+  if (!bookingForm.value.therapist) { error.value = 'Por favor selecciona un terapeuta'; return }
+  if (!bookingForm.value.date) { error.value = 'Por favor selecciona una fecha'; return }
+  if (!bookingForm.value.time) { error.value = 'Por favor selecciona una hora'; return }
+  if (!finalPatientId) { error.value = 'No se encontró un perfil de paciente válido.'; return }
 
-  let sessionDate: string | null = null
-  try {
-    if (bookingForm.value.time) {
-      sessionDate = `${bookingForm.value.date}T${bookingForm.value.time}:00`
-      console.log(sessionDate)
-    }
-  } catch (e) {
-    console.error('Error parsing session date:', e)
-    return
-  }
-
-  if (!finalPatientId) {
-    error.value = 'No se encontró un perfil de paciente válido. Si es tu primera vez, asegúrate de completar tus datos.'
-    return
-  }
+  const sessionDate = `${bookingForm.value.date}T${bookingForm.value.time}:00`
 
   const sessionPayload: SessionCreatePayload = {
     patient_id: finalPatientId,
     professional_id: bookingForm.value.therapist,
     session_type_id: props.sessionTypeId || null,
     session_status_id: 1,
-    session_date: sessionDate || null,
+    session_date: sessionDate,
     videocall_url: null,
     notes: bookingForm.value.notes || null,
     session_duration: 60
@@ -407,59 +475,45 @@ const bookSession = async () => {
   try {
     loading.value = true
     error.value = ''
-
-    // 1. Create the session in the database first
     await SessionsService.create(sessionPayload)
 
-    // 2. Prepare Payment Link
     const amount = selectedProfessional.value?.hourly_rate
-      ? Math.round(selectedProfessional.value.hourly_rate * 100) // Convert to cents
-      : 2000 // Default fallback or error handling
+      ? Math.round(selectedProfessional.value.hourly_rate * 100)
+      : 2000
 
     const checkoutResponse = await CheckoutService.createSession({
-      amount: amount,
+      amount,
       currency: 'eur',
       success_url: window.location.origin + '/dashboard?payment=success',
       cancel_url: window.location.origin + '/dashboard?payment=cancel'
     })
 
-    // 3. Open Modal with Client Secret
     if (checkoutResponse.client_secret) {
       stripeClientSecret.value = checkoutResponse.client_secret
       isStripeModalOpen.value = true
     } else {
-      error.value = "Error al iniciar el pago."
+      error.value = 'Error al iniciar el pago.'
     }
 
     bookingForm.value = { therapist: '', date: '', time: '', notes: '' }
+    currentStep.value = 0
   } catch (err: any) {
-    console.error('Error creating session or payment:', err)
-    if (err?.response?.status === 422) {
-      error.value = 'El servidor no pudo procesar la solicitud (422). Revisa los campos requeridos.'
-      return
-    }
+    console.error('Error creating session:', err)
     error.value = err?.response?.data?.message || err?.message || 'Error al reservar la sesión'
   } finally {
     loading.value = false
   }
 }
 
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(price)
-}
+const formatPrice = (price: number) =>
+  new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(price)
 
 const formatDate = (dateStr: string) => {
   if (!dateStr) return ''
-  return new Date(dateStr).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+  return new Date(dateStr).toLocaleDateString('es-ES', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  })
 }
 
-onMounted(() => {
-  fetchProfessionals()
-})
+onMounted(() => { fetchProfessionals() })
 </script>
-
-<style scoped>
-.font-serif {
-  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-}
-</style>

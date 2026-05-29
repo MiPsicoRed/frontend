@@ -1,12 +1,12 @@
 <template>
-    <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl p-6 relative h-[90vh] overflow-hidden flex flex-col">
-            <button @click="$emit('close')" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10">
-                <X class="w-6 h-6" />
+    <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-brand-charcoal/40 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-[2rem] border border-brand-border shadow-lg w-full max-w-4xl p-8 relative h-[85vh] overflow-hidden flex flex-col text-left animate-in fade-in duration-200">
+            <button @click="$emit('close')" class="absolute top-4 right-4 p-2 bg-white border border-brand-border hover:bg-brand-bg rounded-full text-brand-cool-gray hover:text-brand-charcoal cursor-pointer transition-colors shadow-xs z-10">
+                <X class="w-4 h-4" />
             </button>
 
-            <div class="mb-4">
-                <h2 class="text-xl font-bold">Pago Seguro</h2>
+            <div class="mb-6 pb-4 border-b border-brand-border">
+                <h2 class="text-base font-bold font-serif text-brand-charcoal">Pago Seguro</h2>
             </div>
 
             <div id="checkout" class="flex-grow overflow-y-auto">

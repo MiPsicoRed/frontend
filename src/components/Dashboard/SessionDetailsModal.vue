@@ -1,71 +1,71 @@
 <template>
     <div v-if="isOpen && session"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-900">Detalles de la Sesión</h3>
-                <button @click="$emit('close')" class="text-gray-400 hover:text-gray-600">
-                    <X class="h-6 w-6" />
+        class="fixed inset-0 z-50 flex items-center justify-center bg-brand-charcoal/40 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-[2rem] border border-brand-border shadow-lg w-full max-w-2xl max-h-[85vh] overflow-y-auto text-left">
+            <div class="p-8 border-b border-brand-border flex justify-between items-center">
+                <h3 class="text-base font-bold font-serif text-brand-charcoal">Detalles de la Sesión</h3>
+                <button @click="$emit('close')" class="text-brand-cool-gray hover:text-brand-charcoal cursor-pointer transition-colors">
+                    <X class="h-5 w-5" />
                 </button>
             </div>
 
-            <div class="p-6 space-y-6">
+            <div class="p-8 space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <p class="text-sm font-medium text-gray-500">ID Sesión</p>
-                        <p class="text-gray-900">{{ session.id }}</p>
+                        <p class="text-[10px] text-brand-cool-gray font-black uppercase tracking-wider">ID Sesión</p>
+                        <p class="text-xs font-bold text-brand-charcoal mt-1">{{ session.id }}</p>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-gray-500">Estado</p>
-                        <span :class="session.session_status_id == 2 ? 'text-green-600' : 'text-yellow-600'" class="font-medium">
+                        <p class="text-[10px] text-brand-cool-gray font-black uppercase tracking-wider">Estado</p>
+                        <span :class="session.session_status_id == 2 ? 'bg-emerald-55/40 border border-emerald-200 text-emerald-800' : 'bg-brand-sage-bg border border-brand-sage-border text-brand-teal'" class="px-2.5 py-0.5 text-[9.5px] font-black uppercase tracking-wider rounded-full inline-block mt-1">
                             {{ session.session_status_id == 2 ? 'Completada' : 'Pendiente' }}
                         </span>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-gray-500">Paciente</p>
-                        <p class="text-gray-900 font-medium">{{ session.patient_name || 'Desconocido' }}</p>
-                        <p class="text-xs text-gray-400">{{ session.patient_id }}</p>
+                        <p class="text-[10px] text-brand-cool-gray font-black uppercase tracking-wider">Paciente</p>
+                        <p class="text-xs font-bold text-brand-charcoal mt-1">{{ session.patient_name || 'Desconocido' }}</p>
+                        <p class="text-[10px] text-brand-cool-gray font-mono mt-0.5">{{ session.patient_id }}</p>
                     </div>
                     <div class="md:col-span-2">
-                        <p class="text-sm font-medium text-gray-500">Fecha y Hora Actual</p>
-                        <p class="text-gray-900 text-lg">{{ formatDateTime(session.session_date) }}</p>
+                        <p class="text-[10px] text-brand-cool-gray font-black uppercase tracking-wider">Fecha y Hora</p>
+                        <p class="text-sm font-bold text-brand-teal mt-1">{{ formatDateTime(session.session_date) }} hrs</p>
                     </div>
                     <div class="md:col-span-2" v-if="session.notes">
-                        <p class="text-sm font-medium text-gray-500">Notas</p>
-                        <p class="text-gray-700 bg-gray-50 p-3 rounded-lg mt-1">{{ session.notes }}</p>
+                        <p class="text-[10px] text-brand-cool-gray font-black uppercase tracking-wider">Notas</p>
+                        <p class="text-xs text-brand-muted-teal bg-[#F9FBFA] border border-brand-border p-4 rounded-xl mt-1.5 font-medium leading-relaxed italic">"{{ session.notes }}"</p>
                     </div>
                 </div>
 
-                <div class="border-t border-gray-100 pt-6">
-                    <h4 class="font-bold text-gray-900 mb-4">Acciones</h4>
+                <div class="border-t border-brand-border pt-8">
+                    <h4 class="text-xs font-black text-brand-charcoal uppercase tracking-wider mb-4">Acciones</h4>
 
                     <div class="flex flex-col gap-4">
                         <!-- Confirm Action -->
-                        <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+                        <div class="flex items-center justify-between bg-[#F9FBFA] border border-brand-border p-5 rounded-2xl flex-wrap sm:flex-nowrap gap-4">
                             <div>
-                                <p class="font-medium text-gray-900">Confirmar Sesión</p>
-                                <p class="text-sm text-gray-500">Marcar la sesión como confirmada/completada</p>
+                                <p class="text-xs font-bold text-brand-charcoal">Confirmar Sesión</p>
+                                <p class="text-[10px] text-brand-cool-gray mt-0.5">Marcar la sesión como confirmada/completada</p>
                             </div>
                             <button @click="confirmSession" :disabled="updating"
-                                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50">
+                                class="bg-emerald-700 text-white px-4 py-2 rounded-full hover:bg-emerald-800 transition-all active:scale-[0.98] text-[10px] font-bold uppercase tracking-wider cursor-pointer shadow-md shadow-emerald-700/5 disabled:opacity-50">
                                 Confirmar
                             </button>
                         </div>
 
                         <!-- Reschedule Action -->
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <p class="font-medium text-gray-900 mb-2">Proponer Nueva Fecha</p>
-                            <div class="flex flex-wrap gap-3 items-end">
+                        <div class="bg-[#F9FBFA] border border-brand-border p-5 rounded-2xl">
+                            <p class="text-xs font-bold text-brand-charcoal mb-4">Proponer Nueva Fecha</p>
+                            <div class="flex flex-wrap gap-4 items-end">
                                 <div>
-                                    <label class="block text-xs text-gray-500 mb-1">Fecha</label>
-                                    <input v-model="newDate" type="date" class="border rounded-lg px-3 py-2 text-sm">
+                                    <label class="block text-[10px] text-brand-cool-gray font-black uppercase tracking-wider mb-1.5">Fecha</label>
+                                    <input v-model="newDate" type="date" class="px-3 py-2 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-white">
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-gray-500 mb-1">Hora</label>
-                                    <input v-model="newTime" type="time" class="border rounded-lg px-3 py-2 text-sm">
+                                    <label class="block text-[10px] text-brand-cool-gray font-black uppercase tracking-wider mb-1.5">Hora</label>
+                                    <input v-model="newTime" type="time" class="px-3 py-2 border border-brand-border rounded-xl focus:border-brand-teal focus:ring-1 focus:ring-brand-teal outline-none text-brand-charcoal text-xs font-medium bg-white">
                                 </div>
                                 <button @click="updateDate" :disabled="updating || !newDate || !newTime"
-                                    class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 disabled:opacity-50 text-sm">
+                                    class="bg-brand-teal text-white px-4 py-2.5 rounded-full hover:bg-brand-teal-hover transition-all active:scale-[0.98] text-[10px] font-bold uppercase tracking-wider cursor-pointer shadow-md shadow-brand-teal/5 disabled:opacity-50">
                                     Guardar Fecha
                                 </button>
                             </div>

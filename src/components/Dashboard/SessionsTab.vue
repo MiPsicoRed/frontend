@@ -1,47 +1,50 @@
 <template>
-  <div class="bg-white rounded-xl shadow-sm border">
-    <div class="p-6 border-b border-gray-200">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-gray-900">Mis Sesiones</h2>
+  <div class="bg-white rounded-[2rem] border border-brand-border shadow-xs text-left">
+    <div class="p-8 border-b border-brand-border">
+      <div class="flex items-center justify-between gap-4 flex-wrap">
+        <h2 class="text-lg font-bold font-serif text-brand-dark-text">Mis Sesiones</h2>
         <div class="flex space-x-2">
           <button @click="sessionFilter = 'upcoming'"
-            :class="sessionFilter === 'upcoming' ? 'bg-teal-100 text-teal-700' : 'text-gray-500 hover:text-gray-700'"
-            class="px-3 py-1 rounded-md text-sm font-medium">
+            :class="sessionFilter === 'upcoming' ? 'bg-brand-sage-bg border-brand-sage-border text-brand-teal font-extrabold' : 'border-transparent text-brand-cool-gray hover:text-brand-charcoal'"
+            class="px-4 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer">
             Próximas
           </button>
           <button @click="sessionFilter = 'completed'"
-            :class="sessionFilter === 'completed' ? 'bg-teal-100 text-teal-700' : 'text-gray-500 hover:text-gray-700'"
-            class="px-3 py-1 rounded-md text-sm font-medium">
+            :class="sessionFilter === 'completed' ? 'bg-brand-sage-bg border-brand-sage-border text-brand-teal font-extrabold' : 'border-transparent text-brand-cool-gray hover:text-brand-charcoal'"
+            class="px-4 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer">
             Completadas
           </button>
         </div>
       </div>
     </div>
 
-    <div class="p-6">
+    <div class="p-8">
       <div class="space-y-4">
-        <div v-for="session in filteredSessions" :key="session.id" class="border rounded-lg p-4">
-          <div class="flex items-start justify-between">
+        <div v-if="filteredSessions.length === 0" class="text-center py-12 text-brand-muted-teal text-xs font-medium">
+          No hay sesiones programadas en esta sección.
+        </div>
+        <div v-else v-for="session in filteredSessions" :key="session.id" class="p-5 bg-brand-bg rounded-2xl border border-brand-border hover:border-brand-sage-border transition-all">
+          <div class="flex items-start justify-between flex-wrap sm:flex-nowrap gap-4">
             <div class="flex items-start">
-              <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <User class="h-6 w-6 text-teal-600" />
+              <div class="w-11 h-11 bg-brand-sage-bg rounded-full flex items-center justify-center border border-brand-sage-border shrink-0">
+                <User class="h-5 w-5 text-brand-teal" />
               </div>
               <div class="ml-4">
-                <h3 class="font-medium text-gray-900">{{ getProfessional(session.professional_id).name }}</h3>
-                <p class="text-sm text-gray-500 mt-1">
-                  {{ formatSessionDate(session.session_date) }} - {{ formatSessionTime(session.session_date) }}
+                <h3 class="text-xs font-bold text-brand-charcoal">{{ getProfessional(session.professional_id).name }}</h3>
+                <p class="text-[11px] text-brand-cool-gray mt-1">
+                  {{ formatSessionDate(session.session_date) }} • {{ formatSessionTime(session.session_date) }} hrs
                 </p>
-                <div v-if="session.notes" class="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
-                  <span class="font-medium">Notas:</span> {{ session.notes }}
+                <div v-if="session.notes" class="mt-3 text-xs text-brand-muted-teal bg-brand-sage-bg/25 border border-brand-sage-border/40 p-3 rounded-xl">
+                  <span class="font-bold text-brand-charcoal">Notas:</span> {{ session.notes }}
                 </div>
               </div>
             </div>
-            <div class="flex items-center space-x-3">
-              <span :class="getStatusClass(session.completed)" class="px-2 py-1 text-xs font-medium rounded-full">
+            <div class="flex items-center space-x-3 self-start sm:self-center shrink-0 w-full sm:w-auto justify-end">
+              <span :class="getStatusClass(session.completed)" class="px-2.5 py-0.5 text-[9.5px] font-black uppercase tracking-wider rounded-full">
                 {{ session.completed ? 'Completada' : 'Próxima' }}
               </span>
               <JoinMeetButton v-if="!session.completed" :session="session" />
-              <button class="text-gray-400 hover:text-gray-600">
+              <button class="text-brand-cool-gray hover:text-brand-charcoal transition-colors cursor-pointer p-1">
                 <MoreVertical class="h-4 w-4" />
               </button>
             </div>
@@ -140,9 +143,9 @@ const filteredSessions = computed(() => {
 
 const getStatusClass = (completed: boolean) => {
   if (completed) {
-    return 'bg-green-100 text-green-800'
+    return 'bg-emerald-55/40 border border-emerald-200 text-emerald-800'
   } else {
-    return 'bg-blue-100 text-blue-800'
+    return 'bg-brand-sage-bg border border-brand-sage-border text-brand-teal'
   }
 }
 
