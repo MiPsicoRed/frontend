@@ -1,94 +1,134 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b">
+  <div class="min-h-screen bg-brand-bg font-sans flex flex-col">
+    <!-- Top Navbar -->
+    <header class="bg-white border-b border-brand-border sticky top-0 z-40 backdrop-blur-md bg-white/90 shrink-0">
       <DashboardNavBar v-model:showUserMenu="showUserMenu" v-model:activeTab="activeTab" :profile="userProfile" />
     </header>
 
+    <!-- Onboarding loading overlay -->
     <div v-if="isCheckingOnboarding"
-      class="fixed inset-0 flex flex-col items-center justify-center bg-[#00000086] bg-opacity-50 w-full h-screen overflow-clip z-50">
-      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-500 mb-4"></div>
-      <p class="text-white font-medium text-lg">Comprobando datos de usuario...</p>
+      class="fixed inset-0 flex flex-col items-center justify-center bg-brand-charcoal/80 w-full h-screen overflow-clip z-50 backdrop-blur-xs">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-teal mb-4"></div>
+      <p class="text-white font-medium text-sm font-sans tracking-wide">Comprobando datos de usuario...</p>
     </div>
 
+    <!-- Onboarding modal -->
     <div v-if="!isCheckingOnboarding && onboard"
-      class="fixed inset-0 flex items-center justify-center bg-[#00000086] bg-opacity-50 w-full h-screen overflow-clip z-50">
+      class="fixed inset-0 flex items-center justify-center bg-brand-charcoal/80 w-full h-screen overflow-clip z-50 backdrop-blur-xs">
       <div class="w-full max-w-4xl mx-4">
         <ModalForm :onboarding="true" @closeOnboarding="handleCloseOnboarding" />
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Navigation Tabs -->
-      <div class="border-b border-gray-200 mb-8">
-        <DashboardNavTabs v-model:activeTab="activeTab" />
-      </div>
+    <!-- App shell: sidebar + content -->
+    <div class="flex flex-1 overflow-hidden">
 
-      <!-- Dashboard Content -->
-      <div v-if="activeTab === 'dashboard'">
-        <!-- Welcome Section -->
-        <div class="bg-gradient-to-r from-teal-50 to-green-50 rounded-xl p-6 mb-8 shadow-sm border">
-          <DashboardWelcomeSection :name="userName" />
-        </div>
+      <!-- ── SIDEBAR (only visible on dashboard tab on mobile, always on lg+) ── -->
+      <DashboardSidebarNav
+        v-model:activeTab="activeTab"
+        :name="userName"
+        :profile-picture="userProfile.profile_picture_url"
+        :next-session="nextSession"
+        class="hidden lg:flex"
+      />
 
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <DashboardStatCards :nextSession="nextSession" :stats="stats" />
-        </div>
+      <!-- ── MAIN CONTENT AREA ── -->
+      <main class="flex-1 overflow-y-auto">
 
-        <!-- Main Content Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <!-- Upcoming Sessions -->
-          <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border p-6 h-full flex flex-col">
+        <!-- === PANEL PRINCIPAL TAB === -->
+        <div v-if="activeTab === 'dashboard'" class="px-8 py-8 max-w-4xl mx-auto space-y-8 animate-fade-in">
+
+          <!-- Welcome banner (compact) -->
+          <div class="bg-white border border-brand-border rounded-[2rem] px-8 py-6 shadow-xs">
+            <DashboardWelcomeSection :name="userName" />
+          </div>
+
+          <!-- Stat chips row -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <DashboardStatCards :nextSession="nextSession" :stats="stats" />
+          </div>
+
+          <!-- Upcoming sessions -->
+          <div class="bg-white rounded-[2rem] border border-brand-border p-8 shadow-xs">
             <div class="flex items-center justify-between mb-6">
-              <h3 class="text-lg font-semibold text-gray-900">Próximas Sesiones</h3>
-              <button @click="activeTab = 'sessions'" class="text-teal-600 hover:text-teal-700 text-sm font-medium">
+              <h3 class="text-base font-bold text-brand-charcoal font-serif">Próximas Sesiones</h3>
+              <button @click="activeTab = 'sessions'" class="text-xs text-brand-teal hover:text-brand-teal-hover font-bold transition-colors cursor-pointer underline underline-offset-4">
                 Ver todas
               </button>
             </div>
-
-            <div class="space-y-4 flex-1">
-              <div v-if="upcomingSessions.length === 0" class="text-gray-500 text-sm py-4">
+            <div class="space-y-4">
+              <div v-if="upcomingSessions.length === 0" class="text-brand-muted-teal text-xs py-8 font-medium text-center">
                 No tienes sesiones programadas.
+                <br/>
+                <button @click="activeTab = 'book'" class="mt-3 inline-flex items-center gap-1.5 text-brand-teal font-bold hover:text-brand-teal-hover transition-colors cursor-pointer">
+                  <Plus class="w-3.5 h-3.5" /> Reservar ahora
+                </button>
               </div>
               <div v-else v-for="session in upcomingSessions" :key="session.id"
-                class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                class="flex items-center justify-between p-4 bg-brand-bg rounded-2xl border border-brand-border hover:border-brand-sage-border transition-all">
                 <DashboardUpcomingSession :session="session" />
               </div>
             </div>
           </div>
 
-          <!-- Notifications Box -->
-          <div class="lg:col-span-1">
-            <DashboardNotificationsBox />
+          <!-- Notifications -->
+          <DashboardNotificationsBox />
+
+          <!-- Mood Tracker -->
+          <div class="mt-8">
+            <MoodTracker />
+          </div>
+
+          <!-- Mobile-only quick actions (visible only when sidebar is hidden) -->
+          <div class="lg:hidden bg-white rounded-[2rem] border border-brand-border p-6 shadow-xs space-y-3">
+            <h3 class="text-base font-bold text-brand-charcoal font-serif mb-4">Acciones Rápidas</h3>
+            <button @click="activeTab = 'book'"
+              class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-brand-teal text-white rounded-full hover:bg-brand-teal-hover transition-all active:scale-[0.98] text-xs font-bold uppercase tracking-wider cursor-pointer shadow-md shadow-brand-teal/10">
+              <CalendarPlus class="w-4 h-4" />
+              Reservar Sesión
+            </button>
+            <button @click="activeTab = 'messages'"
+              class="w-full flex items-center justify-center gap-2 px-4 py-3 border border-brand-border text-brand-charcoal rounded-full hover:bg-brand-bg transition-all text-xs font-bold cursor-pointer">
+              <MessageCircle class="w-4 h-4" />
+              Contactar Terapeuta
+            </button>
+          </div>
+
+        </div>
+
+        <!-- === SESSIONS TAB (full-width) === -->
+        <div v-if="activeTab === 'sessions'" class="px-8 py-8">
+          <DashboardSessionsTab :allSessions="sessions" :professionals="therapists" v-model:sessionFilter="sessionFilter"
+            @session-created="fetchSessions" />
+        </div>
+
+        <!-- === BOOK SESSION TAB (full-width) === -->
+        <div v-if="activeTab === 'book'" class="px-8 py-8">
+          <DashboardBookSessionTab :professionals="therapists" :patient-id="patient?.id"
+            :session-type-id="sessionTypes?.[0]?.id" @session-booked="handleSessionBooked" />
+        </div>
+
+        <!-- === SETTINGS TAB (full-width) === -->
+        <div v-if="activeTab === 'settings'" class="px-8 py-8">
+          <DashboardSettingsTab :currentUser="currentUser" @save="saveSettings" />
+        </div>
+
+        <!-- === MESSAGES TAB === -->
+        <div v-if="activeTab === 'messages'" class="px-8 py-8 max-w-4xl mx-auto animate-fade-in">
+          <h2 class="text-2xl font-serif font-bold text-brand-charcoal mb-6">Mensajes</h2>
+          <div v-if="therapists.length > 0">
+            <ChatWidget :otherUserId="therapists[0].id" :otherUserName="therapists[0].name" />
+          </div>
+          <div v-else class="text-center text-gray-500 py-12 bg-white rounded-[2rem] border border-gray-100">
+            Aún no tienes un terapeuta asignado.
           </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <DashboardQuickActions v-model:activeTab="activeTab" />
-        </div>
-      </div>
-
-      <!-- Sessions Tab -->
-      <div v-if="activeTab === 'sessions'">
-        <DashboardSessionsTab :allSessions="sessions" :professionals="therapists" v-model:sessionFilter="sessionFilter"
-          @session-created="fetchSessions" />
-      </div>
-
-      <!-- Book Session Tab -->
-      <div v-if="activeTab === 'book'">
-        <DashboardBookSessionTab :professionals="therapists" :patient-id="patient?.id"
-          :session-type-id="sessionTypes?.[0]?.id" @session-booked="handleSessionBooked" />
-      </div>
-
-      <!-- Settings Tab -->
-      <div v-if="activeTab === 'settings'">
-        <DashboardSettingsTab :currentUser="currentUser" @save="saveSettings" />
-      </div>
+      </main>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, onBeforeMount } from 'vue'
@@ -98,17 +138,19 @@ import SessionTypeService, { type SessionType } from '@/services/session_type/se
 import PatientService, { type Patient } from '@/services/patient/patient.service'
 import { useAuthStore } from '@/stores/auth.module'
 import DashboardNavBar from '@/components/Dashboard/NavBar.vue'
+import DashboardSidebarNav from '@/components/Dashboard/SidebarNav.vue'
 import ModalForm from '@/components/Onboarding/ModalForm.vue'
-import DashboardNavTabs from '@/components/Dashboard/NavTabs.vue'
 import DashboardWelcomeSection from '@/components/Dashboard/WelcomeSection.vue'
 import DashboardStatCards from '@/components/Dashboard/StatCards.vue'
 import DashboardUpcomingSession from '@/components/Dashboard/UpcomingSession.vue'
 import DashboardNotificationsBox from '@/components/Dashboard/NotificationsBox.vue'
-import DashboardQuickActions from '@/components/Dashboard/QuickActions.vue'
 import DashboardSessionsTab from '@/components/Dashboard/SessionsTab.vue'
 import DashboardBookSessionTab from '@/components/Dashboard/BookSessionTab.vue'
 import DashboardSettingsTab from '@/components/Dashboard/SettingsTab.vue'
+import MoodTracker from '@/components/patient/MoodTracker.vue'
+import ChatWidget from '@/components/shared/ChatWidget.vue'
 import UserService, { type User } from '@/services/user/user.service'
+import { CalendarPlus, Plus, MessageCircle } from 'lucide-vue-next'
 
 /*
 * =========================================
