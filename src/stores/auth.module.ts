@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import AuthService from '../services/auth/auth.service.ts'
 import { getAuthToken } from '../services/auth/auth-header'
 import type { LoginResponse, ParsedToken, RegisterResponse } from '@/services/auth/auth.types.ts'
+import { wsService } from '@/services/ws'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token') || null)
@@ -26,6 +27,8 @@ export const useAuthStore = defineStore('auth', () => {
       const isValid = await AuthService.validateToken()
       if (!isValid) {
         logout() // Clear invalid token
+      } else {
+        wsService.connect(token.value)
       }
       return isValid
     } catch (error) {
@@ -48,6 +51,7 @@ export const useAuthStore = defineStore('auth', () => {
   function logout() {
     AuthService.logout()
     token.value = null
+    wsService.disconnect()
   }
 
   async function register(userData: any): Promise<RegisterResponse> {
@@ -65,6 +69,7 @@ export const useAuthStore = defineStore('auth', () => {
   function loginSuccess(jwt: string) {
     token.value = jwt
     localStorage.setItem('token', jwt)
+    wsService.connect(jwt)
   }
 
   function loginFailure() {
@@ -76,6 +81,7 @@ export const useAuthStore = defineStore('auth', () => {
   function registerSuccess(jwt: string) {
     token.value = jwt
     localStorage.setItem('token', jwt)
+    wsService.connect(jwt)
   }
 
   function registerFailure() {

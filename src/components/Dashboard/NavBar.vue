@@ -21,9 +21,9 @@
                         class="text-brand-cool-gray hover:text-brand-teal relative p-1.5 transition-colors cursor-pointer">
                         <Bell class="h-4.5 w-4.5" />
                         <!-- Unread badge -->
-                        <span v-if="unreadCount > 0"
+                        <span v-if="notificationStore.unreadCount > 0"
                             class="absolute top-0.5 right-0.5 inline-flex items-center justify-center w-3.5 h-3.5 text-[8.5px] font-black text-white bg-amber-600 rounded-full border border-white">
-                            {{ unreadCount }}
+                            {{ notificationStore.unreadCount }}
                         </span>
                     </button>
 
@@ -32,17 +32,17 @@
                         class="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-xl border border-brand-border z-50 overflow-hidden animate-fade-in">
                         <div class="p-4 border-b border-brand-border flex justify-between items-center bg-brand-sage-bg/30">
                             <h3 class="text-xs font-black uppercase tracking-wider text-brand-charcoal font-sans">Notificaciones</h3>
-                            <button v-if="notifications.length > 0" @click="clearNotifications"
+                            <button v-if="notificationStore.notifications.length > 0" @click="notificationStore.markAllAsRead"
                                 class="text-[11px] text-brand-teal hover:text-brand-teal-hover font-bold transition-colors cursor-pointer">
                                 Marcar leídas
                             </button>
                         </div>
 
                         <div class="max-h-80 overflow-y-auto">
-                            <div v-if="notifications.length > 0">
-                                <a href="#" v-for="notif in notifications" :key="notif.id"
+                            <div v-if="notificationStore.notifications.length > 0">
+                                <a href="#" v-for="notif in notificationStore.notifications" :key="notif.id"
                                     class="block p-4 border-b border-brand-border hover:bg-brand-bg transition-colors"
-                                    :class="{ 'bg-brand-sage-bg/20': notif.unread }">
+                                    :class="{ 'bg-brand-sage-bg/20': !notif.is_read }">
                                     <div class="flex gap-3">
                                         <div class="flex-shrink-0 mt-0.5">
                                             <div class="w-1.5 h-1.5 rounded-full mt-1.5" :class="{
@@ -55,7 +55,7 @@
                                         <div class="text-left">
                                             <p class="text-xs font-bold text-brand-charcoal mb-0.5">{{ notif.title }}</p>
                                             <p class="text-[11px] text-brand-muted-teal leading-relaxed mb-1">{{ notif.message }}</p>
-                                            <p class="text-[9.5px] text-brand-cool-gray font-mono">{{ notif.time }}</p>
+                                            <p class="text-[9.5px] text-brand-cool-gray font-mono">{{ new Date(notif.created_at).toLocaleString() }}</p>
                                         </div>
                                     </div>
                                 </a>
@@ -66,7 +66,7 @@
                             </div>
                         </div>
 
-                        <div v-if="notifications.length > 0"
+                        <div v-if="notificationStore.notifications.length > 0"
                             class="p-3 border-t border-brand-border text-center bg-brand-bg">
                             <a href="#" class="text-[11px] font-bold text-brand-teal hover:text-brand-teal-hover transition-colors">Ver todas las
                                 notificaciones</a>
@@ -110,6 +110,7 @@ import {
     Bell, User, ChevronDown
 } from 'lucide-vue-next'
 import authService from '@/services/auth/auth.service'
+import { useNotificationStore } from '@/stores/notifications.module'
 
 const props = defineProps({
     showUserMenu: Boolean,
@@ -145,38 +146,15 @@ const logout = () => {
 
 // Notifications state
 const showNotifications = ref(false)
-const notifications = ref([
-    {
-        id: 1,
-        type: 'info',
-        title: 'Nueva funcionalidad',
-        message: 'Ahora puedes subir tu propia foto de perfil desde los ajustes de tu cuenta.',
-        time: 'Hace 2 horas',
-        unread: true
-    },
-    {
-        id: 2,
-        type: 'success',
-        title: 'Pago confirmado',
-        message: 'Hemos recibido correctamente el pago de tu última sesión.',
-        time: 'Ayer',
-        unread: true
-    },
-    {
-        id: 3,
-        type: 'warning',
-        title: 'Recordatorio',
-        message: 'Tu próxima sesión es en 48 horas. Revisa que tu cámara y micrófono funcionen correctamente.',
-        time: 'Ayer',
-        unread: false
+const notificationStore = useNotificationStore()
+
+// Fetch notifications on mount
+onMounted(() => {
+    notificationStore.fetchNotifications()
+    if (typeof window !== 'undefined') {
+        document.addEventListener('click', handleClickOutside)
     }
-])
-
-const unreadCount = computed(() => notifications.value.filter(n => n.unread).length)
-
-const clearNotifications = () => {
-    notifications.value.forEach(n => n.unread = false)
-}
+})
 
 // Close dropdowns on outside click
 const handleClickOutside = (event) => {
@@ -186,11 +164,7 @@ const handleClickOutside = (event) => {
     }
 }
 
-onMounted(() => {
-    if (typeof window !== 'undefined') {
-        document.addEventListener('click', handleClickOutside)
-    }
-})
+
 
 onUnmounted(() => {
     if (typeof window !== 'undefined') {
