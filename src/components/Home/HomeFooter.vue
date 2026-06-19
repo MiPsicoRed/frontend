@@ -79,12 +79,10 @@ const handleMySpace = () => {
             <span class="text-xs font-black uppercase tracking-wider font-sans">¿Estás en Crisis Súbita?</span>
           </div>
           <p class="text-[10px] text-stone-400 leading-tight font-sans">
-            Si experimentas ideas de autolesión o peligro inminente para tu integridad, llama inmediatamente al servicio de emergencias o al fono de contención regional.
+            Si experimentas ideas de autolesión o peligro inminente para tu integridad, llama inmediatamente al servicio de emergencias o al teléfono de atención a la conducta suicida.
           </p>
           <div class="flex gap-2 pt-1 font-mono text-white text-xs font-black">
-            <span>Chile: 4141</span>
-            <span>•</span>
-            <span>España: 024</span>
+            <span>024</span>
           </div>
         </div>
 

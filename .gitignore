@@ -32,3 +32,5 @@ coverage
 
 # Bun
 bun.lock
+
+env*

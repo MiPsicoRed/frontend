@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.module'
 import { therapistsData, type Therapist } from '@/data/therapists'
-import { Star, ShieldCheck, DollarSign, Calendar, Clock, Smile, Search, AlertCircle } from 'lucide-vue-next'
+import { ShieldCheck, Calendar, Clock, Smile, Search, X, GraduationCap, Languages, BookOpen } from 'lucide-vue-next'
 import axios from 'axios'
 
 const emit = defineEmits<{
@@ -17,6 +17,7 @@ const searchTerm = ref('')
 const selectedSpecialty = ref('All')
 const selectedPrice = ref('All')
 const selectedTherapist = ref<Therapist | null>(null)
+const profileTherapist = ref<Therapist | null>(null)
 const allTherapists = ref<Therapist[]>([...therapistsData])
 
 // Booking modal state
@@ -53,6 +54,10 @@ const filteredTherapists = computed(() => {
     return matchesSearch && matchesSpecialty && matchesPrice
   })
 })
+
+const handleOpenProfile = (therapist: Therapist) => {
+  profileTherapist.value = therapist
+}
 
 const handleOpenBooking = (therapist: Therapist) => {
   if (!authStore.isLoggedIn) {
@@ -100,6 +105,14 @@ const handleConfirmBooking = (e: Event) => {
     emit('click-view', 'dashboard')
   }, 2000)
 }
+
+watch([profileTherapist, selectedTherapist], ([profile, booking]) => {
+  document.body.style.overflow = (profile || booking) ? 'hidden' : ''
+})
+
+onUnmounted(() => {
+  document.body.style.overflow = ''
+})
 
 const clearFilters = () => {
   searchTerm.value = ''
@@ -209,10 +222,11 @@ onMounted(async () => {
 
       <!-- Dynamic List -->
       <div v-if="filteredTherapists.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div 
-          v-for="therapist in filteredTherapists" 
+        <div
+          v-for="therapist in filteredTherapists"
           :key="therapist.id"
-          class="bg-white rounded-3xl border border-brand-border hover:border-brand-sage-border overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-teal/5 transition-all duration-300 flex flex-col justify-between text-left"
+          @click="handleOpenProfile(therapist)"
+          class="bg-white rounded-3xl border border-brand-border hover:border-brand-sage-border overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-teal/5 transition-all duration-300 flex flex-col justify-between text-left cursor-pointer"
         >
           
           <!-- Upper profile content -->
@@ -273,7 +287,7 @@ onMounted(async () => {
           <!-- Footer interactive buttons -->
           <div class="px-8 pb-8 pt-2 bg-[#F9FBFA]/80 border-t border-brand-border grid grid-cols-1 gap-2 font-sans">
             <button
-              @click="handleOpenBooking(therapist)"
+              @click.stop="handleOpenBooking(therapist)"
               class="w-full bg-brand-teal hover:bg-brand-teal-hover active:scale-98 transition-all text-white text-xs font-bold py-3.5 rounded-full cursor-pointer text-center flex items-center justify-center gap-2 shadow-md shadow-brand-teal/5 border-0"
             >
               <Calendar class="w-4 h-4" />
@@ -298,8 +312,123 @@ onMounted(async () => {
         </button>
       </div>
 
+      <!-- Therapist Profile Modal -->
+      <div v-if="profileTherapist" class="fixed inset-0 z-50 flex items-center justify-center py-10 px-6 sm:py-14 sm:px-10 bg-brand-charcoal/50 backdrop-blur-sm" @click.self="profileTherapist = null">
+        <div class="relative bg-white max-w-lg w-full rounded-[2.5rem] border border-brand-border shadow-2xl text-left animate-in slide-in-from-bottom duration-300 flex flex-col max-h-full overflow-hidden">
+
+          <!-- Header — fijo, no scrollea -->
+          <div class="relative bg-gradient-to-br from-[#E8F3F1] to-[#F4F7F6] p-6 sm:p-8 pb-5 shrink-0">
+            <button
+              @click="profileTherapist = null"
+              class="absolute top-5 right-5 p-2 rounded-full bg-white/80 text-brand-cool-gray hover:text-brand-charcoal border-0 cursor-pointer shadow-sm"
+            >
+              <X class="w-4 h-4" />
+            </button>
+
+            <div class="flex gap-4 sm:gap-5 items-start">
+              <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden shrink-0 border-2 border-white shadow-md bg-[#F4F7F6]">
+                <img :src="profileTherapist.image" :alt="profileTherapist.name" class="w-full h-full object-cover" />
+              </div>
+              <div class="space-y-1.5 pt-1">
+                <div class="flex items-center gap-1.5 font-sans">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white text-brand-teal text-[10px] font-black shadow-sm">
+                    ★ {{ profileTherapist.rating }}
+                  </span>
+                  <span class="text-[11px] text-brand-cool-gray font-sans">({{ profileTherapist.reviewsCount }} reseñas)</span>
+                </div>
+                <h3 class="font-bold text-lg sm:text-xl text-brand-charcoal tracking-tight leading-snug font-sans">{{ profileTherapist.name }}</h3>
+                <p class="text-[11px] text-brand-teal font-bold uppercase tracking-wider font-sans">{{ profileTherapist.languages.join(' • ') }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Body — único bloque con scroll -->
+          <div class="flex-1 overflow-y-auto p-6 sm:p-8 space-y-5">
+
+            <!-- Specialties -->
+            <div class="space-y-2">
+              <div class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-brand-cool-gray font-sans">
+                <BookOpen class="w-3.5 h-3.5" />
+                Especialidades
+              </div>
+              <div class="flex flex-wrap gap-1.5 font-sans">
+                <span
+                  v-for="(spec, i) in profileTherapist.specialty"
+                  :key="i"
+                  class="text-[10px] font-semibold px-3 py-1 rounded-full bg-[#E8F3F1] border border-[#D1E2E0] text-[#0D5C63]"
+                >{{ spec }}</span>
+              </div>
+            </div>
+
+            <!-- Bio -->
+            <div class="space-y-2">
+              <div class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-brand-cool-gray font-sans">
+                <Smile class="w-3.5 h-3.5" />
+                Sobre mí
+              </div>
+              <p class="text-[#526663] text-xs leading-relaxed font-sans">{{ profileTherapist.bio }}</p>
+            </div>
+
+            <!-- Education -->
+            <div class="space-y-2">
+              <div class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-brand-cool-gray font-sans">
+                <GraduationCap class="w-3.5 h-3.5" />
+                Formación
+              </div>
+              <div class="flex items-start gap-2 text-xs text-brand-charcoal font-sans">
+                <ShieldCheck class="w-4 h-4 text-brand-teal shrink-0 mt-0.5" />
+                <span>{{ profileTherapist.education }}</span>
+              </div>
+            </div>
+
+            <!-- Languages -->
+            <div class="space-y-2">
+              <div class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-brand-cool-gray font-sans">
+                <Languages class="w-3.5 h-3.5" />
+                Idiomas
+              </div>
+              <p class="text-xs text-brand-charcoal font-sans">{{ profileTherapist.languages.join(', ') }}</p>
+            </div>
+
+            <!-- Availability -->
+            <div v-if="profileTherapist.availability.length > 0" class="space-y-2">
+              <div class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-brand-cool-gray font-sans">
+                <Clock class="w-3.5 h-3.5" />
+                Disponibilidad
+              </div>
+              <div class="space-y-1">
+                <div
+                  v-for="(slot, i) in profileTherapist.availability"
+                  :key="i"
+                  class="text-[11px] text-[#526663] bg-[#F4F7F6] rounded-full px-3 py-1 inline-block mr-1.5 mb-1 font-sans"
+                >{{ slot }}</div>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="bg-[#E8F3F1] rounded-2xl p-4 border border-[#D1E2E0] flex justify-between items-center font-sans">
+              <span class="text-xs text-brand-teal font-medium">Precio por sesión (50 min)</span>
+              <span class="font-black text-lg text-brand-charcoal">${{ profileTherapist.sessionPrice }} <span class="text-xs font-medium">EUR</span></span>
+            </div>
+
+          </div>
+
+          <!-- CTA footer — fijo, no scrollea -->
+          <div class="px-6 sm:px-8 pb-6 sm:pb-8 pt-4 border-t border-brand-border shrink-0">
+            <button
+              @click="handleOpenBooking(profileTherapist!); profileTherapist = null"
+              class="w-full bg-brand-teal hover:bg-brand-teal-hover active:scale-98 transition-all text-white text-sm font-bold py-4 rounded-full cursor-pointer text-center flex items-center justify-center gap-2 shadow-md shadow-brand-teal/10 border-0 font-sans"
+            >
+              <Calendar class="w-4 h-4" />
+              Reservar Primera Cita Gratuita
+            </button>
+          </div>
+
+        </div>
+      </div>
+
       <!-- Interactive Booking Modal Drawer -->
-      <div v-if="selectedTherapist" class="fixed inset-0 z-50 overflow-y-auto bg-brand-charcoal/40 backdrop-blur-sm flex items-center justify-center p-4">
+      <div v-if="selectedTherapist" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-charcoal/40 backdrop-blur-sm">
         <div class="relative bg-white max-w-md w-full rounded-[2.5rem] border border-brand-border shadow-2xl p-8 text-left space-y-6 animate-in slide-in-from-bottom duration-300">
           
           <div class="flex justify-between items-start">
