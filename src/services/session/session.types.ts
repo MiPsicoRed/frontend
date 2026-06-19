@@ -9,6 +9,7 @@ export interface CreatePayload {
     videocall_url: string | null
     notes: string | null
     session_duration: number | null
+    payment_session_id?: string | null
 }
 
 export interface DeletePayload {

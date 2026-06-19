@@ -7,4 +7,5 @@ export interface CreateCheckoutSessionPayload {
 
 export interface CreateCheckoutSessionResponse {
   client_secret: string
+  session_id: string
 }

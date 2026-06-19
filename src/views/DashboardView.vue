@@ -254,6 +254,45 @@ const fetchSessionTypes = async () => {
   }
 }
 
+const handlePendingSessionBooking = async () => {
+  const params = new URLSearchParams(window.location.search)
+  const paymentStatus = params.get('payment')
+  if (!paymentStatus) return
+
+  const pending = localStorage.getItem('pending_session_booking')
+  if (!pending) return
+
+  try {
+    const parsed = JSON.parse(pending)
+    const sessionPayload = parsed.sessionPayload
+    const paymentSessionId = parsed.payment_session_id
+
+    if (!sessionPayload || !paymentSessionId) {
+      localStorage.removeItem('pending_session_booking')
+      return
+    }
+
+    if (paymentStatus === 'success') {
+      loading.value = true
+      await SessionsService.create({
+        ...sessionPayload,
+        payment_session_id: paymentSessionId,
+      })
+      localStorage.removeItem('pending_session_booking')
+      await fetchSessions()
+    } else if (paymentStatus === 'cancel') {
+      error.value = 'El pago fue cancelado. Intenta nuevamente.'
+      localStorage.removeItem('pending_session_booking')
+    }
+  } catch (err: any) {
+    console.error('Error finalizing pending session booking:', err)
+    localStorage.removeItem('pending_session_booking')
+  } finally {
+    window.history.replaceState({}, '', window.location.pathname)
+    loading.value = false
+  }
+}
+
 //TODO: Fetch professionals only when necessary
 const fetchProfessionals = async () => {
   loading.value = true
@@ -383,7 +422,8 @@ onBeforeMount(async () => {
   ])
 })
 
-onMounted(() => {
+onMounted(async () => {
+  await handlePendingSessionBooking()
   fetchSessions()
   if (typeof window !== 'undefined') {
     document.addEventListener('click', handleClickOutside)
