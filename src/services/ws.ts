@@ -3,6 +3,7 @@ import { useNotificationStore } from '../stores/notifications.module'
 class WebSocketService {
   private ws: WebSocket | null = null;
   private reconnectTimer: number | null = null;
+  private reconnectAttempts: number = 0;
 
   connect(token: string) {
     if (this.ws) {
@@ -16,6 +17,7 @@ class WebSocketService {
 
     this.ws.onopen = () => {
       console.log('WebSocket connected');
+      this.reconnectAttempts = 0;
       if (this.reconnectTimer) {
         clearTimeout(this.reconnectTimer);
         this.reconnectTimer = null;
@@ -36,8 +38,15 @@ class WebSocketService {
     };
 
     this.ws.onclose = () => {
-      console.log('WebSocket disconnected. Reconnecting in 5s...');
-      this.reconnectTimer = setTimeout(() => this.connect(token), 5000) as any;
+      const baseDelay = 1000;
+      const maxDelay = 30000;
+      const delay = Math.min(maxDelay, baseDelay * Math.pow(2, this.reconnectAttempts));
+      
+      console.log(`WebSocket disconnected. Reconnecting in ${delay}ms...`);
+      this.reconnectTimer = setTimeout(() => {
+        this.reconnectAttempts++;
+        this.connect(token);
+      }, delay) as any;
     };
 
     this.ws.onerror = (error) => {

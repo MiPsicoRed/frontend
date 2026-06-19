@@ -475,7 +475,6 @@ const bookSession = async () => {
   try {
     loading.value = true
     error.value = ''
-    await SessionsService.create(sessionPayload)
 
     const amount = selectedProfessional.value?.hourly_rate
       ? Math.round(selectedProfessional.value.hourly_rate * 100)
@@ -488,15 +487,20 @@ const bookSession = async () => {
       cancel_url: window.location.origin + '/dashboard?payment=cancel'
     })
 
-    if (checkoutResponse.client_secret) {
+    if (checkoutResponse.client_secret && checkoutResponse.session_id) {
+      localStorage.setItem('pending_session_booking', JSON.stringify({
+        sessionPayload,
+        payment_session_id: checkoutResponse.session_id,
+      }))
+
       stripeClientSecret.value = checkoutResponse.client_secret
       isStripeModalOpen.value = true
+      currentStep.value = 2
     } else {
       error.value = 'Error al iniciar el pago.'
     }
 
     bookingForm.value = { therapist: '', date: '', time: '', notes: '' }
-    currentStep.value = 0
   } catch (err: any) {
     console.error('Error creating session:', err)
     error.value = err?.response?.data?.message || err?.message || 'Error al reservar la sesión'

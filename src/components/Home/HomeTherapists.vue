@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.module'
 import { therapistsData, type Therapist } from '@/data/therapists'
 import { Star, ShieldCheck, DollarSign, Calendar, Clock, Smile, Search, AlertCircle } from 'lucide-vue-next'
+import axios from 'axios'
 
 const emit = defineEmits<{
   (e: 'click-view', view: string): void
@@ -16,6 +17,7 @@ const searchTerm = ref('')
 const selectedSpecialty = ref('All')
 const selectedPrice = ref('All')
 const selectedTherapist = ref<Therapist | null>(null)
+const allTherapists = ref<Therapist[]>([...therapistsData])
 
 // Booking modal state
 const bookingDate = ref('')
@@ -34,7 +36,7 @@ const specialties = [
 ]
 
 const filteredTherapists = computed(() => {
-  return therapistsData.filter(therapist => {
+  return allTherapists.value.filter(therapist => {
     const matchesSearch = therapist.name.toLowerCase().includes(searchTerm.value.toLowerCase()) || 
                           therapist.bio.toLowerCase().includes(searchTerm.value.toLowerCase())
     
@@ -53,6 +55,10 @@ const filteredTherapists = computed(() => {
 })
 
 const handleOpenBooking = (therapist: Therapist) => {
+  if (!authStore.isLoggedIn) {
+    router.push('/login')
+    return
+  }
   selectedTherapist.value = therapist
   bookingDate.value = new Date(Date.now() + 86400000).toISOString().split('T')[0] || '' // tomorrow
   bookingTime.value = '10:00'
@@ -61,14 +67,11 @@ const handleOpenBooking = (therapist: Therapist) => {
 
 const handleConfirmBooking = (e: Event) => {
   e.preventDefault()
-  if (!selectedTherapist.value) return
+  if (!selectedTherapist.value || !authStore.isLoggedIn) return
 
-  const user = authStore.isLoggedIn ? {
+  const user = {
     id: authStore.userId || 'patient-mock-1',
     name: authStore.fullUserName || 'Usuario',
-  } : {
-    id: 'patient-mock-1',
-    name: 'Invitado',
   }
 
   const newAppointment = {
@@ -103,6 +106,42 @@ const clearFilters = () => {
   selectedSpecialty.value = 'All'
   selectedPrice.value = 'All'
 }
+
+onMounted(async () => {
+  try {
+    const baseApi = import.meta.env.VITE_BASE_API_URL || 'http://localhost:3001/api/'
+    const [allRes, selRes] = await Promise.all([
+      axios.get(`${baseApi}professional/all`),
+      axios.get(`${baseApi}professional/selector`)
+    ])
+
+    const allData = allRes.data.data
+    const selData = selRes.data.data
+
+    if (allData && allData.length > 0) {
+      allTherapists.value = allData.map((dbProf: any, index: number) => {
+        const selectorInfo = selData.find((s: any) => s.professional_id === dbProf.id)
+        const name = selectorInfo ? selectorInfo.name : 'Terapeuta'
+        
+        return {
+          id: dbProf.id,
+          name: name,
+          specialty: [], // Will be fetched from DB when implemented
+          bio: dbProf.bio || 'Este profesional aún no ha añadido una biografía.',
+          rating: 5.0,
+          reviewsCount: 0,
+          sessionPrice: dbProf.hourly_rate || 0,
+          image: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=E8F3F1&color=0D5C63&size=400&font-size=0.33`, // Default thumbnail with initials
+          availability: [],
+          education: dbProf.education || 'Profesional Colegiado',
+          languages: ['Español'] // Default fallback
+        }
+      })
+    }
+  } catch (e) {
+    console.error('Failed to load professionals from database', e)
+  }
+})
 </script>
 
 <template>
@@ -319,12 +358,7 @@ const clearFilters = () => {
               </select>
             </div>
 
-            <div v-if="!authStore.isLoggedIn" class="bg-amber-55 p-4 rounded-2xl border border-amber-200 flex items-start gap-2.5 text-[10.5px] text-amber-900 leading-tight">
-              <AlertCircle class="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-              <div>
-                <strong>Agendamiento como Invitado:</strong> Se creará una sesión temporal. Puedes registrarte más tarde para sincronizar tu videollamada de forma de persistente.
-              </div>
-            </div>
+
 
             <div class="pt-2 flex gap-3">
               <button
