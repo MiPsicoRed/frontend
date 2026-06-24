@@ -17,7 +17,7 @@
             <div class="flex items-center space-x-4">
                 <!-- Notifications Dropdown -->
                 <div class="relative">
-                    <button @click="showNotifications = !showNotifications"
+                    <button @click="toggleNotifications"
                         class="text-brand-cool-gray hover:text-brand-teal relative p-1.5 transition-colors cursor-pointer">
                         <Bell class="h-4.5 w-4.5" />
                         <!-- Unread badge -->
@@ -147,6 +147,13 @@ const logout = () => {
 // Notifications state
 const showNotifications = ref(false)
 const notificationStore = useNotificationStore()
+
+const toggleNotifications = () => {
+    showNotifications.value = !showNotifications.value
+    if (showNotifications.value) {
+        notificationStore.fetchNotifications()
+    }
+}
 
 // Fetch notifications on mount
 onMounted(() => {

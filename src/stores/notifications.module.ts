@@ -4,7 +4,7 @@ import axios from 'axios'
 import authHeader from '../services/auth/auth-header'
 import { useToast } from 'vue-toastification'
 
-const API_URL = import.meta.env.VITE_BASE_API_URL + 'notification/'
+const API_URL = import.meta.env.VITE_BASE_API_URL + 'notification'
 
 export interface Notification {
   id: string
@@ -37,7 +37,7 @@ export const useNotificationStore = defineStore('notifications', () => {
 
   async function markAllAsRead() {
     try {
-      await axios.patch(API_URL + 'read-all', {}, { headers: authHeader() })
+      await axios.patch(API_URL + '/read-all', {}, { headers: authHeader() })
       notifications.value.forEach(n => n.is_read = true)
     } catch (error) {
       console.error('Failed to mark notifications as read', error)
@@ -46,7 +46,7 @@ export const useNotificationStore = defineStore('notifications', () => {
 
   async function markAsRead(id: string) {
     try {
-      await axios.patch(API_URL + `${id}/read`, {}, { headers: authHeader() })
+      await axios.patch(API_URL + `/${id}/read`, {}, { headers: authHeader() })
       const notif = notifications.value.find(n => n.id === id)
       if (notif) notif.is_read = true
     } catch (error) {

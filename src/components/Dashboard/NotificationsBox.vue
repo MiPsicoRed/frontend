@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import {
     Bell as BellIcon,
     Info as InfoIcon,
@@ -65,4 +65,8 @@ import {
 import { useNotificationStore } from '@/stores/notifications.module'
 
 const notificationStore = useNotificationStore()
+
+onMounted(() => {
+    notificationStore.fetchNotifications()
+})
 </script>
